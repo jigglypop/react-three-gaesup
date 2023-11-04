@@ -15,7 +15,7 @@ export default function checkTurn({
 }) {
   const { cur, move, calc, control, slope, model } =
     useContext(ControllerContext);
-  const [{isMoving, isCanJump}, setStates] = useAtom(statesAtom);
+  const [{ isMoving, isCanJump }, setStates] = useAtom(statesAtom);
 
   useFrame(() => {
     if (isMoving) {

@@ -16,13 +16,12 @@ export default function calcBuoyancy({
    * Apply buoyancy force
    * 부력을 계산합니다. 캐릭터의 현재 속도에 비례하여 아래 방향의 힘을 적용합니다.
    */
-  const { jumps, stand, rays, buoyancy } =
-    useContext(ControllerContext);
+  const { jumps, stand, rays, buoyancy } = useContext(ControllerContext);
   const { isCanJump } = useAtomValue(statesAtom);
 
   useFrame(() => {
     if (rays.rayHit !== null) {
-      if (isCanJump  && rays.rayParent) {
+      if (isCanJump && rays.rayParent) {
         const buoyancyForce =
           buoyancy.K * (buoyancy.distance - rays.rayHit.toi) -
           rigidBodyRef.current!.linvel().y * buoyancy.damp;

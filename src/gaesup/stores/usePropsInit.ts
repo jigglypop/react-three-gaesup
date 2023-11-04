@@ -73,18 +73,16 @@ export const ControllerDefault = {
     length: -1,
     dir: { x: 0, y: 0, z: 0 }
   },
-  control: {
-    f: false,
-    b: false,
-    l: false,
-    r: false,
-    jump: false,
-    run: false,
-    jumpIdle: false,
-    jumpLand: false
-    // isMoving: false,
-    // isNotMoving: false
-  },
+  // control: {
+  //   f: false,
+  //   b: false,
+  //   l: false,
+  //   r: false,
+  //   jump: false,
+  //   run: false,
+  //   jumpIdle: false,
+  //   jumpLand: false
+  // },
   animationSet: {
     idle: 'idle',
     walk: 'walk',
@@ -94,10 +92,6 @@ export const ControllerDefault = {
     jumpLand: 'jumpLand',
     fall: 'fall'
   },
-  // states: {
-  //   canJump: false,
-  //   isOnMoving: false
-  // },
   capsule: {
     halfHeight: -1,
     radius: -1

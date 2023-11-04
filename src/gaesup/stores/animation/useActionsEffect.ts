@@ -1,9 +1,10 @@
 import { useFrame } from '@react-three/fiber';
 import { RefObject, useContext } from 'react';
-import { ControllerContext } from '../stores/context';
-import usePlay from './usePlay';
 import states, { statesAtom } from '@gaesup/stores/states';
 import { useAtomValue } from 'jotai';
+import { ControllerContext } from '../context';
+import usePlay from '.';
+import { useKeyboardControls } from '@react-three/drei';
 
 /**
  * Actions for managing animations
@@ -21,23 +22,25 @@ export default function useActionsEffect({
   url: string;
   outerGroupRef?: RefObject<THREE.Group>;
 }) {
-  const {  control, rays, cur } = useContext(ControllerContext);
+  const { rays, cur } = useContext(ControllerContext);
   const { playIdle, playWalk, playRun, playJump, playJumpIdle, playFall } =
     usePlay({ url, outerGroupRef });
+  const [_, getKeys] = useKeyboardControls();
+  const { jump, run } = getKeys();
 
   const { isCanJump, isNotMoving, isMoving } = useAtomValue(statesAtom);
 
   useFrame(() => {
-    const { jump, run } = control;
     if (isNotMoving && !jump) {
       playIdle();
     } else if (jump) {
       playJump();
     } else if (isMoving) {
       run ? playRun() : playWalk();
-    } else if (!isCanJump) {
-      playJumpIdle();
     }
+    // else if (!isCanJump) {
+    //   playJumpIdle();
+    // }
     if (rays.rayHit == null && cur.V.y < 0) {
       playFall();
     }

@@ -11,7 +11,7 @@ export default function checkOnMove() {
    * Ray detect if on rigid body or dynamic platform, then apply the linear Vocity and angular Vocity to character
    * 캐릭터가 움직이는 플랫폼 위에 있는지 감지합니다
    */
-  const distanceFromCharacterToObject = vec3();
+  const diCToO = vec3();
   const { stand, rays, cur, move, objectAng, calc } =
     useContext(ControllerContext);
 
@@ -31,23 +31,13 @@ export default function checkOnMove() {
             isOnMoving: true
           });
 
-          distanceFromCharacterToObject
-            .copy(cur.P)
-            .sub(vec3(rayParent!.translation()));
+          diCToO.copy(cur.P).sub(vec3(rayParent!.translation()));
           const moVinV = rayParent!.linvel() as THREE.Vector3;
           const moveAngV = rayParent!.angvel() as THREE.Vector3;
           move.V.set(
-            moVinV.x +
-              objectAng.VToLinV.crossVectors(
-                moveAngV,
-                distanceFromCharacterToObject
-              ).x,
+            moVinV.x + objectAng.VToLinV.crossVectors(moveAngV, diCToO).x,
             moVinV.y,
-            moVinV.z +
-              objectAng.VToLinV.crossVectors(
-                moveAngV,
-                distanceFromCharacterToObject
-              ).z
+            moVinV.z + objectAng.VToLinV.crossVectors(moveAngV, diCToO).z
           );
 
           if (rayType === 0) {

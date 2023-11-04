@@ -19,7 +19,6 @@ import {
   stabilizeDefault,
   buoyancyDefault
 } from './props';
-import useActionsEffect from './hooks/useActionsEffect';
 import calcAccelaration from './physics/accelaration';
 import checkTurn from './check/checkTurn';
 import checkOnTheSlope from './check/checkOnTheSlope';
@@ -37,6 +36,8 @@ import * as style from './styles.css';
 import useFollowCamera from './hooks/useFollowCamera';
 import useRayInit from './stores/ray';
 import initDebug from './stores/initDebug';
+import useActionsEffect from './stores/animation/useActionsEffect';
+import useControlEffect from './stores/control/useControlEffect';
 
 /**
  * ControllerWrapper
@@ -104,6 +105,8 @@ export function ControllerInner({
    */
   // init control set
   useControlInit();
+
+  useControlEffect();
   // init props
   usePropsInit({
     // url,

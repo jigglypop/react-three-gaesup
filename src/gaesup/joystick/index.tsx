@@ -15,7 +15,7 @@ export default function JoyStick() {
 
 export function JoyBall() {
   const outerRef = useRef<HTMLDivElement>(null);
-  const { JoyStick, setJoyStick, setBall, setOrigin } = useJoyStick();
+  const { JoyStick, setBall, setOrigin } = useJoyStick();
   const { ball, origin } = JoyStick;
   const [states, setStates] = useAtom(statesAtom);
 
@@ -49,7 +49,8 @@ export function JoyBall() {
     });
     setStates({
       ...states,
-      isOnMoving: true
+      isOnMoving: true,
+      isMoving: true
     });
   };
   const handleMouseOut = () => {
@@ -62,7 +63,8 @@ export function JoyBall() {
     });
     setStates({
       ...states,
-      isOnMoving: false
+      isOnMoving: false,
+      isMoving: false
     });
     console.log(states);
   };
@@ -74,7 +76,7 @@ export function JoyBall() {
       onMouseMove={handleMouseOver}
       onMouseOut={handleMouseOut}
     >
-      <div
+      {/* <div
         style={{
           position: 'fixed',
           zIndex: 100000000000,
@@ -84,7 +86,7 @@ export function JoyBall() {
           top: origin.y,
           left: origin.x
         }}
-      />
+      /> */}
       {/* <h3>{JoyStick.origin.angle}</h3> */}
       <div
         className={`${style.joystickBall}`}

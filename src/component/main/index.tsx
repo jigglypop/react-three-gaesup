@@ -37,10 +37,7 @@ export default function Main() {
         <ambientLight intensity={0.2} />
         <Physics timeStep='vary' colliders='trimesh'>
           <KeyboardControls map={keyboardMap}>
-            <Controller
-              url={URL}
-              options={{ debug: true, controllerType: 'joystick' }}
-            />
+            <Controller url={URL} options={{ debug: true }} />
           </KeyboardControls>
 
           <RigidBody type='fixed' colliders='trimesh'>
@@ -54,7 +51,6 @@ export default function Main() {
           </RigidBody>
         </Physics>
       </Canvas>
-      <JoyStick />
     </>
   );
 }
