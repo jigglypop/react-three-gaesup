@@ -31,7 +31,6 @@ export default function usePlay({
   const [animation, setAnimation] = useAtom(animationAtom);
   // Animation set state
   const playAnimation = (tag: keyof AnimationTag) => {
-    console.log(tag);
     setAnimation({
       current: tag
     });

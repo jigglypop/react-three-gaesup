@@ -4,6 +4,7 @@ import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
 import { statesAtom } from '@gaesup/stores/states';
 import { useAtomValue } from 'jotai';
+import { useKeyboardControls } from '@react-three/drei';
 
 export default function calcJump({
   rigidBodyRef,
@@ -12,17 +13,20 @@ export default function calcJump({
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { cur, jumps, calc, control, slope, rays, stand } =
+  const { cur, jumps, calc, slope, rays, stand } =
     useContext(ControllerContext);
+  const [_, getKeys] = useKeyboardControls();
+  const { jump, run } = getKeys();
+
   const { isCanJump } = useAtomValue(statesAtom);
 
   useFrame(() => {
     // Jump impulse
     // 점프 충격량 계산
-    if (control.jump && isCanJump) {
+    if (jump && isCanJump) {
       jumps.Vv3.set(
         cur.V.x,
-        control.run ? calc.runJumpR * calc.jumpV : calc.jumpV,
+        run ? calc.runJumpR * calc.jumpV : calc.jumpV,
         cur.V.z
       );
       // Apply slope normal to jump direction
@@ -32,8 +36,7 @@ export default function calcJump({
         rigidBodyRef.current!.setLinvel(
           jumps.Di.set(
             0,
-            (control.run ? calc.runJumpR * calc.jumpV : calc.jumpV) *
-              calc.slopJumpR,
+            (run ? calc.runJumpR * calc.jumpV : calc.jumpV) * calc.slopJumpR,
             0
           )
             .projectOnVector(vec3().set(x, y, z))

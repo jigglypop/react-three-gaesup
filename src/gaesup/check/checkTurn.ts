@@ -5,6 +5,7 @@ import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { ControllerContext } from '../stores/context';
 import { statesAtom } from '@gaesup/stores/states';
 import { useAtom } from 'jotai';
+import { useKeyboardControls } from '@react-three/drei';
 
 export default function checkTurn({
   outerGroupRef,
@@ -13,10 +14,10 @@ export default function checkTurn({
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { cur, move, calc, control, slope, model } =
-    useContext(ControllerContext);
+  const { cur, move, calc, slope, model } = useContext(ControllerContext);
   const [{ isMoving, isCanJump }, setStates] = useAtom(statesAtom);
-
+  const [_, getKeys] = useKeyboardControls();
+  const { run } = getKeys();
   useFrame(() => {
     if (isMoving) {
       if (
@@ -45,7 +46,7 @@ export default function checkTurn({
           return 0;
         } else {
           const { runR, turnV } = calc;
-          const runDelta = control.run ? runR : 1;
+          const runDelta = run ? runR : 1;
           const { upExtraForce, downExtraForce } = slope;
           const upDownDelta = move.Di.y > 0 ? upExtraForce : downExtraForce;
           return move.Di.y * turnV * runDelta * upDownDelta;

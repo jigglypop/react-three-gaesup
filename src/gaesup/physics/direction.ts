@@ -3,8 +3,6 @@ import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
 import { Object3D, Object3DEventMap } from 'three';
-import { JoyStickAtom } from '@gaesup/stores/joystick';
-import { useAtomValue } from 'jotai';
 import { useKeyboardControls } from '@react-three/drei';
 
 export default function calcDirection({
@@ -16,6 +14,8 @@ export default function calcDirection({
 }) {
   const { model, cur } = useContext(ControllerContext);
   const [_, getKeys] = useKeyboardControls();
+  const { forward, backward, leftward, rightward } = getKeys();
+
   // const { origin } = useAtomValue(JoyStickAtom);
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
@@ -24,21 +24,22 @@ export default function calcDirection({
     // model.euler.y = -origin.angle - Math.PI / 2;
     // console.log(model.euler.y);
 
-    const { f, b, l, r } = control;
     // 이동 방향을 가져옵니다
     const { euler } = model;
-    if (f) {
+    if (forward) {
       euler.y =
-        pivot.rotation.y + (l ? Math.PI / 4 : 0) - (r ? Math.PI / 4 : 0);
-    } else if (b) {
+        pivot.rotation.y +
+        (leftward ? Math.PI / 4 : 0) -
+        (rightward ? Math.PI / 4 : 0);
+    } else if (backward) {
       euler.y =
         pivot.rotation.y +
         Math.PI -
-        (l ? Math.PI / 4 : 0) +
-        (r ? Math.PI / 4 : 0);
-    } else if (l) {
+        (leftward ? Math.PI / 4 : 0) +
+        (rightward ? Math.PI / 4 : 0);
+    } else if (leftward) {
       euler.y = pivot.rotation.y + Math.PI / 2;
-    } else if (r) {
+    } else if (rightward) {
       euler.y = pivot.rotation.y - Math.PI / 2;
     }
   });
