@@ -1,4 +1,7 @@
 import { currentAtom } from '@gaesup/stores/current';
+import { dampingAtom } from '@gaesup/stores/damping';
+import { rayAtom } from '@gaesup/stores/ray/atom';
+import { standAtom } from '@gaesup/stores/stand';
 import { statesAtom } from '@gaesup/stores/states';
 import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
@@ -13,17 +16,20 @@ export default function checkOnMove() {
    * 캐릭터가 움직이는 플랫폼 위에 있는지 감지합니다
    */
   const diCToO = vec3();
-  const { stand, rays, move, objectAng, calc } = useContext(ControllerContext);
+  const { move, objectAng } = useContext(ControllerContext);
+  const ray = useAtomValue(rayAtom);
   const current = useAtomValue(currentAtom);
+  const damping = useAtomValue(dampingAtom);
+  const stand = useAtomValue(standAtom);
 
   const [states, setStates] = useAtom(statesAtom);
 
-  const { isNotMoving, isMoving } = states;
+  const { isNotMoving } = states;
   useFrame(() => {
-    const { rayHit, rayCast, rayOrigin, rayParent } = rays;
+    const { rayHit, rayCast, rayOrigin, rayParent } = ray;
     if (rayHit && rayParent) {
       if (rayParent !== null) {
-        stand.P.set(rayOrigin.x, rayOrigin.y - rayHit.toi, rayOrigin.z);
+        stand.position.set(rayOrigin.x, rayOrigin.y - rayHit.toi, rayOrigin.z);
         const rayType = rayParent!.bodyType();
         const rayMass = rayParent!.mass();
 
@@ -45,14 +51,18 @@ export default function checkOnMove() {
           if (rayType === 0) {
             if (isNotMoving) {
               move.dragForce.set(
-                (current.velocity.x - move.V.x) * calc.dragDamp,
+                (current.velocity.x - move.V.x) * damping.drag,
                 0,
-                (current.velocity.z - move.V.z) * calc.dragDamp
+                (current.velocity.z - move.V.z) * damping.drag
               );
             } else {
               move.dragForce.copy(move.impulse).negate();
             }
-            rayParent!.applyImpulseAtPoint(move.dragForce, stand.P, true);
+            rayParent!.applyImpulseAtPoint(
+              move.dragForce,
+              stand.position,
+              true
+            );
           }
         } else {
           setStates({

@@ -1,84 +1,9 @@
 import { useThree } from '@react-three/fiber';
-import { vec3 } from '@react-three/rapier';
-import { atom, useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import * as THREE from 'three';
-
-export type currentCameraAtomType = {
-  initDistance: number;
-  maxDistance: number;
-  minDistance: number;
-  initDirection: number;
-  collisionOff: number;
-  cameraDistance: number;
-  followCamera: THREE.Object3D<THREE.Object3DEventMap>;
-  pivot: THREE.Object3D;
-};
-
-export type cameraCollisionAtomType = {
-  minDistance: number;
-  cameraDistance: number;
-  intersects: any;
-  followCamera: THREE.Object3D;
-  pivot: THREE.Object3D;
-};
-
-export type cameraPropsType = {
-  initDistance: number;
-  maxDistance: number;
-  minDistance: number;
-  initDirection: number;
-  collisionOff: number;
-};
-export type cameraRayPropsType = {
-  length: number;
-};
-
-export type cameraRayAtomType = {
-  origin: THREE.Vector3;
-  hit: THREE.Raycaster;
-  rayCast: THREE.Raycaster | null;
-  lerpingPoint: THREE.Vector3;
-  length: number;
-  dir: THREE.Vector3;
-  position: THREE.Vector3;
-};
-
-export type cameraInteractAtomType = {
-  intersects: THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
-  intersectObjects: THREE.Object3D[];
-  intersectObjectMap: { [uuid: string]: THREE.Object3D };
-};
-
-export const cameraRayAtom = atom<cameraRayAtomType>({
-  origin: vec3(),
-  hit: new THREE.Raycaster(),
-  rayCast: new THREE.Raycaster(vec3(), vec3(), 0, -7),
-  lerpingPoint: vec3(),
-  dir: vec3(),
-  position: vec3(),
-  length: -1
-});
-
-export const cameraInteractAtom = atom<cameraInteractAtomType>({
-  intersects: [],
-  intersectObjects: [],
-  intersectObjectMap: {}
-});
-
-export const currentCameraAtom = atom<currentCameraAtomType>({
-  initDistance: -5,
-  maxDistance: -7,
-  minDistance: -0.7,
-  initDirection: 0,
-  collisionOff: 0.7,
-  cameraDistance: -1,
-  followCamera: new THREE.Object3D(),
-  pivot: new THREE.Object3D()
-});
-
-cameraRayAtom.debugLabel = 'camera_ray';
-currentCameraAtom.debugLabel = 'current_camera';
+import { cameraInteractAtom, cameraRayAtom, currentCameraAtom } from './atom';
+import { cameraPropsType, cameraRayPropsType } from './type';
 
 export default function useCameraInit({
   cameraProps,
@@ -114,16 +39,18 @@ export default function useCameraInit({
 
   const initCurrentCamera = (cameraProps: cameraPropsType) => {
     const origin = new THREE.Object3D();
-    origin.position.set(0, 0, cameraProps.initDistance);
-    setCurrentCamera({
-      ...currentCamera,
-      followCamera: origin,
-      initDistance: cameraProps.initDistance || currentCamera.initDistance,
-      maxDistance: cameraProps.maxDistance || currentCamera.maxDistance,
-      minDistance: cameraProps.minDistance || currentCamera.minDistance,
-      initDirection: cameraProps.initDirection || currentCamera.initDirection,
-      collisionOff: cameraProps.collisionOff || currentCamera.collisionOff
-    });
+    origin.position.set(
+      0,
+      0,
+      cameraProps?.initDistance || currentCamera.initDistance
+    );
+    if (cameraProps) {
+      setCurrentCamera({
+        ...currentCamera,
+        ...Object.assign(currentCamera, cameraProps),
+        followCamera: origin
+      });
+    }
   };
 
   const initCameraRay = (cameraRayProps: cameraRayPropsType) => {

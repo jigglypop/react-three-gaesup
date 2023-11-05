@@ -1,4 +1,6 @@
 import { currentAtom } from '@gaesup/stores/current';
+import { dampingAtom } from '@gaesup/stores/damping';
+import { ratioAtom } from '@gaesup/stores/ratio';
 import { statesAtom } from '@gaesup/stores/states';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
@@ -18,6 +20,8 @@ export default function calcDragForce({ rigidBodyRef }: calcDragForceType) {
   const { move, calc } = useContext(ControllerContext);
   const { isMoving, isOnMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
+  const damping = useAtomValue(dampingAtom);
+  const ratio = useAtomValue(ratioAtom);
 
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
@@ -25,8 +29,8 @@ export default function calcDragForce({ rigidBodyRef }: calcDragForceType) {
     if (!isMoving) {
       // not or on a moving object
       const forwardF = (xz: 'x' | 'z', isOnMoving: boolean) =>
-        move.V[xz] * calc.dragDamp * (isOnMoving ? 0 : 1);
-      const reverseF = (xz: 'x' | 'z') => -current.velocity[xz] * calc.dragDamp;
+        move.V[xz] * damping.drag * (isOnMoving ? 0 : 1);
+      const reverseF = (xz: 'x' | 'z') => -current.velocity[xz] * damping.drag;
       rigidBodyRef.current.applyImpulse(
         vec3().set(
           forwardF('x', isOnMoving) + reverseF('x'),

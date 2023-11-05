@@ -1,9 +1,9 @@
-import { currentCameraAtom } from '@gaesup/stores/camera';
+import { currentCameraAtom } from '@gaesup/stores/camera/atom';
 import { currentAtom } from '@gaesup/stores/current';
 import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { RefObject } from 'react';
 
 export default function calcDirection({
@@ -12,7 +12,7 @@ export default function calcDirection({
   rigidBodyRef: RefObject<RapierRigidBody>;
 }) {
   const [_, getKeys] = useKeyboardControls();
-  const [currentCamera, setCurrentCamera] = useAtom(currentCameraAtom);
+  const currentCamera = useAtomValue(currentCameraAtom);
   const current = useAtomValue(currentAtom);
   const { forward, backward, leftward, rightward } = getKeys();
   useFrame(() => {

@@ -1,4 +1,7 @@
 import { currentAtom } from '@gaesup/stores/current';
+import { dampingAtom } from '@gaesup/stores/damping';
+import { ratioAtom } from '@gaesup/stores/ratio';
+import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -14,25 +17,29 @@ export default function checkTurn({
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { move, calc, slope } = useContext(ControllerContext);
+  const { move, calc } = useContext(ControllerContext);
+  const slopeRay = useAtomValue(slopeRayAtom);
   const { isMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
   const [_, getKeys] = useKeyboardControls();
   const { run, jump } = getKeys();
+  const damping = useAtomValue(dampingAtom);
+  const ratio = useAtomValue(ratioAtom);
+
   useFrame(() => {
     if (isMoving) {
       if (
         // maxAngle = 1
-        slope.currentAngle < 1 &&
-        0.2 < Math.abs(slope.angle) &&
-        Math.abs(slope.angle) < 1
+        slopeRay.currentAngle < 1 &&
+        0.2 < Math.abs(slopeRay.angle) &&
+        Math.abs(slopeRay.angle) < 1
       ) {
-        move.Di.set(0, Math.sin(slope.angle), Math.cos(slope.angle));
-      } else if (slope.currentAngle >= 1) {
+        move.Di.set(0, Math.sin(slopeRay.angle), Math.cos(slopeRay.angle));
+      } else if (slopeRay.currentAngle >= 1) {
         move.Di.set(
           0,
-          Math.sin(slope.angle) > 0 ? 0 : Math.sin(slope.angle),
-          Math.sin(slope.angle) > 0 ? 0.1 : 1
+          Math.sin(slopeRay.angle) > 0 ? 0 : Math.sin(slopeRay.angle),
+          Math.sin(slopeRay.angle) > 0 ? 0.1 : 1
         );
       } else {
         move.Di.set(0, 0, 1);
@@ -43,18 +50,18 @@ export default function checkTurn({
         Math.sin(current.euler.y).toFixed(3);
 
       const impulseY = () => {
-        if (slope.angle === 0) {
+        if (slopeRay.angle === 0) {
           return 0;
         } else {
-          const { runR, turnV } = calc;
-          const runDelta = run ? runR : 1;
-          const { upExtraForce, downExtraForce } = slope;
+          const { turnV } = calc;
+          const runDelta = run ? ratio.run : 1;
+          const { upExtraForce, downExtraForce } = slopeRay;
           const upDownDelta = move.Di.y > 0 ? upExtraForce : downExtraForce;
           return move.Di.y * turnV * runDelta * upDownDelta;
         }
       };
       const impulseXZRotated = (isRotated: boolean, xz: 'x' | 'z') => {
-        const { turnV, airDrag } = calc;
+        const { turnV } = calc;
         if (isRotated) {
           return moveF[xz];
         } else {

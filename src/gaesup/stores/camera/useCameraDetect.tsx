@@ -1,6 +1,6 @@
 import { useThree } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
-import { cameraInteractAtom, cameraRayAtom, currentCameraAtom } from '.';
+import { cameraInteractAtom, cameraRayAtom, currentCameraAtom } from './atom';
 
 export default function useCameraDetect() {
   const { camera } = useThree();

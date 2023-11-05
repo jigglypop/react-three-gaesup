@@ -1,4 +1,4 @@
-import { currentCameraAtom } from '@gaesup/stores/camera';
+import { currentCameraAtom } from '@gaesup/stores/camera/atom';
 import useCameraDetect from '@gaesup/stores/camera/useCameraDetect';
 import { currentAtom } from '@gaesup/stores/current';
 import { useFrame } from '@react-three/fiber';

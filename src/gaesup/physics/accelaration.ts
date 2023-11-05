@@ -1,6 +1,7 @@
 import { RefObject, useContext } from 'react';
 
 import { currentAtom } from '@gaesup/stores/current';
+import { ratioAtom } from '@gaesup/stores/ratio';
 import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -15,6 +16,7 @@ export default function calcAccelaration({
   const { move, calc } = useContext(ControllerContext);
   const { isMoving, isOnMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
+  const ratio = useAtomValue(ratioAtom);
   const [_, getKeys] = useKeyboardControls();
   const { run } = getKeys();
 
@@ -25,7 +27,7 @@ export default function calcAccelaration({
 
     const angleBetween = move.V.angleTo(move.Di);
     const sinAngleBetween = Math.sin(angleBetween);
-    const maxVelocity = calc.maxV * (run ? calc.runR : 1);
+    const maxVelocity = calc.maxV * (run ? ratio.run : 1);
     const rejectRatio = isOnMoving ? 0 : calc.rejectV;
 
     const moveAXZ = (tag: 'x' | 'z') => {

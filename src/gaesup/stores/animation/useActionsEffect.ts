@@ -2,10 +2,10 @@ import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
-import { RefObject, useContext } from 'react';
+import { RefObject } from 'react';
 import usePlay from '.';
-import { ControllerContext } from '../context';
 import { currentAtom } from '../current';
+import { rayAtom } from '../ray/atom';
 
 /**
  * Actions for managing animations
@@ -23,7 +23,8 @@ export default function useActionsEffect({
   url: string;
   outerGroupRef?: RefObject<THREE.Group>;
 }) {
-  const { rays } = useContext(ControllerContext);
+  // const { rays } = useContext(ControllerContext);
+  const ray = useAtomValue(rayAtom);
   const current = useAtomValue(currentAtom);
   const { playIdle, playWalk, playRun, playJump, playJumpIdle, playFall } =
     usePlay({ url, outerGroupRef });
@@ -41,7 +42,7 @@ export default function useActionsEffect({
     // else if (!isCanJump) {
     //   playJumpIdle();
     // }
-    if (rays.rayHit == null && current.velocity.y < 0) {
+    if (ray.rayHit === null && current.velocity.y < 0) {
       playFall();
     }
   });

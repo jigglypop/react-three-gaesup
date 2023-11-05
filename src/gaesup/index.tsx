@@ -5,7 +5,8 @@ import {
   RapierRigidBody,
   RigidBody
 } from '@react-three/rapier';
-import { useContext, useRef } from 'react';
+import { useAtomValue } from 'jotai';
+import { useRef } from 'react';
 import * as THREE from 'three';
 import checkOnMove from './check/checkOnMove';
 import checkOnTheGround from './check/checkOnTheGround';
@@ -19,19 +20,13 @@ import calcDragForce from './physics/dragForce';
 import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
-import {
-  buoyancyDefault,
-  calcDefault,
-  cameraDefault,
-  capsuleDefault,
-  rayDefault,
-  slopeDefault,
-  stabilizeDefault
-} from './props';
+import { buoyancyDefault, calcDefault } from './props';
 import useActionsEffect from './stores/animation/useActionsEffect';
+import { colliderAtom } from './stores/collider';
 import { ControllerContext } from './stores/context';
 import useControlEffect from './stores/control/useControlEffect';
-import useRayInit from './stores/ray';
+import { rayAtom } from './stores/ray/atom';
+import { slopeRayAtom } from './stores/slopRay/atom';
 import useControlInit from './stores/useControlInit';
 import usePropsInit, { ControllerDefault } from './stores/usePropsInit';
 import useStartInit from './stores/useStartInit';
@@ -74,32 +69,22 @@ export default function Controller(props: ControllerProps) {
 export function ControllerInner({
   children,
   url,
-  capsule = { ...capsuleDefault },
-  camera = { ...cameraDefault },
+  camera,
   calc = { ...calcDefault },
-  ray = { ...rayDefault },
-  slopeRay = { ...slopeDefault },
+  ray,
+  slopeRay,
+  cameraRay,
   buoyancy = {
     ...buoyancyDefault
   },
-  stabilize = { ...stabilizeDefault },
   options,
+  ratio,
   ...props
 }: ControllerProps) {
   const capsuleColliderRef = useRef<Collider>(null);
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
-
-  const { rays, move } = useContext(ControllerContext);
-
-  // const { cameraCollisionDetect } = useFollowCamera();
-
-  useRayInit({
-    rayProp: ray,
-    capsuleColliderRef
-  });
-
   /**
    * keyboard controls setup
    */
@@ -114,13 +99,11 @@ export function ControllerInner({
     rigidBodyRef,
     outerGroupRef,
     slopeRayOriginRef,
-    capsule,
     camera,
     calc,
     ray,
     slopeRay,
     buoyancy,
-    stabilize,
     options,
     ...props
   });
@@ -181,8 +164,7 @@ export function ControllerInner({
    * @param outerGroupRef
    */
   calcJump({
-    rigidBodyRef,
-    outerGroupRef
+    rigidBodyRef
   });
   /**
    * Ray casting detect if on ground
@@ -263,6 +245,9 @@ export function ControllerInner({
   //       delta * calc.turnS * 0.5
   //     );
   //   });
+  const rays = useAtomValue(rayAtom);
+  const slopeRays = useAtomValue(slopeRayAtom);
+  const collider = useAtomValue(colliderAtom);
 
   return (
     <>
@@ -276,11 +261,11 @@ export function ControllerInner({
       >
         <CapsuleCollider
           ref={capsuleColliderRef}
-          args={[capsule.halfHeight, capsule.radius]}
+          args={[collider.halfHeight, collider.radius]}
           position={[
             rays.originOffset.x,
             rays.originOffset.y,
-            rays.originOffset.z + slopeRay.rayOriginOffset
+            rays.originOffset.z + slopeRays.originOffset.z
           ]}
         />
         <group ref={outerGroupRef} userData={{ camExcludeCollision: true }}>
@@ -288,7 +273,7 @@ export function ControllerInner({
             position={[
               rays.originOffset.x,
               rays.originOffset.y,
-              rays.originOffset.z + slopeRay.rayOriginOffset
+              rays.originOffset.z + slopeRays.originOffset.z
             ]}
             ref={slopeRayOriginRef}
             visible={false}

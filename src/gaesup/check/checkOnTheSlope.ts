@@ -1,6 +1,9 @@
 import { Collider } from '@dimforge/rapier3d-compat';
+import { rayAtom } from '@gaesup/stores/ray/atom';
+import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { useFrame } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
+import { useAtomValue } from 'jotai';
 import { RefObject, useContext } from 'react';
 import * as THREE from 'three';
 import { ControllerContext } from '../stores/context';
@@ -12,22 +15,24 @@ export default function checkOnTheSlope({
   capsuleColliderRef: RefObject<Collider>;
   slopeRayOriginRef: RefObject<THREE.Mesh>;
 }) {
-  const { slope, rays, buoyancy } = useContext(ControllerContext);
+  const { buoyancy } = useContext(ControllerContext);
+  const slopeRay = useAtomValue(slopeRayAtom);
+  const ray = useAtomValue(rayAtom);
   // const { isCanJump } = useAtomValue(statesAtom);
   const { world } = useRapier();
   useFrame(() => {
     if (
       !slopeRayOriginRef.current ||
       !capsuleColliderRef.current ||
-      !slope.rayCast
+      !slopeRay.rayCast
     )
       return null;
-    slopeRayOriginRef.current.getWorldPosition(slope.rayOrigin);
-    slope.rayOrigin.y = rays.rayOrigin.y;
+    slopeRayOriginRef.current.getWorldPosition(slopeRay.rayOrigin);
+    slopeRay.rayOrigin.y = ray.rayOrigin.y;
 
-    slope.rayHit = world.castRay(
-      slope.rayCast,
-      slope.rayLength,
+    slopeRay.rayHit = world.castRay(
+      slopeRay.rayCast,
+      slopeRay.length,
       true,
       undefined,
       undefined,
@@ -35,30 +40,30 @@ export default function checkOnTheSlope({
     );
 
     // Calculate slope angle
-    if (slope.rayHit && rays.rayCast) {
-      const castRayNormal = slope.rayHit.collider.castRayAndGetNormal(
-        rays.rayCast,
-        slope.rayLength,
+    if (slopeRay.rayHit && ray.rayCast) {
+      const castRayNormal = slopeRay.rayHit.collider.castRayAndGetNormal(
+        ray.rayCast,
+        slopeRay.length,
         false
       );
-      if (castRayNormal) slope.currentV3 = vec3(castRayNormal.normal);
+      if (castRayNormal) slopeRay.current = vec3(castRayNormal.normal);
     }
     if (
-      slope.rayHit &&
-      rays.rayHit &&
-      slope.rayHit.toi < buoyancy.distance + 0.5
+      slopeRay.rayHit &&
+      ray.rayHit &&
+      slopeRay.rayHit.toi < buoyancy.distance + 0.5
     ) {
       // if (isCanJump) {
       //   // Round the slope angle to 2 decimal places
-      //   slope.angle = Number(
+      //   slopeRay.angle = Number(
       //     Math.atan(
-      //       (rays.rayHit.toi - slope.rayHit.toi) / slope.rayOriginOffset
+      //       (ray.rayHit.toi - slopeRay.rayHit.toi) / slopeRay.rayOriginOffset
       //     ).toFixed(2)
       //   );
       // }
-      slope.angle = Number(
+      slopeRay.angle = Number(
         Math.atan(
-          (rays.rayHit.toi - slope.rayHit.toi) / slope.rayOriginOffset
+          (ray.rayHit.toi - slopeRay.rayHit.toi) / slopeRay.originOffset.z
         ).toFixed(2)
       );
     }

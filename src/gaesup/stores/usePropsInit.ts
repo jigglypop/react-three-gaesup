@@ -1,17 +1,21 @@
-import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
-import { RapierRigidBody, useRapier, vec3 } from '@react-three/rapier';
+import { Collider } from '@dimforge/rapier3d-compat';
+import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { RefObject, useContext } from 'react';
 import * as THREE from 'three';
 import { ControllerProps } from '../type';
 import useCameraInit from './camera';
 import { ControllerContext } from './context';
 import useCurrentInit from './current';
+import { useDampingInit } from './damping';
 import useOptionInit from './options';
+import useRayInit from './ray';
+import useSolpeRayInit from './slopRay';
+import useStandInit from './stand';
 
 export const ControllerDefault = {
-  stand: {
-    P: vec3()
-  },
+  // stand: {
+  //   P: vec3()
+  // },
   objectAng: {
     VToLinV: vec3()
   },
@@ -34,33 +38,6 @@ export const ControllerDefault = {
     Vv3: vec3(),
     Di: vec3()
   },
-  // slope
-  slope: {
-    angle: 0,
-    currentV3: vec3(),
-    currentAngle: 0,
-    rayOrigin: vec3(),
-    rayHit: null as RayColliderToi | null,
-    rayCast: null as Ray | null,
-    maxAngle: 1, // in rad
-    upExtraForce: 0.1,
-    downExtraForce: 0.2,
-    rayOriginOffset: -1,
-    rayLength: -1,
-    rayDir: { x: 0, y: -1, z: 0 }
-  },
-  rays: {
-    springDirVec: vec3(),
-    mass: vec3(),
-    rayOrigin: vec3(),
-    rayHit: null as RayColliderToi | null,
-    rayParent: null as RapierRigidBody | null | undefined,
-    rayCast: null as Ray | null,
-    originOffset: { x: 0, y: 0, z: 0 },
-    hitForgiveness: 0.1,
-    length: -1,
-    dir: { x: 0, y: 0, z: 0 }
-  },
   animationSet: {
     idle: 'idle',
     walk: 'walk',
@@ -70,53 +47,21 @@ export const ControllerDefault = {
     jumpLand: 'jumpLand',
     fall: 'fall'
   },
-  capsule: {
-    halfHeight: -1,
-    radius: -1
-  },
   buoyancy: {
     distance: -1,
-    K: 1.2,
-    damp: 0.08
+    K: 1.2
   },
   calc: {
     maxV: 2.5,
     turnV: 0.2,
     turnS: 15,
     jumpV: 4,
-    dragDamp: 0.15,
-    ATimeD: 10,
     rejectV: 4,
-    runR: 2,
-    runJumpR: 1.2,
-    slopJumpR: 0.25,
+
+    ATimeD: 10,
     jumpToG: 5,
-    airDrag: 0.2,
     camFollow: 11
-  },
-  stabilize: {
-    strength: 0.3,
-    damping: {
-      rotational: 0.03,
-      vertical: 0.02
-    }
   }
-  // camera: {
-  //   initDistance: -5,
-  //   maxDistance: -7,
-  //   minDistance: -0.7,
-  //   initDirection: 0,
-  //   collisionOff: 0.7
-  // },
-  // cameraRay: {
-  //   origin: vec3(),
-  //   hit: null as RayColliderToi | null,
-  //   rayCast: null as THREE.Raycaster | null,
-  //   lerpingPoint: vec3(),
-  //   length: -1,
-  //   dir: vec3(),
-  //   position: vec3()
-  // }
 };
 
 export default function usePropsInit(
@@ -127,49 +72,10 @@ export default function usePropsInit(
     slopeRayOriginRef: RefObject<THREE.Mesh>;
   }
 ) {
-  const { rapier, world } = useRapier();
-  const { slope, rays } = useContext(ControllerContext);
   const controllerContext = useContext(ControllerContext);
-
-  rays.rayCast = new rapier.Ray(rays.rayOrigin, props.ray!.dir);
-
-  rays.rayHit = world.castRay(
-    rays.rayCast,
-    props.ray!.length,
-    true,
-    undefined,
-    undefined,
-    props.capsuleColliderRef.current as Collider,
-    undefined,
-    (collider) => !collider.isSensor()
-  );
-  rays.rayParent = rays.rayHit?.collider.parent();
-  slope.rayCast = new rapier.Ray(slope.rayOrigin, props.slopeRay!.rayDir);
-  rays.originOffset = props.ray!.originOffset;
-  rays.hitForgiveness = props.ray!.hitForgiveness;
-  rays.length = props.ray!.length;
-  rays.dir = props.ray!.dir;
-
-  // cameraRay.rayCast = new THREE.Raycaster(
-  //   cameraRay.origin,
-  //   cameraRay.dir,
-  //   0,
-  //   -props.camera?.maxDistance!
-  // );
-
-  slope.maxAngle = props.slopeRay!.maxAngle;
-  slope.upExtraForce = props.slopeRay!.upExtraForce;
-  slope.downExtraForce = props.slopeRay!.downExtraForce;
-  slope.rayOriginOffset = props.slopeRay!.rayOriginOffset;
-  slope.rayLength = props.slopeRay!.rayLength;
-  slope.rayDir = props.slopeRay!.rayDir;
 
   controllerContext.buoyancy = props.buoyancy!;
   controllerContext.calc = props.calc!;
-  controllerContext.capsule = props.capsule!;
-  controllerContext.stabilize = props.stabilize!;
-
-  // controllerContext.camera = props.camera!;
 
   // options init
   useOptionInit({ optionProp: props.options });
@@ -180,5 +86,20 @@ export default function usePropsInit(
     cameraProps: props.camera!,
     cameraRayProps: props.cameraRay!
   });
+  // damping
+  useDampingInit({
+    dampingProps: props.damping
+  });
 
+  useRayInit({
+    rayProp: props.ray!,
+    capsuleColliderRef: props.capsuleColliderRef
+  });
+
+  useSolpeRayInit({
+    slopeRayProp: props.slopeRay!
+  });
+  // character state
+  // stand
+  useStandInit();
 }
