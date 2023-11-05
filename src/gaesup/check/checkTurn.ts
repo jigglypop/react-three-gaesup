@@ -1,11 +1,11 @@
-import { RefObject, use, useContext } from 'react';
-import { checkTurnType } from '../type';
+import { currentAtom } from '@gaesup/stores/current';
+import { statesAtom } from '@gaesup/stores/states';
+import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
+import { useAtomValue } from 'jotai';
+import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
-import { statesAtom } from '@gaesup/stores/states';
-import { useAtom } from 'jotai';
-import { useKeyboardControls } from '@react-three/drei';
 
 export default function checkTurn({
   outerGroupRef,
@@ -14,16 +14,17 @@ export default function checkTurn({
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { cur, move, calc, slope, model } = useContext(ControllerContext);
-  const [{ isMoving, isCanJump }, setStates] = useAtom(statesAtom);
+  const { move, calc, slope } = useContext(ControllerContext);
+  const { isMoving } = useAtomValue(statesAtom);
+  const current = useAtomValue(currentAtom);
   const [_, getKeys] = useKeyboardControls();
-  const { run } = getKeys();
+  const { run, jump } = getKeys();
   useFrame(() => {
     if (isMoving) {
       if (
         // maxAngle = 1
         slope.currentAngle < 1 &&
-        Math.abs(slope.angle) > 0.2 &&
+        0.2 < Math.abs(slope.angle) &&
         Math.abs(slope.angle) < 1
       ) {
         move.Di.set(0, Math.sin(slope.angle), Math.cos(slope.angle));
@@ -39,7 +40,7 @@ export default function checkTurn({
       const moveF = move.A.multiplyScalar(rigidBodyRef.current!.mass());
       const isRotated =
         Math.sin(outerGroupRef.current!.rotation.y).toFixed(3) ===
-        Math.sin(model.euler.y).toFixed(3);
+        Math.sin(current.euler.y).toFixed(3);
 
       const impulseY = () => {
         if (slope.angle === 0) {
@@ -55,9 +56,9 @@ export default function checkTurn({
       const impulseXZRotated = (isRotated: boolean, xz: 'x' | 'z') => {
         const { turnV, airDrag } = calc;
         if (isRotated) {
-          return moveF[xz] * (isCanJump ? 1 : airDrag);
+          return moveF[xz];
         } else {
-          return moveF[xz] * turnV * (isCanJump ? 1 : airDrag);
+          return moveF[xz] * turnV;
         }
       };
       // 세팅
@@ -72,8 +73,8 @@ export default function checkTurn({
         rigidBodyRef.current.applyImpulseAtPoint(
           move.impulse,
           vec3()
-            .copy(cur.P)
-            .setY(cur.P.y + move.deltaY),
+            .copy(current.position)
+            .setY(current.position.y + move.deltaY),
           false
         );
     }

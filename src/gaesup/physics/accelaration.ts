@@ -1,18 +1,20 @@
 import { RefObject, useContext } from 'react';
 
-import { useFrame } from '@react-three/fiber';
-import { ControllerContext } from '../stores/context';
-import states, { statesAtom } from '@gaesup/stores/states';
-import { useAtomValue } from 'jotai';
+import { currentAtom } from '@gaesup/stores/current';
+import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
+import { ControllerContext } from '../stores/context';
 
 export default function calcAccelaration({
   outerGroupRef
 }: {
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { cur, move, calc } = useContext(ControllerContext);
+  const { move, calc } = useContext(ControllerContext);
   const { isMoving, isOnMoving } = useAtomValue(statesAtom);
+  const current = useAtomValue(currentAtom);
   const [_, getKeys] = useKeyboardControls();
   const { run } = getKeys();
 
@@ -29,9 +31,9 @@ export default function calcAccelaration({
     const moveAXZ = (tag: 'x' | 'z') => {
       return (
         (move.Di[tag] * (maxVelocity + move.VinDi[tag]) -
-          (cur.V[tag] -
+          (current.velocity[tag] -
             move.V[tag] * sinAngleBetween +
-            cur.rejectV[tag] * rejectRatio)) /
+            current.reverseVelocity[tag] * rejectRatio)) /
         calc.ATimeD
       );
     };

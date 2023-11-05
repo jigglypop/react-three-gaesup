@@ -1,10 +1,11 @@
-import { useFrame } from '@react-three/fiber';
-import { RefObject, useContext } from 'react';
-import states, { statesAtom } from '@gaesup/stores/states';
-import { useAtomValue } from 'jotai';
-import { ControllerContext } from '../context';
-import usePlay from '.';
+import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
+import { RefObject, useContext } from 'react';
+import usePlay from '.';
+import { ControllerContext } from '../context';
+import { currentAtom } from '../current';
 
 /**
  * Actions for managing animations
@@ -22,26 +23,25 @@ export default function useActionsEffect({
   url: string;
   outerGroupRef?: RefObject<THREE.Group>;
 }) {
-  const { rays, cur } = useContext(ControllerContext);
+  const { rays } = useContext(ControllerContext);
+  const current = useAtomValue(currentAtom);
   const { playIdle, playWalk, playRun, playJump, playJumpIdle, playFall } =
     usePlay({ url, outerGroupRef });
   const [_, getKeys] = useKeyboardControls();
   const { jump, run } = getKeys();
-
-  const { isCanJump, isNotMoving, isMoving } = useAtomValue(statesAtom);
-
+  const { isNotMoving, isMoving } = useAtomValue(statesAtom);
   useFrame(() => {
-    if (isNotMoving && !jump) {
-      playIdle();
-    } else if (jump) {
+    if (jump) {
       playJump();
+    } else if (isNotMoving) {
+      playIdle();
     } else if (isMoving) {
       run ? playRun() : playWalk();
     }
     // else if (!isCanJump) {
     //   playJumpIdle();
     // }
-    if (rays.rayHit == null && cur.V.y < 0) {
+    if (rays.rayHit == null && current.velocity.y < 0) {
       playFall();
     }
   });

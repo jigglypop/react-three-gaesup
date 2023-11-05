@@ -1,43 +1,41 @@
-import { Gltf } from '@react-three/drei';
-import ReactDOM from 'react-dom';
-import { useFrame } from '@react-three/fiber';
-import { RigidBody, RapierRigidBody, vec3 } from '@react-three/rapier';
-import { useRef, useContext } from 'react';
-import * as THREE from 'three';
 import { Collider } from '@dimforge/rapier3d-compat';
-import { ControllerProps, slopeType } from './type';
-import { CapsuleCollider } from '@react-three/rapier';
-import stabilizing from './physics/stabilizing';
-import calcBuoyancy from './physics/buoyancy';
-import calcDragForce from './physics/dragForce';
+import { Gltf } from '@react-three/drei';
 import {
-  capsuleDefault,
-  cameraDefault,
+  CapsuleCollider,
+  RapierRigidBody,
+  RigidBody
+} from '@react-three/rapier';
+import { useContext, useRef } from 'react';
+import * as THREE from 'three';
+import checkOnMove from './check/checkOnMove';
+import checkOnTheGround from './check/checkOnTheGround';
+import checkOnTheSlope from './check/checkOnTheSlope';
+import checkTurn from './check/checkTurn';
+import calcAccelaration from './physics/accelaration';
+import calcBuoyancy from './physics/buoyancy';
+import calcCamera from './physics/camera';
+import calcDirection from './physics/direction';
+import calcDragForce from './physics/dragForce';
+import calcJump from './physics/jump';
+import stabilizing from './physics/stabilizing';
+import calcTurn from './physics/turn';
+import {
+  buoyancyDefault,
   calcDefault,
+  cameraDefault,
+  capsuleDefault,
   rayDefault,
   slopeDefault,
-  stabilizeDefault,
-  buoyancyDefault
+  stabilizeDefault
 } from './props';
-import calcAccelaration from './physics/accelaration';
-import checkTurn from './check/checkTurn';
-import checkOnTheSlope from './check/checkOnTheSlope';
-import checkOnMove from './check/checkOnMove';
-import calcDirection from './physics/direction';
-import calcJump from './physics/jump';
-import { ControllerContext, controllerContextType } from './stores/context';
+import useActionsEffect from './stores/animation/useActionsEffect';
+import { ControllerContext } from './stores/context';
+import useControlEffect from './stores/control/useControlEffect';
+import useRayInit from './stores/ray';
 import useControlInit from './stores/useControlInit';
 import usePropsInit, { ControllerDefault } from './stores/usePropsInit';
-import checkOnTheGround from './check/checkOnTheGround';
-import calcTurn from './physics/turn';
-import calcCamera from './physics/camera';
 import useStartInit from './stores/useStartInit';
-import * as style from './styles.css';
-import useFollowCamera from './hooks/useFollowCamera';
-import useRayInit from './stores/ray';
-import initDebug from './stores/initDebug';
-import useActionsEffect from './stores/animation/useActionsEffect';
-import useControlEffect from './stores/control/useControlEffect';
+import { ControllerProps } from './type';
 
 /**
  * ControllerWrapper
@@ -92,8 +90,10 @@ export function ControllerInner({
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
-  const { pivot, cameraCollisionDetect } = useFollowCamera();
-  const { rays, cur, move } = useContext(ControllerContext);
+
+  const { rays, move } = useContext(ControllerContext);
+
+  // const { cameraCollisionDetect } = useFollowCamera();
 
   useRayInit({
     rayProp: ray,
@@ -133,10 +133,7 @@ export function ControllerInner({
    *  카메라 이동, 카메라 충돌 감지
    */
 
-  calcCamera({
-    pivot,
-    cameraCollisionDetect
-  });
+  calcCamera();
   /**
    * Character current position, Vocity, slope detection
    * 캐릭터 현재 위치, 속도, 방향 감지
@@ -153,8 +150,7 @@ export function ControllerInner({
    * @param cam
    */
   calcDirection({
-    rigidBodyRef,
-    pivot
+    rigidBodyRef
   });
 
   /**
@@ -250,23 +246,23 @@ export function ControllerInner({
   const outerGroup2Ref = useRef<THREE.Group>(null);
   const slopeRayOrigin2Ref = useRef<THREE.Mesh>(null);
   // const { stabilize } = useContext(ControllerContext);
-
-  const { model } = useContext(ControllerContext);
-
-  useFrame((_, delta) => {
-    if (!rigidBody2Ref.current || !outerGroup2Ref.current) return null;
-    if (!rigidBodyRef || !rigidBodyRef.current) return null;
-
-    outerGroup2Ref.current.position.lerp(
-      cur.P.add(vec3({ x: 1, y: 0.1, z: 1 })),
-      0
-    );
-    model.quat.setFromEuler(model.euler);
-    outerGroup2Ref.current!.quaternion.rotateTowards(
-      model.quat,
-      delta * calc.turnS * 0.5
-    );
-  });
+  //
+  //   const { model } = useContext(ControllerContext);
+  //
+  //   useFrame((_, delta) => {
+  //     if (!rigidBody2Ref.current || !outerGroup2Ref.current) return null;
+  //     if (!rigidBodyRef || !rigidBodyRef.current) return null;
+  //
+  //     outerGroup2Ref.current.position.lerp(
+  //       cur.P.add(vec3({ x: 1, y: 0.1, z: 1 })),
+  //       0
+  //     );
+  //     model.quat.setFromEuler(model.euler);
+  //     outerGroup2Ref.current!.quaternion.rotateTowards(
+  //       model.quat,
+  //       delta * calc.turnS * 0.5
+  //     );
+  //   });
 
   return (
     <>
@@ -305,7 +301,7 @@ export function ControllerInner({
         </group>
       </RigidBody>
 
-      <RigidBody
+      {/* <RigidBody
         colliders={false}
         canSleep={false}
         ref={rigidBody2Ref}
@@ -326,7 +322,7 @@ export function ControllerInner({
             src={'./ghost_w_tophat.glb'}
           />
         </group>
-      </RigidBody>
+      </RigidBody> */}
     </>
   );
 }

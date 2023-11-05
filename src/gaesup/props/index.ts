@@ -1,3 +1,4 @@
+import { cameraPropsType, cameraRayPropsType } from '@gaesup/stores/camera';
 import { optionType } from '../type';
 
 export const capsuleDefault = {
@@ -29,12 +30,16 @@ export const stabilizeDefault = {
   }
 };
 
-export const cameraDefault = {
+export const cameraDefault: cameraPropsType = {
   initDistance: -5,
   maxDistance: -7,
   minDistance: -0.7,
   initDirection: 0,
   collisionOff: 0.7
+};
+
+export const cameraRayDefault: cameraRayPropsType = {
+  length: -1
 };
 
 export const buoyancyDefault = {

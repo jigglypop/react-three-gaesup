@@ -3,7 +3,7 @@ import { atom, useAtom } from 'jotai';
 export const statesAtom = atom({
   isMoving: false,
   isNotMoving: false,
-  isCanJump: false,
+  // isCanJump: false,
   isOnMoving: false
 });
 statesAtom.debugLabel = 'states';

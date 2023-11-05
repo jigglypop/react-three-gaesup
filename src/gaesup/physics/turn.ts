@@ -1,4 +1,6 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
 import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
 
@@ -7,14 +9,15 @@ export default function calcTurn({
 }: {
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { model, calc } = useContext(ControllerContext);
+  const { calc } = useContext(ControllerContext);
+  const current = useAtomValue(currentAtom);
 
   useFrame((_, delta) => {
     // Rotate character model
     // 캐릭터 모델 회전
-    model.quat.setFromEuler(model.euler);
+    current.quat.setFromEuler(current.euler);
     outerGroupRef.current!.quaternion.rotateTowards(
-      model.quat,
+      current.quat,
       delta * calc.turnS
     );
   });

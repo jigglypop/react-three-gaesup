@@ -1,46 +1,39 @@
+import { currentCameraAtom } from '@gaesup/stores/camera';
+import { currentAtom } from '@gaesup/stores/current';
+import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
-import { RefObject, useContext } from 'react';
-import { ControllerContext } from '../stores/context';
-import { Object3D, Object3DEventMap } from 'three';
-import { useKeyboardControls } from '@react-three/drei';
+import { useAtom, useAtomValue } from 'jotai';
+import { RefObject } from 'react';
 
 export default function calcDirection({
-  rigidBodyRef,
-  pivot
+  rigidBodyRef
 }: {
   rigidBodyRef: RefObject<RapierRigidBody>;
-  pivot: Object3D<Object3DEventMap>;
 }) {
-  const { model, cur } = useContext(ControllerContext);
   const [_, getKeys] = useKeyboardControls();
+  const [currentCamera, setCurrentCamera] = useAtom(currentCameraAtom);
+  const current = useAtomValue(currentAtom);
   const { forward, backward, leftward, rightward } = getKeys();
-
-  // const { origin } = useAtomValue(JoyStickAtom);
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
-    cur.P = vec3(rigidBodyRef.current.translation());
-    cur.V = vec3(rigidBodyRef.current.linvel());
-    // model.euler.y = -origin.angle - Math.PI / 2;
-    // console.log(model.euler.y);
-
-    // 이동 방향을 가져옵니다
-    const { euler } = model;
+    current.position = vec3(rigidBodyRef.current.translation());
+    current.velocity = vec3(rigidBodyRef.current.linvel());
     if (forward) {
-      euler.y =
-        pivot.rotation.y +
+      current.euler.y =
+        currentCamera.pivot.rotation.y +
         (leftward ? Math.PI / 4 : 0) -
         (rightward ? Math.PI / 4 : 0);
     } else if (backward) {
-      euler.y =
-        pivot.rotation.y +
+      current.euler.y =
+        currentCamera.pivot.rotation.y +
         Math.PI -
         (leftward ? Math.PI / 4 : 0) +
         (rightward ? Math.PI / 4 : 0);
     } else if (leftward) {
-      euler.y = pivot.rotation.y + Math.PI / 2;
+      current.euler.y = currentCamera.pivot.rotation.y + Math.PI / 2;
     } else if (rightward) {
-      euler.y = pivot.rotation.y - Math.PI / 2;
+      current.euler.y = currentCamera.pivot.rotation.y - Math.PI / 2;
     }
   });
 }

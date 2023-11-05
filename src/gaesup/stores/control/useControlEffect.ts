@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useKeyboardControls } from '@react-three/drei';
-import { useAtom, useAtomValue } from 'jotai';
-import { optionAtom } from '../options';
+import { useAtom } from 'jotai';
 import { statesAtom } from '../states';
 
 export default function useControlEffect() {
   const [_, getKeys] = useKeyboardControls();
-  const options = useAtomValue(optionAtom);
   const [states, setStates] = useAtom(statesAtom);
   const keyControl = getKeys();
 

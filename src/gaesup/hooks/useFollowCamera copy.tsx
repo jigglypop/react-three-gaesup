@@ -1,8 +1,7 @@
 import { cameraRayAtom, currentCameraAtom } from '@gaesup/stores/camera';
-import useCameraTraverse from '@gaesup/stores/camera/useCameraTraverse';
 import { useThree } from '@react-three/fiber';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 
 export default function useFollowCamera() {
@@ -10,12 +9,18 @@ export default function useFollowCamera() {
   // const { cameraRay, camera: currentCamera } = useContext(ControllerContext);
   const [currentCamera, setCurrentCamera] = useAtom(currentCameraAtom);
   const [cameraRay, setCameraRay] = useAtom(cameraRayAtom);
+  const pivot = useMemo(() => new THREE.Object3D(), []);
+  const followCam = useMemo(() => {
+    const origin = new THREE.Object3D();
+    origin.position.set(0, 0, currentCamera.initDistance);
+    return origin;
+  }, []);
 
   /** Camera collison detect setups */
+  // let smallestDistance: any = null;
   // let cameraDistance: any = null;
-  // let intersects: any = null;
-  // let intersectObjects: THREE.Object3D[] = [];
-  // const intersectObjects: THREE.Object3D[] = [];
+  let intersects: any = null;
+  let intersectObjects: THREE.Object3D[] = [];
   cameraRay.rayCast = new THREE.Raycaster(
     cameraRay.origin,
     cameraRay.dir,
@@ -54,49 +59,45 @@ export default function useFollowCamera() {
 
   // Custom traverse function
   // Prepare intersect objects for camera collision
-  //   function customTraverse(object: THREE.Object3D) {
-  //     if (object.userData && object.userData.camExcludeCollision === true) return;
-  //     if (
-  //       (object as THREE.Mesh).isMesh &&
-  //       (object as THREE.Mesh).geometry.type !== 'InstancedBufferGeometry'
-  //     ) {
-  //       intersectObjects.push(object);
-  //     }
-  //
-  //     // Recursively traverse child objects
-  //     object.children.forEach((child) => {
-  //       customTraverse(child); // Continue the traversal for all child objects
-  //     });
-  //   }
-  const { customTraverse, intersectObjects } = useCameraTraverse();
+  function customTraverse(object: THREE.Object3D) {
+    if (object.userData && object.userData.camExcludeCollision === true) return;
+    if (
+      (object as THREE.Mesh).isMesh &&
+      (object as THREE.Mesh).geometry.type !== 'InstancedBufferGeometry'
+    ) {
+      intersectObjects.push(object);
+    }
+
+    // Recursively traverse child objects
+    object.children.forEach((child) => {
+      customTraverse(child); // Continue the traversal for all child objects
+    });
+  }
 
   const cameraCollisionDetect = (delta: number) => {
-    cameraRay.origin.copy(currentCamera.pivot.position);
+    cameraRay.origin.copy(pivot.position);
     camera.getWorldPosition(cameraRay.position);
-    cameraRay.dir.subVectors(cameraRay.position, currentCamera.pivot.position);
-    cameraRay.intersects =
-      cameraRay.rayCast!.intersectObjects(intersectObjects);
+    cameraRay.dir.subVectors(cameraRay.position, pivot.position);
+    intersects = cameraRay.rayCast!.intersectObjects(intersectObjects);
     if (
-      cameraRay.intersects.length &&
-      cameraRay.intersects[0].distance <= -currentCamera.initDistance
+      intersects.length &&
+      intersects[0].distance <= -currentCamera.initDistance
     ) {
-      currentCamera.minDistance =
-        -cameraRay.intersects[0].distance * currentCamera.collisionOff < -0.7
-          ? -cameraRay.intersects[0].distance * currentCamera.collisionOff
+      smallestDistance =
+        -intersects[0].distance * currentCamera.collisionOff < -0.7
+          ? -intersects[0].distance * currentCamera.collisionOff
           : -0.7;
     } else {
-      currentCamera.minDistance = currentCamera.initDistance;
+      smallestDistance = currentCamera.initDistance;
     }
     // Update camera next lerping position, and lerp the camera
     cameraRay.lerpingPoint.set(
-      currentCamera.followCamera.position.x,
-      currentCamera.minDistance *
-        Math.sin(-currentCamera.followCamera.rotation.x),
-      currentCamera.minDistance *
-        Math.cos(-currentCamera.followCamera.rotation.x)
+      followCam.position.x,
+      smallestDistance * Math.sin(-followCam.rotation.x),
+      smallestDistance * Math.cos(-followCam.rotation.x)
     );
 
-    currentCamera.followCamera.position.lerp(cameraRay.lerpingPoint, delta * 4); // delta * 2 for rapier ray setup
+    followCam.position.lerp(cameraRay.lerpingPoint, delta * 4); // delta * 2 for rapier ray setup
   };
 
   // Set camera position to (0,0,0)
@@ -108,9 +109,9 @@ export default function useFollowCamera() {
   useEffect(() => {
     // Prepare for camera ray intersect objects
     scene.children.forEach((child) => customTraverse(child));
-    // Prepare for currentCamera.followCamera and currentCamera.pivot point
-    currentCamera.followCamera.add(camera);
-    currentCamera.pivot.add(currentCamera.followCamera);
+    // Prepare for followCam and pivot point
+    followCam.add(camera);
+    pivot.add(followCam);
     // document.addEventListener('mousemove', onDocumentMouseMove);
     // document.addEventListener('mousewheel', onDocumentMouseWheel);
     // return () => {
@@ -119,7 +120,5 @@ export default function useFollowCamera() {
     // };
   });
 
-  return {
-    cameraCollisionDetect
-  };
+  return { pivot, followCam, cameraCollisionDetect };
 }

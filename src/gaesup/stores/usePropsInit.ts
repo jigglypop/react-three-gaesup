@@ -1,17 +1,11 @@
-import { useFrame } from '@react-three/fiber';
-import { RefObject, useContext, useEffect, useMemo } from 'react';
-import { ControllerContext } from './context';
-import { ControllerProps } from '../type';
-import {
-  vec3,
-  euler,
-  quat,
-  RapierRigidBody,
-  CapsuleCollider,
-  useRapier
-} from '@react-three/rapier';
-import { RayColliderToi, Collider, Ray } from '@dimforge/rapier3d-compat';
+import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
+import { RapierRigidBody, useRapier, vec3 } from '@react-three/rapier';
+import { RefObject, useContext } from 'react';
 import * as THREE from 'three';
+import { ControllerProps } from '../type';
+import useCameraInit from './camera';
+import { ControllerContext } from './context';
+import useCurrentInit from './current';
 import useOptionInit from './options';
 
 export const ControllerDefault = {
@@ -23,10 +17,6 @@ export const ControllerDefault = {
   },
   pivot: {
     P: vec3()
-  },
-  model: {
-    euler: euler(),
-    quat: quat()
   },
   // move
   move: {
@@ -44,8 +34,6 @@ export const ControllerDefault = {
     Vv3: vec3(),
     Di: vec3()
   },
-  // cur
-  cur: { P: vec3(), V: vec3(), rejectV: vec3() },
   // slope
   slope: {
     angle: 0,
@@ -73,16 +61,6 @@ export const ControllerDefault = {
     length: -1,
     dir: { x: 0, y: 0, z: 0 }
   },
-  // control: {
-  //   f: false,
-  //   b: false,
-  //   l: false,
-  //   r: false,
-  //   jump: false,
-  //   run: false,
-  //   jumpIdle: false,
-  //   jumpLand: false
-  // },
   animationSet: {
     idle: 'idle',
     walk: 'walk',
@@ -122,27 +100,23 @@ export const ControllerDefault = {
       rotational: 0.03,
       vertical: 0.02
     }
-  },
-  camera: {
-    initDistance: -5,
-    maxDistance: -7,
-    minDistance: -0.7,
-    initDirection: 0,
-    collisionOff: 0.7
-  },
-  cameraRay: {
-    origin: vec3(),
-    hit: null as RayColliderToi | null,
-    rayCast: null as THREE.Raycaster | null,
-    lerpingPoint: vec3(),
-    length: -1,
-    dir: vec3(),
-    position: vec3()
-  },
-  options: {
-    debug: false,
-    controllerType: 'none'
   }
+  // camera: {
+  //   initDistance: -5,
+  //   maxDistance: -7,
+  //   minDistance: -0.7,
+  //   initDirection: 0,
+  //   collisionOff: 0.7
+  // },
+  // cameraRay: {
+  //   origin: vec3(),
+  //   hit: null as RayColliderToi | null,
+  //   rayCast: null as THREE.Raycaster | null,
+  //   lerpingPoint: vec3(),
+  //   length: -1,
+  //   dir: vec3(),
+  //   position: vec3()
+  // }
 };
 
 export default function usePropsInit(
@@ -154,7 +128,7 @@ export default function usePropsInit(
   }
 ) {
   const { rapier, world } = useRapier();
-  const { slope, rays, cameraRay } = useContext(ControllerContext);
+  const { slope, rays } = useContext(ControllerContext);
   const controllerContext = useContext(ControllerContext);
 
   rays.rayCast = new rapier.Ray(rays.rayOrigin, props.ray!.dir);
@@ -176,12 +150,12 @@ export default function usePropsInit(
   rays.length = props.ray!.length;
   rays.dir = props.ray!.dir;
 
-  cameraRay.rayCast = new THREE.Raycaster(
-    cameraRay.origin,
-    cameraRay.dir,
-    0,
-    -props.camera?.maxDistance!
-  );
+  // cameraRay.rayCast = new THREE.Raycaster(
+  //   cameraRay.origin,
+  //   cameraRay.dir,
+  //   0,
+  //   -props.camera?.maxDistance!
+  // );
 
   slope.maxAngle = props.slopeRay!.maxAngle;
   slope.upExtraForce = props.slopeRay!.upExtraForce;
@@ -195,8 +169,16 @@ export default function usePropsInit(
   controllerContext.capsule = props.capsule!;
   controllerContext.stabilize = props.stabilize!;
 
-  controllerContext.camera = props.camera!;
+  // controllerContext.camera = props.camera!;
 
   // options init
   useOptionInit({ optionProp: props.options });
+  // current init
+  useCurrentInit();
+  // follow camera init
+  useCameraInit({
+    cameraProps: props.camera!,
+    cameraRayProps: props.cameraRay!
+  });
+
 }

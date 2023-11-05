@@ -1,10 +1,11 @@
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-import { useContext } from 'react';
-import { ControllerContext } from '../stores/context';
-import { vec3 } from '@react-three/rapier';
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
-import { useAtom } from 'jotai';
+import { useFrame } from '@react-three/fiber';
+import { vec3 } from '@react-three/rapier';
+import { useAtom, useAtomValue } from 'jotai';
+import { useContext } from 'react';
+import * as THREE from 'three';
+import { ControllerContext } from '../stores/context';
 
 export default function checkOnMove() {
   /**
@@ -12,14 +13,15 @@ export default function checkOnMove() {
    * 캐릭터가 움직이는 플랫폼 위에 있는지 감지합니다
    */
   const diCToO = vec3();
-  const { stand, rays, cur, move, objectAng, calc } =
-    useContext(ControllerContext);
+  const { stand, rays, move, objectAng, calc } = useContext(ControllerContext);
+  const current = useAtomValue(currentAtom);
 
   const [states, setStates] = useAtom(statesAtom);
-  const { isCanJump, isNotMoving, isMoving } = states;
+
+  const { isNotMoving, isMoving } = states;
   useFrame(() => {
     const { rayHit, rayCast, rayOrigin, rayParent } = rays;
-    if (rayHit && isCanJump && rayParent) {
+    if (rayHit && rayParent) {
       if (rayParent !== null) {
         stand.P.set(rayOrigin.x, rayOrigin.y - rayHit.toi, rayOrigin.z);
         const rayType = rayParent!.bodyType();
@@ -31,7 +33,7 @@ export default function checkOnMove() {
             isOnMoving: true
           });
 
-          diCToO.copy(cur.P).sub(vec3(rayParent!.translation()));
+          diCToO.copy(current.position).sub(vec3(rayParent!.translation()));
           const moVinV = rayParent!.linvel() as THREE.Vector3;
           const moveAngV = rayParent!.angvel() as THREE.Vector3;
           move.V.set(
@@ -41,11 +43,11 @@ export default function checkOnMove() {
           );
 
           if (rayType === 0) {
-            if (isNotMoving && isCanJump) {
+            if (isNotMoving) {
               move.dragForce.set(
-                (cur.V.x - move.V.x) * calc.dragDamp,
+                (current.velocity.x - move.V.x) * calc.dragDamp,
                 0,
-                (cur.V.z - move.V.z) * calc.dragDamp
+                (current.velocity.z - move.V.z) * calc.dragDamp
               );
             } else {
               move.dragForce.copy(move.impulse).negate();

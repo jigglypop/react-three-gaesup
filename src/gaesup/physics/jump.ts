@@ -1,10 +1,10 @@
+import { currentAtom } from '@gaesup/stores/current';
+import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
+import { useAtomValue } from 'jotai';
 import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
-import { statesAtom } from '@gaesup/stores/states';
-import { useAtomValue } from 'jotai';
-import { useKeyboardControls } from '@react-three/drei';
 
 export default function calcJump({
   rigidBodyRef,
@@ -13,21 +13,19 @@ export default function calcJump({
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
 }) {
-  const { cur, jumps, calc, slope, rays, stand } =
-    useContext(ControllerContext);
+  const { jumps, calc, slope, rays, stand } = useContext(ControllerContext);
+  const current = useAtomValue(currentAtom);
   const [_, getKeys] = useKeyboardControls();
   const { jump, run } = getKeys();
-
-  const { isCanJump } = useAtomValue(statesAtom);
-
+  // const { isCanJump } = useAtomValue(statesAtom);
   useFrame(() => {
     // Jump impulse
     // 점프 충격량 계산
-    if (jump && isCanJump) {
+    if (jump) {
       jumps.Vv3.set(
-        cur.V.x,
+        current.velocity.x,
         run ? calc.runJumpR * calc.jumpV : calc.jumpV,
-        cur.V.z
+        current.velocity.z
       );
       // Apply slope normal to jump direction
       // 경사면의 법선을 점프 방향에 적용합니다

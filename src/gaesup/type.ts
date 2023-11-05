@@ -1,8 +1,9 @@
+import { RayColliderToi } from '@dimforge/rapier3d-compat';
 import { RapierRigidBody, RigidBodyProps } from '@react-three/rapier';
 import { ReactNode, RefObject } from 'react';
-import { RayColliderToi } from '@dimforge/rapier3d-compat';
 import { Vector3 } from 'three';
-import { optionDefault, rayDefault } from './props';
+import { rayDefault } from './props';
+import { cameraRayPropsType } from './stores/camera';
 
 export type AnimationTag = {
   idle: string;
@@ -54,7 +55,7 @@ export type stabilizeType = {
   };
 };
 
-export type camType = {
+export type cameraPropsType = {
   initDistance: number;
   maxDistance: number;
   minDistance: number;
@@ -100,7 +101,8 @@ export interface ControllerProps extends RigidBodyProps {
   debug?: boolean;
   capsule?: capsuleType;
   characterInitDir?: number;
-  camera?: camType;
+  camera?: cameraPropsType;
+  cameraRay?: cameraRayPropsType;
   calc?: calcType;
   ray?: typeof rayDefault;
   buoyancy?: buoyancyDefaultType;
@@ -126,7 +128,7 @@ export type AnimationProps = {
 };
 
 export type useFollowCamType = {
-  cam: camType;
+  cam: cameraPropsType;
 };
 
 export type useActionsEffectType = {

@@ -1,15 +1,10 @@
-import { RefObject, use, useCallback, useEffect, useMemo } from 'react';
+import { RefObject, useEffect } from 'react';
 
-import { vec3, RapierRigidBody, useRapier } from '@react-three/rapier';
-import { RayColliderToi, Collider, Ray } from '@dimforge/rapier3d-compat';
-import * as THREE from 'three';
-import { atom, useAtom } from 'jotai';
-import { rayDefault } from '../../props';
-import { unwrap } from 'jotai/utils';
-import { useFrame } from '@react-three/fiber';
-import { useAnimations, useGLTF } from '@react-three/drei';
-import { GLTF } from 'three-stdlib';
 import { AnimationTag } from '@gaesup/type';
+import { useAnimations, useGLTF } from '@react-three/drei';
+import { atom, useAtom } from 'jotai';
+import * as THREE from 'three';
+import { GLTF } from 'three-stdlib';
 
 export type animationProps = {
   current: keyof AnimationTag;
@@ -18,6 +13,8 @@ export type animationProps = {
 export const animationAtom = atom<animationProps>({
   current: 'idle'
 });
+
+animationAtom.debugLabel = 'animation';
 
 export default function usePlay({
   url,

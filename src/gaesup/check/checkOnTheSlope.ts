@@ -1,11 +1,9 @@
+import { Collider } from '@dimforge/rapier3d-compat';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
 import { useRapier, vec3 } from '@react-three/rapier';
 import { RefObject, useContext } from 'react';
+import * as THREE from 'three';
 import { ControllerContext } from '../stores/context';
-import { Collider } from '@dimforge/rapier3d-compat';
-import { statesAtom } from '@gaesup/stores/states';
-import { useAtomValue } from 'jotai';
 
 export default function checkOnTheSlope({
   capsuleColliderRef,
@@ -15,12 +13,7 @@ export default function checkOnTheSlope({
   slopeRayOriginRef: RefObject<THREE.Mesh>;
 }) {
   const { slope, rays, buoyancy } = useContext(ControllerContext);
-  const { isCanJump } = useAtomValue(statesAtom);
-
-  /**
-   * Slope ray casting detect if on slope
-   * 캐릭터가 경사면 위에 있는지 감지합니다
-   */
+  // const { isCanJump } = useAtomValue(statesAtom);
   const { world } = useRapier();
   useFrame(() => {
     if (
@@ -55,14 +48,19 @@ export default function checkOnTheSlope({
       rays.rayHit &&
       slope.rayHit.toi < buoyancy.distance + 0.5
     ) {
-      if (isCanJump) {
-        // Round the slope angle to 2 decimal places
-        slope.angle = Number(
-          Math.atan(
-            (rays.rayHit.toi - slope.rayHit.toi) / slope.rayOriginOffset
-          ).toFixed(2)
-        );
-      }
+      // if (isCanJump) {
+      //   // Round the slope angle to 2 decimal places
+      //   slope.angle = Number(
+      //     Math.atan(
+      //       (rays.rayHit.toi - slope.rayHit.toi) / slope.rayOriginOffset
+      //     ).toFixed(2)
+      //   );
+      // }
+      slope.angle = Number(
+        Math.atan(
+          (rays.rayHit.toi - slope.rayHit.toi) / slope.rayOriginOffset
+        ).toFixed(2)
+      );
     }
   });
 }

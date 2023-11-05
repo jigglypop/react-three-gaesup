@@ -1,8 +1,6 @@
+import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { RefObject, useContext, useEffect } from 'react';
-import * as THREE from 'three';
-import { stabilizeType } from '../type';
-import { useFrame } from '@react-three/fiber';
 import { ControllerContext } from '../stores/context';
 
 /**
