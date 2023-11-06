@@ -19,7 +19,6 @@ export default function checkOnTheSlope({
   const buoyancy = useAtomValue(buoyancyAtom);
   const slopeRay = useAtomValue(slopeRayAtom);
   const ray = useAtomValue(rayAtom);
-  // const { isCanJump } = useAtomValue(statesAtom);
   const { world } = useRapier();
   useFrame(() => {
     if (

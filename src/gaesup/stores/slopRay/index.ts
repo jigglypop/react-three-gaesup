@@ -15,7 +15,6 @@ export default function useSolpeRayInit({
   const [slopeRay, setSlopeRay] = useAtom(slopeRayAtom);
   const collider = useAtomValue(colliderAtom);
   slopeRay.rayCast = new rapier.Ray(slopeRay.rayOrigin, slopeRay.dir);
-
   useEffect(() => {
     if (slopeRayProp) {
       setSlopeRay((slopeRay) => ({

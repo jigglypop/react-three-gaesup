@@ -3,6 +3,7 @@ import { dampingAtom } from '@gaesup/stores/damping';
 import { jumpAtom } from '@gaesup/stores/jump';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { standAtom } from '@gaesup/stores/stand';
+import { statesAtom } from '@gaesup/stores/states';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
@@ -21,7 +22,7 @@ export default function calcBuoyancy({
   const buoyancy = useAtomValue(buoyancyAtom);
   const stand = useAtomValue(standAtom);
   const jump = useAtomValue(jumpAtom);
-  // const { isCanJump } = useAtomValue(statesAtom);
+  const { isOnTheGround } = useAtomValue(statesAtom);
 
   useFrame(() => {
     if (ray.rayHit !== null && ray.rayParent) {
@@ -30,7 +31,11 @@ export default function calcBuoyancy({
         buoyancy.springConstant * (buoyancy.distance - ray.rayHit.toi) -
         rigidBodyRef.current!.linvel().y * damping.buoyancy;
       rigidBodyRef.current!.applyImpulse(
-        vec3().set(0, buoyancyForce, 0),
+        vec3({
+          x: 0,
+          y: buoyancyForce,
+          z: 0
+        }),
         false
       );
       // Apply opposite force to standing object (gravity g in rapier is 0.11 ?_?)

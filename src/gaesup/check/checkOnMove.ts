@@ -7,7 +7,6 @@ import { statesAtom } from '@gaesup/stores/states';
 import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
 import { useAtom, useAtomValue } from 'jotai';
-import * as THREE from 'three';
 
 export default function checkOnMove() {
   /**
@@ -39,8 +38,9 @@ export default function checkOnMove() {
           });
 
           diCToO.copy(current.position).sub(vec3(rayParent!.translation()));
-          const moVinV = rayParent!.linvel() as THREE.Vector3;
-          const moveAngV = rayParent!.angvel() as THREE.Vector3;
+          const moVinV = vec3(rayParent!.linvel());
+          const moveAngV = vec3(rayParent!.angvel());
+
           move.velocity.set(
             moVinV.x + move.velocityToLinev.crossVectors(moveAngV, diCToO).x,
             moVinV.y,

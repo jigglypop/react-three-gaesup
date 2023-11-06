@@ -8,7 +8,7 @@ import { currentAtom } from './current';
  * 카메라 초기 설정
  * 카메라 피벗과 캐릭터 이동 설정
  */
-export default function useStartInit() {
+export default function initSetting() {
   const current = useAtomValue(currentAtom);
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export default function calcAccelaration({
   outerGroupRef: RefObject<THREE.Group>;
 }) {
   // const { move, calc } = useContext(ControllerContext);
-  const { isMoving, isOnMoving } = useAtomValue(statesAtom);
+  const { isMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
   const ratio = useAtomValue(ratioAtom);
   const [_, getKeys] = useKeyboardControls();
@@ -33,7 +33,7 @@ export default function calcAccelaration({
     const angleBetween = move.velocity.angleTo(move.direction);
     const sinAngleBetween = Math.sin(angleBetween);
     const maxVelocity = jump.maxSpeed * (run ? ratio.run : 1);
-    const rejectRatio = isOnMoving ? 0 : jump.rejectSpeed;
+    const rejectRatio = isMoving ? 0 : jump.rejectSpeed;
 
     const moveAXZ = (tag: 'x' | 'z') => {
       return (

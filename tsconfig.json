@@ -28,7 +28,7 @@
       "@api/*": ["api/*"],
       "@common/*": ["components/common/*"],
       "@hooks/*": ["hooks/*"],
-      "@gaesup/*" : ["gaesup/*"]
+      "@gaesup/*": ["gaesup/*"]
     },
     "plugins": [
       {

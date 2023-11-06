@@ -21,7 +21,7 @@ export default function checkTurn({
   const { isMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
   const [_, getKeys] = useKeyboardControls();
-  const { run, jump } = getKeys();
+  const { run } = getKeys();
   const ratio = useAtomValue(ratioAtom);
   const turn = useAtomValue(turnAtom);
   const move = useAtomValue(moveAtom);
@@ -84,9 +84,7 @@ export default function checkTurn({
       if (rigidBodyRef.current)
         rigidBodyRef.current.applyImpulseAtPoint(
           move.impulse,
-          vec3()
-            .copy(current.position)
-            .setY(current.position.y + move.delta.y),
+          vec3().copy(current.position).add(move.delta),
           false
         );
     }

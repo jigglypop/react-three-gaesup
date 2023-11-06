@@ -21,15 +21,13 @@ import calcDragForce from './physics/dragForce';
 import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
-import { calcDefault } from './props';
 import useActionsEffect from './stores/animation/useActionsEffect';
 import { colliderAtom } from './stores/collider';
-import { ControllerContext } from './stores/context';
 import useControlEffect from './stores/control/useControlEffect';
+import initProps from './stores/initProps';
+import initSetting from './stores/initSetting';
 import { rayAtom } from './stores/ray/atom';
 import { slopeRayAtom } from './stores/slopRay/atom';
-import usePropsInit, { ControllerDefault } from './stores/usePropsInit';
-import useStartInit from './stores/useStartInit';
 import { ControllerProps } from './type';
 import CharacterGltf from './utils/CharacterGltf';
 
@@ -50,30 +48,13 @@ export default function Controller(props: Omit<ControllerProps, 'animations'>) {
   const gltf = useLoader(GLTFLoader, props.url);
   const { animations } = gltf;
   return (
-    <>
-      <ControllerContext.Provider value={ControllerDefault}>
-        <ControllerInner {...{ ...props, animations }}>
-          <CharacterGltf {...props} />
-        </ControllerInner>
-      </ControllerContext.Provider>
-    </>
+    <ControllerInner {...{ ...props, animations }}>
+      <CharacterGltf {...props} />
+    </ControllerInner>
   );
 }
 
-export function ControllerInner({
-  children,
-  url,
-  camera,
-  calc = { ...calcDefault },
-  ray,
-  slopeRay,
-  cameraRay,
-  buoyancy,
-  options,
-  ratio,
-  animations,
-  ...props
-}: ControllerProps) {
+export function ControllerInner(props: ControllerProps) {
   const capsuleColliderRef = useRef<Collider>(null);
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
@@ -81,22 +62,15 @@ export function ControllerInner({
 
   useControlEffect();
   // init props
-  usePropsInit({
-    // url,
+  initProps({
+    ...props,
     capsuleColliderRef,
     rigidBodyRef,
     outerGroupRef,
-    slopeRayOriginRef,
-    camera,
-    calc,
-    ray,
-    slopeRay,
-    buoyancy,
-    options,
-    ...props
+    slopeRayOriginRef
   });
 
-  useStartInit();
+  initSetting();
 
   // initDebug();
   /**
@@ -206,7 +180,7 @@ export function ControllerInner({
    * @param outerGroupRef
    * @param animations
    */
-  useActionsEffect({ outerGroupRef, animations });
+  useActionsEffect({ outerGroupRef, animations: props.animations });
 
   // const ref = useRef<MeshLineGeometry>(null);
   // console.log(ref);
@@ -236,6 +210,14 @@ export function ControllerInner({
   const rays = useAtomValue(rayAtom);
   const slopeRays = useAtomValue(slopeRayAtom);
   const collider = useAtomValue(colliderAtom);
+
+  //   useEffect(() => {
+  //     const a = vec3({ x: 1, y: 0, z: 1 });
+  //     const b = vec3({ x: 2, y: 0, z: 1 });
+  //
+  //     a.multiplyScalar(3);
+  //     console.log(a);
+  //   }, []);
 
   return (
     <>
@@ -270,7 +252,7 @@ export function ControllerInner({
             <boxGeometry args={[0.15, 0.15, 0.15]} />
           </mesh>
 
-          {children}
+          {props.children}
         </group>
       </RigidBody>
 

@@ -16,25 +16,22 @@ export default function calcDragForce({ rigidBodyRef }: calcDragForceType) {
    * Apply drag force
    * 항력을 계산합니다
    */
-  // const { move, calc } = useContext(ControllerContext);
-  const { isMoving, isOnMoving } = useAtomValue(statesAtom);
+  const { isNotMoving } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
   const damping = useAtomValue(dampingAtom);
   const move = useAtomValue(moveAtom);
 
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
-
-    if (!isMoving) {
+    if (isNotMoving) {
       // not or on a moving object
-      const forwardF = (xz: 'x' | 'z', isOnMoving: boolean) =>
-        move.velocity[xz] * damping.drag * (isOnMoving ? 0 : 1);
+      const forwardF = (xz: 'x' | 'z') => move.velocity[xz] * damping.drag;
       const reverseF = (xz: 'x' | 'z') => -current.velocity[xz] * damping.drag;
       rigidBodyRef.current.applyImpulse(
         vec3().set(
-          forwardF('x', isOnMoving) + reverseF('x'),
+          forwardF('x') + reverseF('x'),
           0,
-          forwardF('x', isOnMoving) + reverseF('z')
+          forwardF('x') + reverseF('z')
         ),
         false
       );

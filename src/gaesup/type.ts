@@ -23,26 +23,12 @@ export type actionsType = animationTagType & {
   [key: string]: string;
 };
 
-export type calcType = {
-  maxV: number;
-  turnV: number;
-  turnS: number;
-  jumpV: number;
-  // dragDamp: number;
-  ATimeD: number;
-  rejectV: number;
-  jumpToG: number;
-  airDrag: number;
-  camFollow: number;
-};
-
 export interface ControllerProps extends RigidBodyProps {
   children?: ReactNode;
   url: string;
   debug?: boolean;
   camera?: cameraPropsType;
   cameraRay?: cameraRayPropsType;
-  calc?: calcType;
   ray?: rayType;
   buoyancy?: buoyancyType;
   slopeRay?: slopeRayType;
