@@ -1,8 +1,3 @@
-export const capsuleDefault = {
-  halfHeight: 0.35,
-  radius: 0.3
-};
-
 export const calcDefault = {
   maxV: 2.5,
   turnV: 0.2,
@@ -20,16 +15,8 @@ export const calcDefault = {
   camFollow: 11
 };
 
-export const stabilizeDefault = {
-  strength: 0.3,
-  damping: {
-    rotational: 0.03,
-    vertical: 0.02
-  }
-};
-
-export const buoyancyDefault = {
-  distance: capsuleDefault.radius + 0.3,
-  K: 1.2,
-  damp: 0.08
-};
+// export const buoyancyDefault = {
+//   distance: capsuleDefault.radius + 0.3,
+//   K: 1.2,
+//   damp: 0.08
+// };

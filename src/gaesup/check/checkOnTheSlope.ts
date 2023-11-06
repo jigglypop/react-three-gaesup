@@ -1,12 +1,12 @@
 import { Collider } from '@dimforge/rapier3d-compat';
+import { buoyancyAtom } from '@gaesup/stores/buoyancy';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { useFrame } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { RefObject, useContext } from 'react';
+import { RefObject } from 'react';
 import * as THREE from 'three';
-import { ControllerContext } from '../stores/context';
 
 export default function checkOnTheSlope({
   capsuleColliderRef,
@@ -15,7 +15,8 @@ export default function checkOnTheSlope({
   capsuleColliderRef: RefObject<Collider>;
   slopeRayOriginRef: RefObject<THREE.Mesh>;
 }) {
-  const { buoyancy } = useContext(ControllerContext);
+  // const { buoyancy } = useContext(ControllerContext);
+  const buoyancy = useAtomValue(buoyancyAtom);
   const slopeRay = useAtomValue(slopeRayAtom);
   const ray = useAtomValue(rayAtom);
   // const { isCanJump } = useAtomValue(statesAtom);

@@ -3,6 +3,7 @@ import { ratioAtom } from '@gaesup/stores/ratio';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { standAtom } from '@gaesup/stores/stand';
+import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
@@ -23,6 +24,7 @@ export default function calcJump({
   const current = useAtomValue(currentAtom);
   const stand = useAtomValue(standAtom);
   const [_, getKeys] = useKeyboardControls();
+  const states = useAtomValue(statesAtom);
   const { jump, run } = getKeys();
   // const { isCanJump } = useAtomValue(statesAtom);
   useFrame(() => {

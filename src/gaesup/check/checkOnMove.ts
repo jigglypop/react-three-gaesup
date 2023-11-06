@@ -26,12 +26,12 @@ export default function checkOnMove() {
 
   const { isNotMoving } = states;
   useFrame(() => {
-    const { rayHit, rayCast, rayOrigin, rayParent } = ray;
+    const { rayHit, rayOrigin, rayParent } = ray;
     if (rayHit && rayParent) {
       if (rayParent !== null) {
         stand.position.set(rayOrigin.x, rayOrigin.y - rayHit.toi, rayOrigin.z);
-        const rayType = rayParent!.bodyType();
-        const rayMass = rayParent!.mass();
+        const rayType = rayParent.bodyType();
+        const rayMass = rayParent.mass();
 
         if ((rayType === 0 || rayType === 2) && rayMass > 0.5) {
           setStates({

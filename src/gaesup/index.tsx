@@ -1,5 +1,6 @@
 import { Collider } from '@dimforge/rapier3d-compat';
 import { Gltf } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
 import {
   CapsuleCollider,
   RapierRigidBody,
@@ -8,6 +9,7 @@ import {
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import checkOnMove from './check/checkOnMove';
 import checkOnTheGround from './check/checkOnTheGround';
 import checkOnTheSlope from './check/checkOnTheSlope';
@@ -20,7 +22,7 @@ import calcDragForce from './physics/dragForce';
 import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
-import { buoyancyDefault, calcDefault } from './props';
+import { calcDefault } from './props';
 import useActionsEffect from './stores/animation/useActionsEffect';
 import { colliderAtom } from './stores/collider';
 import { ControllerContext } from './stores/context';
@@ -47,7 +49,12 @@ import { ControllerProps } from './type';
 
 export default function Controller(props: ControllerProps) {
   const gltfRef = useRef<THREE.Object3D<THREE.Object3DEventMap>>(null);
+  const { materials, animations, scene, nodes } = useLoader(
+    GLTFLoader,
+    props.url
+  );
 
+  // const { materials, animations, scene, nodes }: GLTF = useGLTF(props.url);
   return (
     <>
       <ControllerContext.Provider value={ControllerDefault}>
@@ -60,6 +67,21 @@ export default function Controller(props: ControllerProps) {
             position={[0, -0.55, 0]}
             src={props.url}
           />
+          <primitive object={nodes!.walk} visible={false} />
+          {Object.keys(nodes!).map((name: string, key: number) => {
+            if (nodes[name].type === 'SkinnedMesh') {
+              return (
+                <skinnedMesh
+                  castShadow
+                  receiveShadow
+                  material={materials!![name]}
+                  geometry={nodes![name].geometry}
+                  skeleton={nodes![name].skeleton}
+                  key={key}
+                ></skinnedMesh>
+              );
+            }
+          })}
         </ControllerInner>
       </ControllerContext.Provider>
     </>
@@ -74,9 +96,7 @@ export function ControllerInner({
   ray,
   slopeRay,
   cameraRay,
-  buoyancy = {
-    ...buoyancyDefault
-  },
+  buoyancy,
   options,
   ratio,
   ...props

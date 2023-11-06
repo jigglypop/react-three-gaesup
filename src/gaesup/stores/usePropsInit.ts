@@ -3,6 +3,7 @@ import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { RefObject, useContext } from 'react';
 import * as THREE from 'three';
 import { ControllerProps } from '../type';
+import useBuoyancyInit from './buoyancy';
 import useCameraInit from './camera';
 import { ControllerContext } from './context';
 import useCurrentInit from './current';
@@ -13,9 +14,6 @@ import useSolpeRayInit from './slopRay';
 import useStandInit from './stand';
 
 export const ControllerDefault = {
-  // stand: {
-  //   P: vec3()
-  // },
   objectAng: {
     VToLinV: vec3()
   },
@@ -47,10 +45,6 @@ export const ControllerDefault = {
     jumpLand: 'jumpLand',
     fall: 'fall'
   },
-  buoyancy: {
-    distance: -1,
-    K: 1.2
-  },
   calc: {
     maxV: 2.5,
     turnV: 0.2,
@@ -59,7 +53,7 @@ export const ControllerDefault = {
     rejectV: 4,
 
     ATimeD: 10,
-    jumpToG: 5,
+    jumpToG: 10,
     camFollow: 11
   }
 };
@@ -74,7 +68,7 @@ export default function usePropsInit(
 ) {
   const controllerContext = useContext(ControllerContext);
 
-  controllerContext.buoyancy = props.buoyancy!;
+  // controllerContext.buoyancy = props.buoyancy!;
   controllerContext.calc = props.calc!;
 
   // options init
@@ -102,4 +96,8 @@ export default function usePropsInit(
   // character state
   // stand
   useStandInit();
+  // buoyancy
+  useBuoyancyInit({
+    buoyancyProp: props.buoyancy
+  });
 }

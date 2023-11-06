@@ -1,8 +1,7 @@
 'use client';
 
 import Controller from '@gaesup/index';
-import JoyStick from '@gaesup/joystick';
-import { Environment, KeyboardControls, Gltf } from '@react-three/drei';
+import { Environment, Gltf, KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics, RigidBody } from '@react-three/rapier';
 
@@ -35,7 +34,7 @@ export default function Main() {
           <orthographicCamera attach='shadow-camera' args={[20, 20, 20, -20]} />
         </directionalLight>
         <ambientLight intensity={0.2} />
-        <Physics timeStep='vary' colliders='trimesh'>
+        <Physics timeStep='vary' colliders='trimesh' debug>
           <KeyboardControls map={keyboardMap}>
             <Controller url={URL} options={{ debug: true }} />
           </KeyboardControls>

@@ -25,8 +25,7 @@ export default function useRayInit({
     undefined,
     undefined,
     capsuleColliderRef.current!,
-    undefined,
-    (collider) => !collider.isSensor()
+    undefined
   );
   ray.rayParent = ray.rayHit?.collider.parent();
 
@@ -40,7 +39,7 @@ export default function useRayInit({
     setRay((ray) => ({
       ...ray,
       originOffset: vec3({ x: 0, y: -collider.halfHeight, z: 0 }),
-      length: 1
+      length: collider.radius + 2
     }));
   }, []);
 }

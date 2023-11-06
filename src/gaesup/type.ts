@@ -1,7 +1,7 @@
-import { RayColliderToi } from '@dimforge/rapier3d-compat';
-import { RapierRigidBody, RigidBodyProps } from '@react-three/rapier';
+import { RigidBodyProps } from '@react-three/rapier';
 import { ReactNode, RefObject } from 'react';
 import { Vector3 } from 'three';
+import { buoyancyType } from './stores/buoyancy/type';
 import { cameraPropsType, cameraRayPropsType } from './stores/camera/type';
 import { dampingType } from './stores/damping';
 import { optionType } from './stores/options/type';
@@ -43,32 +43,21 @@ export type calcType = {
   camFollow: number;
 };
 
-export type calcBuoyancyType = {
-  rigidBodyRef: RefObject<RapierRigidBody>;
-  rayHit: RayColliderToi | null;
-  rayParent: RapierRigidBody | null | undefined;
-  canJump: boolean;
-  buoyancy: any;
-  springDirVec: THREE.Vector3;
-  mass: THREE.Vector3;
-  standingForcePoint: THREE.Vector3;
-};
-
 export interface ControllerProps extends RigidBodyProps {
   children?: ReactNode;
   url: string;
   debug?: boolean;
-  characterInitDir?: number;
   camera?: cameraPropsType;
   cameraRay?: cameraRayPropsType;
   calc?: calcType;
   ray?: rayType;
-  buoyancy?: any;
+  buoyancy?: buoyancyType;
   slopeRay?: slopeRayType;
   props?: RigidBodyProps;
   options?: optionType;
   damping?: dampingType;
   ratio?: ratioType;
+  character?: any;
 }
 
 export type State = {
