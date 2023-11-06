@@ -50,8 +50,6 @@ export default function checkOnTheGround({
       //   });
       // }
     } else {
-      console.log(ray.rayHit!.toi);
-
       setStates({
         ...states,
         isOnTheGround: false

@@ -36,15 +36,6 @@ export const ControllerDefault = {
     Vv3: vec3(),
     Di: vec3()
   },
-  animationSet: {
-    idle: 'idle',
-    walk: 'walk',
-    run: 'run',
-    jump: 'jump',
-    jumpIdle: 'jumpIdle',
-    jumpLand: 'jumpLand',
-    fall: 'fall'
-  },
   calc: {
     maxV: 2.5,
     turnV: 0.2,
@@ -59,7 +50,7 @@ export const ControllerDefault = {
 };
 
 export default function usePropsInit(
-  props: Omit<ControllerProps, 'children' | 'url'> & {
+  props: Omit<ControllerProps, 'children' | 'url' | 'animations'> & {
     capsuleColliderRef: RefObject<Collider>;
     rigidBodyRef: RefObject<RapierRigidBody>;
     outerGroupRef: RefObject<THREE.Group>;

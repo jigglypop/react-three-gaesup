@@ -1,36 +1,64 @@
 import { RefObject, useEffect } from 'react';
 
-import { AnimationTag } from '@gaesup/type';
-import { useAnimations, useGLTF } from '@react-three/drei';
+import { actionsType, animationTagType } from '@gaesup/type';
+import { useAnimations } from '@react-three/drei';
 import { atom, useAtom } from 'jotai';
 import * as THREE from 'three';
 import { GLTF } from 'three-stdlib';
 
-export type animationProps = {
-  current: keyof AnimationTag;
+export type animationPropType = {
+  current: keyof animationTagType;
+  animationNames: actionsType;
 };
 
-export const animationAtom = atom<animationProps>({
-  current: 'idle'
+export const animationAtom = atom<animationPropType>({
+  current: 'idle',
+  animationNames: {
+    idle: 'idle',
+    walk: 'walk',
+    run: 'run',
+    jump: 'jump',
+    jumpIdle: 'jumpIdle',
+    jumpLand: 'jumpLand',
+    fall: 'fall'
+  }
 });
 
 animationAtom.debugLabel = 'animation';
 
 export default function usePlay({
-  url,
-  outerGroupRef
+  outerGroupRef,
+  animations
 }: {
-  url: string;
   outerGroupRef?: RefObject<THREE.Group>;
+  animations: THREE.AnimationClip[];
 }) {
-  const { animations } = useGLTF(url) as GLTF;
   const { actions } = useAnimations(animations, outerGroupRef);
   const [animation, setAnimation] = useAtom(animationAtom);
+
   // Animation set state
-  const playAnimation = (tag: keyof AnimationTag) => {
-    setAnimation({
+  const playAnimation = (tag: keyof animationTagType) => {
+    setAnimation((animation) => ({
+      ...animation,
       current: tag
-    });
+    }));
+  };
+
+  const setAnimationName = (actions: {
+    [x: string]: THREE.AnimationAction | null;
+  }) => {
+    setAnimation((animation) => ({
+      ...animation,
+      animationNames: Object.assign(
+        animation.animationNames,
+        Object.keys(actions).reduce((acc, cur) => {
+          return {
+            ...acc,
+            [cur]: cur
+          };
+        }, {})
+      )
+    }));
   };
 
   const resetAni = () => playAnimation('idle');
@@ -51,6 +79,7 @@ export default function usePlay({
   useEffect(() => {
     // Play animation
     const action = actions[animation.current]?.reset().fadeIn(0.2).play();
+    setAnimationName(actions);
     return () => {
       action?.fadeOut(0.2);
     };
@@ -69,3 +98,18 @@ export default function usePlay({
     playFall
   };
 }
+
+export const useSetGltf = () => {
+  const [animation, setAnimation] = useAtom(animationAtom);
+  const setGltf = (gltf: GLTF) => {
+    setAnimation((animation) => ({
+      ...animation,
+      gltf
+    }));
+  };
+  return {
+    animation,
+    setAnimation,
+    setGltf
+  };
+};

@@ -1,5 +1,4 @@
 import { Collider } from '@dimforge/rapier3d-compat';
-import { Gltf } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import {
   CapsuleCollider,
@@ -33,6 +32,7 @@ import useControlInit from './stores/useControlInit';
 import usePropsInit, { ControllerDefault } from './stores/usePropsInit';
 import useStartInit from './stores/useStartInit';
 import { ControllerProps } from './type';
+import CharacterGltf from './utils/CharacterGltf';
 
 /**
  * ControllerWrapper
@@ -47,41 +47,14 @@ import { ControllerProps } from './type';
  * R : Ratio (비율)
  */
 
-export default function Controller(props: ControllerProps) {
-  const gltfRef = useRef<THREE.Object3D<THREE.Object3DEventMap>>(null);
-  const { materials, animations, scene, nodes } = useLoader(
-    GLTFLoader,
-    props.url
-  );
-
-  // const { materials, animations, scene, nodes }: GLTF = useGLTF(props.url);
+export default function Controller(props: Omit<ControllerProps, 'animations'>) {
+  const gltf = useLoader(GLTFLoader, props.url);
+  const { animations } = gltf;
   return (
     <>
       <ControllerContext.Provider value={ControllerDefault}>
-        <ControllerInner {...props}>
-          <Gltf
-            ref={gltfRef}
-            castShadow
-            receiveShadow
-            scale={0.3}
-            position={[0, -0.55, 0]}
-            src={props.url}
-          />
-          <primitive object={nodes!.walk} visible={false} />
-          {Object.keys(nodes!).map((name: string, key: number) => {
-            if (nodes[name].type === 'SkinnedMesh') {
-              return (
-                <skinnedMesh
-                  castShadow
-                  receiveShadow
-                  material={materials!![name]}
-                  geometry={nodes![name].geometry}
-                  skeleton={nodes![name].skeleton}
-                  key={key}
-                ></skinnedMesh>
-              );
-            }
-          })}
+        <ControllerInner {...{ ...props, animations }}>
+          <CharacterGltf {...props} />
         </ControllerInner>
       </ControllerContext.Provider>
     </>
@@ -99,6 +72,7 @@ export function ControllerInner({
   buoyancy,
   options,
   ratio,
+  animations,
   ...props
 }: ControllerProps) {
   const capsuleColliderRef = useRef<Collider>(null);
@@ -235,10 +209,10 @@ export function ControllerInner({
   /**
    * Actions for managing animations
    * 애니메이션을 관리하기 위한 액션들
-   * @param url
    * @param outerGroupRef
+   * @param animations
    */
-  useActionsEffect({ url, outerGroupRef });
+  useActionsEffect({ outerGroupRef, animations });
 
   // const ref = useRef<MeshLineGeometry>(null);
   // console.log(ref);

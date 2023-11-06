@@ -36,7 +36,14 @@ export default function Main() {
         <ambientLight intensity={0.2} />
         <Physics timeStep='vary' colliders='trimesh' debug>
           <KeyboardControls map={keyboardMap}>
-            <Controller url={URL} options={{ debug: true }} />
+            <Controller
+              url={URL}
+              options={{ debug: true }}
+              character={{
+                scale: 0.3,
+                position: [0, -0.55, 0]
+              }}
+            />
           </KeyboardControls>
 
           <RigidBody type='fixed' colliders='trimesh'>

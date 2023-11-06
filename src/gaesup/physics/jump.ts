@@ -12,10 +12,9 @@ import { RefObject, useContext } from 'react';
 import { ControllerContext } from '../stores/context';
 
 export default function calcJump({
-  rigidBodyRef // outerGroupRef
+  rigidBodyRef
 }: {
   rigidBodyRef: RefObject<RapierRigidBody>;
-  // outerGroupRef: RefObject<THREE.Group>;
 }) {
   const { jumps, calc } = useContext(ControllerContext);
   const ratio = useAtomValue(ratioAtom);

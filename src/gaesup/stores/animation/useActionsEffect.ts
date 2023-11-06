@@ -17,17 +17,17 @@ import { rayAtom } from '../ray/atom';
  */
 
 export default function useActionsEffect({
-  url,
-  outerGroupRef
+  outerGroupRef,
+  animations
 }: {
-  url: string;
   outerGroupRef?: RefObject<THREE.Group>;
+  animations: THREE.AnimationClip[];
 }) {
   // const { rays } = useContext(ControllerContext);
   const ray = useAtomValue(rayAtom);
   const current = useAtomValue(currentAtom);
   const { playIdle, playWalk, playRun, playJump, playJumpIdle, playFall } =
-    usePlay({ url, outerGroupRef });
+    usePlay({ outerGroupRef, animations });
   const [_, getKeys] = useKeyboardControls();
   const { jump, run } = getKeys();
   const { isNotMoving, isMoving } = useAtomValue(statesAtom);

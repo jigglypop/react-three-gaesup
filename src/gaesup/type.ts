@@ -1,6 +1,6 @@
+import { GroupProps } from '@react-three/fiber';
 import { RigidBodyProps } from '@react-three/rapier';
-import { ReactNode, RefObject } from 'react';
-import { Vector3 } from 'three';
+import { ReactNode } from 'react';
 import { buoyancyType } from './stores/buoyancy/type';
 import { cameraPropsType, cameraRayPropsType } from './stores/camera/type';
 import { dampingType } from './stores/damping';
@@ -9,7 +9,7 @@ import { ratioType } from './stores/ratio';
 import { rayType } from './stores/ray/type';
 import { slopeRayType } from './stores/slopRay/type';
 
-export type AnimationTag = {
+export type animationTagType = {
   idle: string;
   walk: string;
   run: string;
@@ -19,14 +19,7 @@ export type AnimationTag = {
   fall: string;
 };
 
-export type AnimationSet = {
-  idle: string;
-  walk: string;
-  run: string;
-  jump: string;
-  jumpIdle: string;
-  jumpLand: string;
-  fall: string;
+export type actionsType = animationTagType & {
   [key: string]: string;
 };
 
@@ -57,45 +50,6 @@ export interface ControllerProps extends RigidBodyProps {
   options?: optionType;
   damping?: dampingType;
   ratio?: ratioType;
-  character?: any;
+  character?: GroupProps;
+  animations: THREE.AnimationClip[];
 }
-
-export type State = {
-  curAnimation: string;
-  animationSet: AnimationSet;
-  initializeAnimationSet: (animationSet: AnimationSet) => void;
-  reset: () => void;
-} & {
-  [key in keyof AnimationSet]: () => void;
-};
-
-export type AnimationProps = {
-  url: string;
-  animationSet: AnimationSet;
-  children: ReactNode;
-};
-
-export type calcAccelarationType = {
-  outerGroupRef: RefObject<THREE.Group> | undefined;
-  cur: curType;
-  rejectV: THREE.Vector3;
-  accDeltaTime: number;
-  calc: calcType;
-  run: boolean;
-  isOnMoving: boolean;
-  move: moveType;
-};
-
-export type moveType = {
-  impulse: Vector3;
-  Di: Vector3;
-  A: Vector3;
-  V: Vector3;
-  dragForce: Vector3;
-  VinDi: Vector3;
-};
-
-export type curType = {
-  V: Vector3;
-  P: Vector3;
-};
