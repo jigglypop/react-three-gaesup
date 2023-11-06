@@ -31,7 +31,8 @@ export const currentCameraAtom = atom<currentCameraAtomType>({
   collisionOff: 0.7,
   cameraDistance: -1,
   followCamera: new THREE.Object3D(),
-  pivot: new THREE.Object3D()
+  pivot: new THREE.Object3D(),
+  camFollow: 11
 });
 
 cameraRayAtom.debugLabel = 'camera_ray';

@@ -1,5 +1,5 @@
 import { Collider } from '@dimforge/rapier3d-compat';
-import { RapierRigidBody, vec3 } from '@react-three/rapier';
+import { RapierRigidBody } from '@react-three/rapier';
 import { RefObject, useContext } from 'react';
 import * as THREE from 'three';
 import { ControllerProps } from '../type';
@@ -14,39 +14,31 @@ import useSolpeRayInit from './slopRay';
 import useStandInit from './stand';
 
 export const ControllerDefault = {
-  objectAng: {
-    VToLinV: vec3()
-  },
-  pivot: {
-    P: vec3()
-  },
-  // move
-  move: {
-    impulse: vec3(),
-    Di: vec3(),
-    A: vec3(),
-    V: vec3(),
-    dragForce: vec3(),
-    VinDi: vec3(),
-    deltaY: 0.5
-  },
-  // jump
-  jumps: {
-    mass: vec3(),
-    Vv3: vec3(),
-    Di: vec3()
-  },
-  calc: {
-    maxV: 2.5,
-    turnV: 0.2,
-    turnS: 15,
-    jumpV: 4,
-    rejectV: 4,
-
-    ATimeD: 10,
-    jumpToG: 10,
-    camFollow: 11
-  }
+  //   objectAng: {
+  //     VToLinV: vec3()
+  //   },
+  //   // pivot: {
+  //   //   P: vec3()
+  //   // },
+  //   // move
+  //   move: {
+  //     impulse: vec3(),
+  //     Di: vec3(),
+  //     A: vec3(),
+  //     V: vec3(),
+  //     dragForce: vec3(),
+  //     VinDi: vec3(),
+  //     deltaY: 0.5
+  //   },
+  //
+  //   calc: {
+  //     //     maxV: 2.5,
+  //     //
+  //     //     jumpV: 4,
+  //     //     rejectV: 4,
+  //
+  //     ATimeD: 10
+  //   }
 };
 
 export default function usePropsInit(
@@ -60,7 +52,7 @@ export default function usePropsInit(
   const controllerContext = useContext(ControllerContext);
 
   // controllerContext.buoyancy = props.buoyancy!;
-  controllerContext.calc = props.calc!;
+  // controllerContext.calc = props.calc!;
 
   // options init
   useOptionInit({ optionProp: props.options });

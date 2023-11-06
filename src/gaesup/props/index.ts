@@ -14,9 +14,3 @@ export const calcDefault = {
   airDrag: 0.2,
   camFollow: 11
 };
-
-// export const buoyancyDefault = {
-//   distance: capsuleDefault.radius + 0.3,
-//   K: 1.2,
-//   damp: 0.08
-// };

@@ -7,6 +7,7 @@ export type currentCameraAtomType = {
   cameraDistance: number;
   followCamera: THREE.Object3D<THREE.Object3DEventMap>;
   pivot: THREE.Object3D;
+  camFollow: number;
 };
 
 export type cameraCollisionAtomType = {

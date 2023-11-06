@@ -1,21 +1,21 @@
-import { vec3 } from '@react-three/rapier';
 import { atom, useAtom } from 'jotai';
-import * as THREE from 'three';
 
-export type standProps = {
-  position: THREE.Vector3;
+export type turnProps = {
+  accelSpeed: number;
+  decelSpeed: number;
 };
 
-export const standAtom = atom<standProps>({
-  position: vec3()
+export const turnAtom = atom<turnProps>({
+  accelSpeed: 15,
+  decelSpeed: 0.2
 });
 
-standAtom.debugLabel = 'stand';
+turnAtom.debugLabel = 'turn';
 
-export default function useStandInit() {
-  const [stand, setStand] = useAtom(standAtom);
+export default function useTurnInit() {
+  const [turn, setStand] = useAtom(turnAtom);
   return {
-    stand,
+    turn,
     setStand
   };
 }

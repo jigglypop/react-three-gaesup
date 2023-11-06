@@ -4,8 +4,6 @@ import { currentAtom } from '@gaesup/stores/current';
 import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { useContext } from 'react';
-import { ControllerContext } from '../stores/context';
 
 /**
  * Camera movement
@@ -14,7 +12,6 @@ import { ControllerContext } from '../stores/context';
  *
  */
 export default function calcCamera() {
-  const { calc } = useContext(ControllerContext);
   const currentCamera = useAtomValue(currentCameraAtom);
   const { cameraCollisionDetect } = useCameraDetect();
   const current = useAtomValue(currentAtom);
@@ -25,7 +22,7 @@ export default function calcCamera() {
         y: current.position.y,
         z: current.position.z
       }),
-      1 - Math.exp(-calc.camFollow * delta)
+      1 - Math.exp(-currentCamera.camFollow * delta)
     );
     state.camera.lookAt(currentCamera.pivot.position);
 

@@ -28,7 +28,6 @@ import { ControllerContext } from './stores/context';
 import useControlEffect from './stores/control/useControlEffect';
 import { rayAtom } from './stores/ray/atom';
 import { slopeRayAtom } from './stores/slopRay/atom';
-import useControlInit from './stores/useControlInit';
 import usePropsInit, { ControllerDefault } from './stores/usePropsInit';
 import useStartInit from './stores/useStartInit';
 import { ControllerProps } from './type';
@@ -79,11 +78,6 @@ export function ControllerInner({
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
-  /**
-   * keyboard controls setup
-   */
-  // init control set
-  useControlInit();
 
   useControlEffect();
   // init props

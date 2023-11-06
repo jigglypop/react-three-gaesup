@@ -2,12 +2,6 @@ import { atom, useAtom } from 'jotai';
 import { useEffect } from 'react';
 
 export type ratioType = {
-  // reconsil: number;
-  // rotational: number;
-  // vertical: number;
-  // air: number;
-  // drag: number;
-  // buoyancy: number;
   run: number;
   runJump: number;
   slopJump: number;
