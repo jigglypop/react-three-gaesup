@@ -17,7 +17,6 @@ statesAtom.debugLabel = 'states';
 
 export default function useStates() {
   const [states, setStates] = useAtom(statesAtom);
-
   return {
     states,
     setStates

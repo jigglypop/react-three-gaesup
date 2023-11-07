@@ -23,16 +23,31 @@ export default function stabilizing({ rigidBodyRef }: stabilizingType) {
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
     const { reconsil, rotational, vertical } = damping;
-    const { x, y, z } = rigidBodyRef.current.rotation();
-    const { x: avx, y: avy, z: avz } = rigidBodyRef.current.angvel();
+    const rotation = rigidBodyRef.current.rotation();
+    const angvel = rigidBodyRef.current.angvel();
+    // const { x, y, z } = rigidBodyRef.current.rotation();
+    // const { x: avx, y: avy, z: avz } = rigidBodyRef.current.angvel();
+
     rigidBodyRef.current.applyTorqueImpulse(
-      vec3().set(
-        -reconsil * x - avx * rotational,
-        -reconsil * y - avy * vertical,
-        -reconsil * z - avz * rotational
-      ),
+      vec3(rotation)
+        .multiplyScalar(-reconsil)
+        .add(
+          vec3({
+            x: -rotational,
+            y: -vertical,
+            z: -rotational
+          }).multiply(vec3(angvel))
+        ),
       false
     );
+    // rigidBodyRef.current.applyTorqueImpulse(
+    //   vec3().set(
+    //     -reconsil * x - avx * rotational,
+    //     -reconsil * y - avy * vertical,
+    //     -reconsil * z - avz * rotational
+    //   ),
+    //   false
+    // );
   });
 
   useEffect(() => {

@@ -16,10 +16,11 @@ export const jumpAtom = atom<jumpProps>({
   mass: vec3(),
   velocity: vec3(),
   direction: vec3(),
-  speed: 4,
+  speed: 15,
   rejectSpeed: 4,
-  gravity: 10,
-  maxSpeed: 2.5
+  gravity: 5,
+  // 바꾸기
+  maxSpeed: 3
 });
 
 jumpAtom.debugLabel = 'jump';

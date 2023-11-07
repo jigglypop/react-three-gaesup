@@ -22,7 +22,7 @@ import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
 import useActionsEffect from './stores/animation/useActionsEffect';
-import { colliderAtom } from './stores/collider';
+import { colliderAtom, useColliderInit } from './stores/collider';
 import useControlEffect from './stores/control/useControlEffect';
 import initProps from './stores/initProps';
 import initSetting from './stores/initSetting';
@@ -34,19 +34,14 @@ import CharacterGltf from './utils/CharacterGltf';
 /**
  * ControllerWrapper
  * 컨트롤 정의
- * 줄임말 설명
- * V : Vocity (속도)
- * A : accelation (가속도)
- * v3 : vector3 (벡터 3)
- * Di : direction (방향)
- * D : distance (거리)
- * d : delta (델타)
- * R : Ratio (비율)
  */
 
 export default function Controller(props: Omit<ControllerProps, 'animations'>) {
   const gltf = useLoader(GLTFLoader, props.url);
-  const { animations } = gltf;
+  const { animations, scene } = gltf;
+
+  useColliderInit(scene, props);
+  //console.log( size );
   return (
     <ControllerInner {...{ ...props, animations }}>
       <CharacterGltf {...props} />
@@ -75,9 +70,7 @@ export function ControllerInner(props: ControllerProps) {
   // initDebug();
   /**
    * Camera movement, Camera collision detect
-   *  카메라 이동, 카메라 충돌 감지
    */
-
   calcCamera();
   /**
    * Character current position, Vocity, slope detection
@@ -255,29 +248,6 @@ export function ControllerInner(props: ControllerProps) {
           {props.children}
         </group>
       </RigidBody>
-
-      {/* <RigidBody
-        colliders={false}
-        canSleep={false}
-        ref={rigidBody2Ref}
-        position={cur.P}
-        friction={-0.5}
-        {...props}
-      >
-        <group
-          userData={{ camExcludeCollision: true }}
-          ref={outerGroup2Ref}
-          // position={cur.P}
-        >
-          <Gltf
-            castShadow
-            receiveShadow
-            scale={0.3}
-            // position={[0, -0.55, 0]}
-            src={'./ghost_w_tophat.glb'}
-          />
-        </group>
-      </RigidBody> */}
     </>
   );
 }

@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import { useKeyboardControls } from '@react-three/drei';
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 import { statesAtom } from '../states';
 
 export default function useControlEffect() {
@@ -10,10 +10,10 @@ export default function useControlEffect() {
 
   useEffect(() => {
     const { forward, backward, leftward, rightward } = keyControl;
-    setStates({
+    setStates((states) => ({
       ...states,
       isMoving: forward || backward || leftward || rightward,
       isNotMoving: !forward && !backward && !leftward && !rightward
-    });
+    }));
   }, [keyControl]);
 }

@@ -1,9 +1,17 @@
 'use client';
 
 import Controller from '@gaesup/index';
-import { Environment, Gltf, KeyboardControls } from '@react-three/drei';
+import { Environment, KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Physics, RigidBody } from '@react-three/rapier';
+import { Physics } from '@react-three/rapier';
+import DynamicPlatforms from 'component/DynamicPlatforms';
+import FloatingPlatform from 'component/FloatingPlatform';
+import Floor from 'component/Floor';
+import RigidObjects from 'component/RigidObjects';
+import RoughPlane from 'component/RoughPlane';
+import ShotCube from 'component/ShotCube';
+import Slopes from 'component/Slopes';
+import Steps from 'component/Steps';
 
 export default function Main() {
   const keyboardMap = [
@@ -40,13 +48,13 @@ export default function Main() {
               url={URL}
               options={{ debug: true }}
               character={{
-                scale: 0.3,
-                position: [0, -0.55, 0]
+                scale: 0.3
+                // position: [0, -0.55, 0]
               }}
             />
           </KeyboardControls>
 
-          <RigidBody type='fixed' colliders='trimesh'>
+          {/* <RigidBody type='fixed' colliders='trimesh'>
             <Gltf
               castShadow
               receiveShadow
@@ -54,7 +62,31 @@ export default function Main() {
               scale={0.11}
               src='/fantasy_game_inn2-transformed.glb'
             />
-          </RigidBody>
+          </RigidBody> */}
+
+          {/* Rough plan */}
+          <RoughPlane />
+
+          {/* Slopes and stairs */}
+          <Slopes />
+
+          {/* Small steps */}
+          <Steps />
+
+          {/* Rigid body objects */}
+          <RigidObjects />
+
+          {/* Floating platform */}
+          <FloatingPlatform />
+
+          {/* Dynamic platforms */}
+          <DynamicPlatforms />
+
+          {/* Floor */}
+          <Floor />
+
+          {/* Shoting cubes */}
+          <ShotCube />
         </Physics>
       </Canvas>
     </>

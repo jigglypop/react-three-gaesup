@@ -25,7 +25,7 @@ export default function calcBuoyancy({
   const { isOnTheGround } = useAtomValue(statesAtom);
 
   useFrame(() => {
-    if (ray.rayHit !== null && ray.rayParent) {
+    if (ray.rayHit !== null && ray.rayParent && isOnTheGround) {
       // if (isCanJump && ray.rayParent) {
       const buoyancyForce =
         buoyancy.springConstant * (buoyancy.distance - ray.rayHit.toi) -

@@ -36,12 +36,12 @@ export default function checkOnTheGround({
       undefined,
       capsuleColliderRef.current
     );
-
     if (ray.rayHit && ray.rayHit.toi < buoyancy.distance + hitForgiveness) {
-      setStates({
-        ...states,
-        isOnTheGround: true
-      });
+      // setStates((states) => ({
+      //   ...states,
+      //   isOnTheGround: true
+      // }));
+      states.isOnTheGround = true;
 
       // if (slope.rayHit && slope.currentAngle < 1) {
       //   setStates({
@@ -50,10 +50,11 @@ export default function checkOnTheGround({
       //   });
       // }
     } else {
-      setStates({
-        ...states,
-        isOnTheGround: false
-      });
+      states.isOnTheGround = false;
+      // setStates((states) => ({
+      //   ...states,
+      //   isOnTheGround: false
+      // }));
     }
   });
 }

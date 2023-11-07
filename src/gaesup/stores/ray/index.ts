@@ -1,9 +1,8 @@
 import { RefObject, useEffect } from 'react';
 
 import { Collider } from '@dimforge/rapier3d-compat';
-import { useRapier, vec3 } from '@react-three/rapier';
-import { useAtom, useAtomValue } from 'jotai';
-import { colliderAtom } from '../collider';
+import { useRapier } from '@react-three/rapier';
+import { useAtom } from 'jotai';
 import { rayAtom } from './atom';
 import { rayType } from './type';
 
@@ -16,7 +15,6 @@ export default function useRayInit({
 }) {
   const { rapier, world } = useRapier();
   const [ray, setRay] = useAtom(rayAtom);
-  const collider = useAtomValue(colliderAtom);
   ray.rayCast = new rapier.Ray(ray.rayOrigin, ray.dir);
   ray.rayHit = world.castRay(
     ray.rayCast,
@@ -36,10 +34,5 @@ export default function useRayInit({
         ...Object.assign(ray, rayProp)
       }));
     }
-    setRay((ray) => ({
-      ...ray,
-      originOffset: vec3({ x: 0, y: -collider.halfHeight, z: 0 }),
-      length: collider.radius + 2
-    }));
   }, []);
 }

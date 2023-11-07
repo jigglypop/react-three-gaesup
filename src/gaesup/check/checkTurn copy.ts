@@ -28,7 +28,6 @@ export default function checkTurn({
 
   useFrame(() => {
     if (isMoving) {
-      console.log(slopeRay.currentAngle);
       if (
         // maxAngle = 1
         slopeRay.currentAngle < 1 &&
