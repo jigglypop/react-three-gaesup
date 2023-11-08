@@ -3,14 +3,12 @@ import { RapierRigidBody } from '@react-three/rapier';
 import { RefObject } from 'react';
 import * as THREE from 'three';
 import { ControllerProps } from '../type';
-import useBuoyancyInit from './buoyancy';
+// import useBuoyancyInit from './buoyancy';
 import useCameraInit from './camera';
-import useCurrentInit from './current';
 import { useDampingInit } from './damping';
 import useOptionInit from './options';
 import useRayInit from './ray';
 import useSolpeRayInit from './slopRay';
-import useStandInit from './stand';
 
 export default function initProps(
   props: Omit<ControllerProps, 'children' | 'url'> & {
@@ -22,8 +20,6 @@ export default function initProps(
 ) {
   // options init
   useOptionInit({ optionProp: props.options });
-  // current init
-  useCurrentInit();
   // follow camera init
   useCameraInit({
     cameraProps: props.camera!,
@@ -39,11 +35,5 @@ export default function initProps(
   });
   useSolpeRayInit({
     slopeRayProp: props.slopeRay!
-  });
-  // character state
-  useStandInit();
-  // buoyancy
-  useBuoyancyInit({
-    buoyancyProp: props.buoyancy
   });
 }

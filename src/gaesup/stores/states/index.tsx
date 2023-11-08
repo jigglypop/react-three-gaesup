@@ -1,24 +1,18 @@
-import { atom, useAtom } from 'jotai';
+import { atom } from 'jotai';
 
 export type statesType = {
   isMoving: boolean;
   isNotMoving: boolean;
   isOnTheGround: boolean;
   isOnMoving: boolean;
+  isRotated: boolean;
 };
 
 export const statesAtom = atom<statesType>({
   isMoving: false,
   isNotMoving: false,
   isOnTheGround: false,
-  isOnMoving: false
+  isOnMoving: false,
+  isRotated: false
 });
 statesAtom.debugLabel = 'states';
-
-export default function useStates() {
-  const [states, setStates] = useAtom(statesAtom);
-  return {
-    states,
-    setStates
-  };
-}

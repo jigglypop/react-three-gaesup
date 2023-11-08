@@ -1,5 +1,5 @@
 import { Collider } from '@dimforge/rapier3d-compat';
-import { buoyancyAtom } from '@gaesup/stores/buoyancy';
+import { dampingAtom } from '@gaesup/stores/damping';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { useFrame } from '@react-three/fiber';
@@ -16,7 +16,7 @@ export default function checkOnTheSlope({
   slopeRayOriginRef: RefObject<THREE.Mesh>;
 }) {
   // const { buoyancy } = useContext(ControllerContext);
-  const buoyancy = useAtomValue(buoyancyAtom);
+  const damping = useAtomValue(dampingAtom);
   const slopeRay = useAtomValue(slopeRayAtom);
   const ray = useAtomValue(rayAtom);
   const { world } = useRapier();
@@ -51,7 +51,7 @@ export default function checkOnTheSlope({
     if (
       slopeRay.rayHit &&
       ray.rayHit &&
-      slopeRay.rayHit.toi < buoyancy.distance + 0.5
+      slopeRay.rayHit.toi < damping.distance + 0.5
     ) {
       // if (isCanJump) {
       //   // Round the slope angle to 2 decimal places

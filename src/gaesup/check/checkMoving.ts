@@ -1,11 +1,11 @@
+import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { statesAtom } from '../states';
 
-export default function useControlEffect() {
+export default function checkMoving() {
   const [_, getKeys] = useKeyboardControls();
-  const [states, setStates] = useAtom(statesAtom);
+  const setStates = useSetAtom(statesAtom);
   const keyControl = getKeys();
 
   useEffect(() => {

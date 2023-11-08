@@ -1,5 +1,5 @@
 import { euler, quat, vec3 } from '@react-three/rapier';
-import { atom, useAtom } from 'jotai';
+import { atom } from 'jotai';
 import * as THREE from 'three';
 
 export type currentProps = {
@@ -19,11 +19,3 @@ export const currentAtom = atom<currentProps>({
 });
 
 currentAtom.debugLabel = 'current';
-
-export default function useCurrentInit() {
-  const [current, setCurrent] = useAtom(currentAtom);
-  return {
-    current,
-    setCurrent
-  };
-}

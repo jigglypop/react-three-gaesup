@@ -3,7 +3,6 @@ import { atom, useAtom } from 'jotai';
 import * as THREE from 'three';
 
 export type jumpProps = {
-  mass: THREE.Vector3;
   velocity: THREE.Vector3;
   direction: THREE.Vector3;
   speed: number;
@@ -13,13 +12,11 @@ export type jumpProps = {
 };
 
 export const jumpAtom = atom<jumpProps>({
-  mass: vec3(),
   velocity: vec3(),
   direction: vec3(),
-  speed: 15,
+  speed: 5,
   rejectSpeed: 4,
   gravity: 5,
-  // 바꾸기
   maxSpeed: 3
 });
 

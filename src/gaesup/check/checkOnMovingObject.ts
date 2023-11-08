@@ -8,7 +8,7 @@ import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
 import { useAtom, useAtomValue } from 'jotai';
 
-export default function checkOnMove() {
+export default function checkOnMovingObject() {
   /**
    * Ray detect if on rigid body or dynamic platform, then apply the linear Vocity and angular Vocity to character
    * 캐릭터가 움직이는 플랫폼 위에 있는지 감지합니다
@@ -19,7 +19,6 @@ export default function checkOnMove() {
   const damping = useAtomValue(dampingAtom);
   const stand = useAtomValue(standAtom);
   const move = useAtomValue(moveAtom);
-
   const [states, setStates] = useAtom(statesAtom);
 
   const { isNotMoving } = states;
@@ -30,29 +29,25 @@ export default function checkOnMove() {
         stand.position.set(rayOrigin.x, rayOrigin.y - rayHit.toi, rayOrigin.z);
         const rayType = rayParent.bodyType();
         const rayMass = rayParent.mass();
-
         if ((rayType === 0 || rayType === 2) && rayMass > 0.5) {
-          setStates({
-            ...states,
-            isOnMoving: true
-          });
-
+          states.isOnMoving = true;
           diCToO.copy(current.position).sub(vec3(rayParent!.translation()));
           const moVinV = vec3(rayParent!.linvel());
           const moveAngV = vec3(rayParent!.angvel());
-
+          const crossVector = vec3().crossVectors(moveAngV, diCToO);
           move.velocity.set(
-            moVinV.x + move.velocityToLinev.crossVectors(moveAngV, diCToO).x,
+            moVinV.x + crossVector.x,
             moVinV.y,
-            moVinV.z + move.velocityToLinev.crossVectors(moveAngV, diCToO).z
+            moVinV.z + crossVector.z
           );
 
+          const { dragXZ, dragY } = damping;
           if (rayType === 0) {
             if (isNotMoving) {
               move.dragForce.set(
-                (current.velocity.x - move.velocity.x) * damping.drag,
+                (current.velocity.x - move.velocity.x) * dragXZ,
                 0,
-                (current.velocity.z - move.velocity.z) * damping.drag
+                (current.velocity.z - move.velocity.z) * dragXZ
               );
             } else {
               move.dragForce.copy(move.impulse).negate();
@@ -64,10 +59,7 @@ export default function checkOnMove() {
             );
           }
         } else {
-          setStates({
-            ...states,
-            isOnMoving: false
-          });
+          states.isOnMoving = false;
           move.velocity.set(0, 0, 0);
         }
       }

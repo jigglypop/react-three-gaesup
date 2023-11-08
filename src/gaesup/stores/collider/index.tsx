@@ -35,13 +35,16 @@ export function useColliderInit(
   }
 
   if (size.x !== 0 && size.y !== 0 && size.z !== 0) {
-    const halfHeight = size.y / 4;
-    const radius = size.x / 2;
+    const height = size.y / 2;
+    const halfHeight = height / 2;
+    const diameter = Math.max(size.x, size.z);
+    const radius = diameter / 2;
+    const ratio = height / (height + radius);
     setcollider({
-      halfHeight,
-      radius,
-      diameter: radius * 2,
-      height: halfHeight * 2
+      height: height * ratio,
+      halfHeight: halfHeight * ratio,
+      diameter,
+      radius
     });
   }
   return { collider, setcollider };

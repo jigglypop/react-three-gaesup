@@ -2,7 +2,6 @@ import { currentCameraAtom } from '@gaesup/stores/camera/atom';
 import useCameraDetect from '@gaesup/stores/camera/useCameraDetect';
 import { currentAtom } from '@gaesup/stores/current';
 import { useFrame } from '@react-three/fiber';
-import { vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
 
 /**
@@ -17,11 +16,7 @@ export default function calcCamera() {
   const current = useAtomValue(currentAtom);
   useFrame((state, delta) => {
     currentCamera.pivot.position.lerp(
-      vec3({
-        x: current.position.x,
-        y: current.position.y,
-        z: current.position.z
-      }),
+      current.position,
       1 - Math.exp(-currentCamera.camFollow * delta)
     );
     state.camera.lookAt(currentCamera.pivot.position);

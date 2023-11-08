@@ -9,21 +9,20 @@ import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import checkOnMove from './check/checkOnMove';
+import checkIsRotate from './check/checkIsRotate';
+import checkMoving from './check/checkMoving';
+import checkOnMovingObject from './check/checkOnMovingObject';
 import checkOnTheGround from './check/checkOnTheGround';
 import checkOnTheSlope from './check/checkOnTheSlope';
-import checkTurn from './check/checkTurn';
 import calcAccelaration from './physics/accelaration';
-import calcBuoyancy from './physics/buoyancy';
 import calcCamera from './physics/camera';
 import calcDirection from './physics/direction';
-import calcDragForce from './physics/dragForce';
+import calcImpulse from './physics/impulse';
 import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
 import useActionsEffect from './stores/animation/useActionsEffect';
 import { colliderAtom, useColliderInit } from './stores/collider';
-import useControlEffect from './stores/control/useControlEffect';
 import initProps from './stores/initProps';
 import initSetting from './stores/initSetting';
 import { rayAtom } from './stores/ray/atom';
@@ -55,7 +54,6 @@ export function ControllerInner(props: ControllerProps) {
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
 
-  useControlEffect();
   // init props
   initProps({
     ...props,
@@ -66,117 +64,48 @@ export function ControllerInner(props: ControllerProps) {
   });
 
   initSetting();
+  // /**
+  //  * check turn
+  //  * 캐릭터 방향 감지
+  //  * @param rigidBodyRef
+  //  */
+  // checkTurn({
+  //   rigidBodyRef
+  // });
 
-  // initDebug();
-  /**
-   * Camera movement, Camera collision detect
-   */
-  calcCamera();
-  /**
-   * Character current position, Vocity, slope detection
-   * 캐릭터 현재 위치, 속도, 방향 감지
-   * @param outerGroupRef
-   */
-  calcTurn({
-    outerGroupRef
-  });
-
-  /**
-   * Calculate character direction
-   * 캐릭터 방향 계산
-   * @param rigidBodyRef
-   * @param cam
-   */
-  calcDirection({
-    rigidBodyRef
-  });
-
-  /**
-   * check turn
-   * 캐릭터 방향 감지
-   * @param outerGroupRef
-   * @param rigidBodyRef
-   */
-  checkTurn({
-    outerGroupRef,
-    rigidBodyRef
-  });
-
-  /**
-   * Calculate character direction
-   * 캐릭터 방향 계산
-   * @param outerGroupRef
-   */
-
-  calcAccelaration({
-    outerGroupRef
-  });
-
-  /**
-   * Jump impulse
-   * 점프 충격량 계산
-   * @param rigidBodyRef
-   * @param outerGroupRef
-   */
-  calcJump({
-    rigidBodyRef
-  });
-  /**
-   * Ray casting detect if on ground
-   * 캐릭터가 땅 위에 있는지 감지합니다
-   * @param capsuleColliderRef
-   */
   checkOnTheGround({
     capsuleColliderRef
   });
-  /**
-   * Ray detect if on slope
-   * 캐릭터가 경사면 위에 있는지 감지합니다
-   * @param slopeRayOriginRef
-   * @param capsuleColliderRef
-   */
 
   checkOnTheSlope({
     slopeRayOriginRef,
     capsuleColliderRef
   });
-  /**
-   * Ray detect if on rigid body or dynamic platform, then apply the linear Vocity and angular Vocity to character
-   * 캐릭터가 움직이는 플랫폼 위에 있는지 감지합니다
-   */
-  checkOnMove();
-  /**
-   * Apply buoyancy force
-   * 부력을 계산합니다
-   * @param rigidBodyRef
-   */
-  calcBuoyancy({
-    rigidBodyRef
-  });
-  /**
-   * Apply drag force
-   * 항력을 계산합니다
-   * @param rigidBodyRef
-   */
-  calcDragForce({
-    rigidBodyRef
-  });
-  /**
-   * Apply stabilize force to the character
-   * 스테빌라이징
-   * @param rigidBodyRef
-   */
-  stabilizing({ rigidBodyRef });
-  /**
-   * Actions for managing animations
-   * 애니메이션을 관리하기 위한 액션들
-   * @param outerGroupRef
-   * @param animations
-   */
-  useActionsEffect({ outerGroupRef, animations: props.animations });
 
-  // const ref = useRef<MeshLineGeometry>(null);
-  // console.log(ref);
+  checkOnMovingObject();
+  checkMoving();
+  checkIsRotate({
+    outerGroupRef
+  });
+
+  calcCamera();
+  calcTurn({
+    outerGroupRef
+  });
+  calcDirection({
+    rigidBodyRef
+  });
+  calcAccelaration({
+    outerGroupRef
+  });
+  calcJump({
+    rigidBodyRef
+  });
+  calcImpulse({
+    rigidBodyRef
+  });
+  stabilizing({ rigidBodyRef });
+  useActionsEffect({ outerGroupRef, animations: props.animations });
 
   const rigidBody2Ref = useRef<RapierRigidBody>(null);
   const capsuleCollider2Ref = useRef<Collider>(null);
@@ -219,17 +148,12 @@ export function ControllerInner(props: ControllerProps) {
         canSleep={false}
         ref={rigidBodyRef}
         position={props.position || [0, 5, 0]}
-        friction={props.friction || -0.5}
+        // friction={props.friction || -0.5}
         {...props}
       >
         <CapsuleCollider
           ref={capsuleColliderRef}
-          args={[collider.halfHeight, collider.radius]}
-          position={[
-            rays.originOffset.x,
-            rays.originOffset.y,
-            rays.originOffset.z + slopeRays.originOffset.z
-          ]}
+          args={[collider.height, collider.radius]}
         />
         <group ref={outerGroupRef} userData={{ camExcludeCollision: true }}>
           <mesh
