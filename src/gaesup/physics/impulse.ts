@@ -1,12 +1,10 @@
 import { currentAtom } from '@gaesup/stores/current';
 import { dampingAtom } from '@gaesup/stores/damping';
 import { moveAtom } from '@gaesup/stores/move';
-import { ratioAtom } from '@gaesup/stores/ratio';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { standAtom } from '@gaesup/stores/stand';
 import { statesAtom } from '@gaesup/stores/states';
-import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
@@ -19,16 +17,12 @@ export default function calcImpulse({
 }) {
   const ray = useAtomValue(rayAtom);
   const damping = useAtomValue(dampingAtom);
-  // const buoyancy = useAtomValue(buoyancyAtom);
   const stand = useAtomValue(standAtom);
   const slopeRay = useAtomValue(slopeRayAtom);
-  const { isMoving, isRotated } = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
-  const [_, getKeys] = useKeyboardControls();
-  const { run } = getKeys();
-  const ratio = useAtomValue(ratioAtom);
   const move = useAtomValue(moveAtom);
-  const { isNotMoving, isOnMoving, isOnTheGround } = useAtomValue(statesAtom);
+  const { isNotMoving, isOnMoving, isOnTheGround, isMoving, isRotated } =
+    useAtomValue(statesAtom);
 
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;

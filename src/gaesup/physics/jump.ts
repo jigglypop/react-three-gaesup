@@ -1,5 +1,6 @@
 import { currentAtom } from '@gaesup/stores/current';
 import { jumpAtom } from '@gaesup/stores/jump';
+import { moveAtom } from '@gaesup/stores/move';
 import { ratioAtom } from '@gaesup/stores/ratio';
 import { rayAtom } from '@gaesup/stores/ray/atom';
 import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
@@ -25,6 +26,7 @@ export default function calcJump({
   const { jump: isOnJump, run } = getKeys();
   const jump = useAtomValue(jumpAtom);
   const states = useAtomValue(statesAtom);
+  const move = useAtomValue(moveAtom);
   // const { isCanJump } = useAtomValue(statesAtom);
   useFrame(() => {
     // Jump impulse
@@ -47,8 +49,8 @@ export default function calcJump({
         false
       );
       // Apply jump force downward to the standing platform
-      ray.mass.y *= jump.gravity;
-      ray.rayParent?.applyImpulseAtPoint(ray.mass, stand.position, true);
+      move.mass.y *= jump.gravity;
+      ray.rayParent?.applyImpulseAtPoint(move.mass, stand.position, true);
     }
   });
 }

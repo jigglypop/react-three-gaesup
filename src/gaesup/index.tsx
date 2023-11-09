@@ -3,10 +3,12 @@ import { useLoader } from '@react-three/fiber';
 import {
   CapsuleCollider,
   RapierRigidBody,
-  RigidBody
+  RigidBody,
+  useRapier,
+  vec3
 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import checkIsRotate from './check/checkIsRotate';
@@ -23,6 +25,7 @@ import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
 import useActionsEffect from './stores/animation/useActionsEffect';
 import { colliderAtom, useColliderInit } from './stores/collider';
+import { currentAtom } from './stores/current';
 import initProps from './stores/initProps';
 import initSetting from './stores/initSetting';
 import { rayAtom } from './stores/ray/atom';
@@ -37,7 +40,16 @@ import CharacterGltf from './utils/CharacterGltf';
 
 export default function Controller(props: Omit<ControllerProps, 'animations'>) {
   const gltf = useLoader(GLTFLoader, props.url);
+  const raycaster = new THREE.Raycaster();
   const { animations, scene } = gltf;
+  // scene.add(
+  //   new THREE.ArrowHelper(
+  //     raycaster.ray.direction,
+  //     raycaster.ray.origin,
+  //     300,
+  //     0xff0000
+  //   )
+  // );
 
   useColliderInit(scene, props);
   //console.log( size );
@@ -53,6 +65,19 @@ export function ControllerInner(props: ControllerProps) {
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
+
+  const { rapier } = useRapier();
+  const rayOrigin = useMemo(() => vec3(), []);
+  const rayCast = new rapier.Ray(rayOrigin, rayDir);
+  let rayHit: any = null;
+
+  const groundRay = useMemo(() => {
+    return {
+      origin: vec3(),
+      dir: vec3({ x: 0, y: -1, z: 0 }),
+      maxLen: 0.5
+    };
+  }, []);
 
   // init props
   initProps({
@@ -132,6 +157,7 @@ export function ControllerInner(props: ControllerProps) {
   const rays = useAtomValue(rayAtom);
   const slopeRays = useAtomValue(slopeRayAtom);
   const collider = useAtomValue(colliderAtom);
+  const current = useAtomValue(currentAtom);
 
   //   useEffect(() => {
   //     const a = vec3({ x: 1, y: 0, z: 1 });
@@ -154,8 +180,14 @@ export function ControllerInner(props: ControllerProps) {
         <CapsuleCollider
           ref={capsuleColliderRef}
           args={[collider.height, collider.radius]}
-        />
+        ></CapsuleCollider>
+
         <group ref={outerGroupRef} userData={{ camExcludeCollision: true }}>
+          <mesh>
+            <arrowHelper
+              args={[vec3().set(0, -1, 0), vec3().set(0, -0.3, 0)]}
+            />
+          </mesh>
           <mesh
             position={[
               rays.originOffset.x,

@@ -3,7 +3,6 @@ import { RapierRigidBody } from '@react-three/rapier';
 import { RefObject } from 'react';
 import * as THREE from 'three';
 import { ControllerProps } from '../type';
-// import useBuoyancyInit from './buoyancy';
 import useCameraInit from './camera';
 import { useDampingInit } from './damping';
 import useOptionInit from './options';

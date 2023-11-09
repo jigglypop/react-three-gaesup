@@ -4,13 +4,22 @@ import * as THREE from 'three';
 
 export type rayPropsType = {
   springDir: THREE.Vector3;
-  mass: THREE.Vector3;
   rayOrigin: THREE.Vector3;
   rayHit: RayColliderToi | null;
   rayParent?: RapierRigidBody | null | undefined;
   rayCast: Ray | null;
   originOffset: THREE.Vector3;
   dir: THREE.Vector3;
+};
+
+export type groundRayType = {
+  rayOrigin: THREE.Vector3;
+  rayHit: RayColliderToi | null;
+  rayParent?: RapierRigidBody | null | undefined;
+  rayCast: Ray | null;
+  offset: THREE.Vector3;
+  dir: THREE.Vector3;
+  length: number;
 };
 
 export type rayPresetType = {

@@ -20,6 +20,7 @@ export default function checkOnTheGround({
 }: {
   capsuleColliderRef: RefObject<Collider>;
 }) {
+  // const ray = useAtomValue(rayAtom);
   const ray = useAtomValue(rayAtom);
   const current = useAtomValue(currentAtom);
   const damping = useAtomValue(dampingAtom);
@@ -28,7 +29,6 @@ export default function checkOnTheGround({
   const { world } = useRapier();
   useFrame(() => {
     const { originOffset, hitForgiveness } = ray;
-
     ray.rayOrigin.addVectors(current.position, vec3(originOffset));
     if (!ray.rayHit || !ray.rayCast || !capsuleColliderRef.current) return null;
     ray.rayHit = world.castRay(
@@ -40,14 +40,7 @@ export default function checkOnTheGround({
       capsuleColliderRef.current
     );
     if (ray.rayHit && ray.rayHit.toi < damping.distance + hitForgiveness) {
-      // setStates((states) => ({
-      //   ...states,
-      //   isOnTheGround: true
-      // }));
       states.isOnTheGround = true;
-      // if (slopeRay.rayHit && slopeRay.currentAngle < 1) {
-      //   states.isOnTheGround = true;
-      // }
     } else {
       states.isOnTheGround = false;
     }

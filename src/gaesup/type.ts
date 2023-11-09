@@ -1,7 +1,6 @@
 import { GroupProps } from '@react-three/fiber';
 import { RigidBodyProps } from '@react-three/rapier';
 import { ReactNode } from 'react';
-import { buoyancyType } from './stores/buoyancy/type';
 import { cameraPropsType, cameraRayPropsType } from './stores/camera/type';
 import { dampingType } from './stores/damping';
 import { optionType } from './stores/options/type';
@@ -30,7 +29,6 @@ export interface ControllerProps extends RigidBodyProps {
   camera?: cameraPropsType;
   cameraRay?: cameraRayPropsType;
   ray?: rayType;
-  buoyancy?: buoyancyType;
   slopeRay?: slopeRayType;
   props?: RigidBodyProps;
   options?: optionType;

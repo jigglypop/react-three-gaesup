@@ -15,8 +15,6 @@ export type slopeRayPropType = {
   angle: number;
   length: number;
   maxAngle: number;
-  upExtraForce: number;
-  downExtraForce: number;
 };
 
 export type slopeRayType = slopeRayPresetType & slopeRayPropType;

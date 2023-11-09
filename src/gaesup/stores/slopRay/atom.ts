@@ -12,8 +12,6 @@ export const slopeRayAtom = atom<slopeRayType>({
   dir: vec3({ x: 0, y: -1, z: 0 }),
   angle: 0,
   maxAngle: 1,
-  upExtraForce: 0.1,
-  downExtraForce: 0.2,
   originOffset: vec3({ x: 0, y: 0, z: colliderAtom.init.radius - 0.03 }),
   length: colliderAtom.init.radius + 3
 });
