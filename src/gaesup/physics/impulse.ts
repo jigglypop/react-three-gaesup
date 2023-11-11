@@ -1,3 +1,4 @@
+import { colliderAtom } from '@gaesup/stores/collider';
 import { currentAtom } from '@gaesup/stores/current';
 import { dampingAtom } from '@gaesup/stores/damping';
 import { moveAtom } from '@gaesup/stores/move';
@@ -21,6 +22,7 @@ export default function calcImpulse({
   const slopeRay = useAtomValue(slopeRayAtom);
   const current = useAtomValue(currentAtom);
   const move = useAtomValue(moveAtom);
+  const collider = useAtomValue(colliderAtom);
   const { isNotMoving, isOnMoving, isOnTheGround, isMoving, isRotated } =
     useAtomValue(statesAtom);
 
@@ -35,7 +37,7 @@ export default function calcImpulse({
           isNotMoving ? current.velocity[xz] * dragXZ : 0;
         // calc up impulse (Y)
         const K = damping.springConstant;
-        const dY = damping.distance - ray.rayHit.toi;
+        const dY = collider.radius + 0.3 - ray.rayHit.toi;
         const sY = rigidBodyRef.current.linvel().y;
         const impulseY = K * dY - dragY * sY;
         rigidBodyRef.current.applyImpulse(

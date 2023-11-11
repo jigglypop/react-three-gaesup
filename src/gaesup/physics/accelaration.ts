@@ -27,7 +27,6 @@ export default function calcAccelaration({
     const { velocity: currentV, reverseVelocity: reverseV } = current;
 
     direction.applyQuaternion(outerGroupRef.current.quaternion);
-    // move.VinDi.copy(mV).projectOnVector(di).multiply(di);
     // projection of velocity on direction
     const projectedV = movingV
       .clone()

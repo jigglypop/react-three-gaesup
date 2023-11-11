@@ -2,7 +2,6 @@ import { Collider } from '@dimforge/rapier3d-compat';
 import { currentAtom } from '@gaesup/stores/current';
 import { dampingAtom } from '@gaesup/stores/damping';
 import { rayAtom } from '@gaesup/stores/ray/atom';
-import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
 import { statesAtom } from '@gaesup/stores/states';
 import { useFrame } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
@@ -24,7 +23,6 @@ export default function checkOnTheGround({
   const ray = useAtomValue(rayAtom);
   const current = useAtomValue(currentAtom);
   const damping = useAtomValue(dampingAtom);
-  const slopeRay = useAtomValue(slopeRayAtom);
   const [states, setStates] = useAtom(statesAtom);
   const { world } = useRapier();
   useFrame(() => {

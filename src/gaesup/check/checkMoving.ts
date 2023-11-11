@@ -1,19 +1,16 @@
 import { statesAtom } from '@gaesup/stores/states';
 import { useKeyboardControls } from '@react-three/drei';
-import { useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
 
 export default function checkMoving() {
   const [_, getKeys] = useKeyboardControls();
-  const setStates = useSetAtom(statesAtom);
+  const states = useAtomValue(statesAtom);
   const keyControl = getKeys();
 
-  useEffect(() => {
+  useFrame(() => {
     const { forward, backward, leftward, rightward } = keyControl;
-    setStates((states) => ({
-      ...states,
-      isMoving: forward || backward || leftward || rightward,
-      isNotMoving: !forward && !backward && !leftward && !rightward
-    }));
-  }, [keyControl]);
+    states.isMoving = forward || backward || leftward || rightward;
+    states.isNotMoving = !states.isMoving;
+  });
 }
