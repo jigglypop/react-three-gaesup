@@ -1,14 +1,9 @@
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
-import { useEffect, useRef, useMemo } from "react";
-import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
-import type { RayColliderToi } from "@dimforge/rapier3d-compat";
+import type { RayColliderToi } from '@dimforge/rapier3d-compat';
+import { Text } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { CuboidCollider, RigidBody, useRapier } from '@react-three/rapier';
+import { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
 
 export default function FloatingPlatform() {
   // Preset
@@ -185,9 +180,9 @@ export default function FloatingPlatform() {
       >
         <Text
           scale={0.5}
-          color="black"
+          color='black'
           maxWidth={10}
-          textAlign="center"
+          textAlign='center'
           position={[0, 2.5, 0]}
         >
           Floating Platform push to move
@@ -195,7 +190,7 @@ export default function FloatingPlatform() {
         <CuboidCollider args={[2.5, 0.1, 2.5]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
-          <meshStandardMaterial color={"lightsteelblue"} />
+          <meshStandardMaterial color={'lightsteelblue'} />
         </mesh>
       </RigidBody>
 
@@ -208,9 +203,9 @@ export default function FloatingPlatform() {
       >
         <Text
           scale={0.5}
-          color="black"
+          color='black'
           maxWidth={10}
-          textAlign="center"
+          textAlign='center'
           position={[0, 2.5, 0]}
         >
           Floating Platform push to rotate
@@ -218,7 +213,7 @@ export default function FloatingPlatform() {
         <CuboidCollider args={[2.5, 0.1, 2.5]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
-          <meshStandardMaterial color={"lightsteelblue"} />
+          <meshStandardMaterial color={'lightsteelblue'} />
         </mesh>
       </RigidBody>
 
@@ -231,9 +226,9 @@ export default function FloatingPlatform() {
       >
         <Text
           scale={0.5}
-          color="black"
+          color='black'
           maxWidth={10}
-          textAlign="center"
+          textAlign='center'
           position={[0, 2.5, 0]}
         >
           Floating & Moving Platform (rigidbody)
@@ -241,7 +236,7 @@ export default function FloatingPlatform() {
         <CuboidCollider args={[1.25, 0.1, 1.25]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[2.5, 0.2, 2.5]} />
-          <meshStandardMaterial color={"lightsteelblue"} />
+          <meshStandardMaterial color={'lightsteelblue'} />
         </mesh>
       </RigidBody>
     </>

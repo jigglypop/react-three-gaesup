@@ -4,11 +4,10 @@ import {
   CapsuleCollider,
   RapierRigidBody,
   RigidBody,
-  useRapier,
   vec3
 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import checkIsRotate from './check/checkIsRotate';
@@ -66,19 +65,6 @@ export function ControllerInner(props: ControllerProps) {
   const outerGroupRef = useRef<THREE.Group>(null);
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
 
-  const { rapier } = useRapier();
-  const rayOrigin = useMemo(() => vec3(), []);
-  const rayCast = new rapier.Ray(rayOrigin, rayDir);
-  let rayHit: any = null;
-
-  const groundRay = useMemo(() => {
-    return {
-      origin: vec3(),
-      dir: vec3({ x: 0, y: -1, z: 0 }),
-      maxLen: 0.5
-    };
-  }, []);
-
   // init props
   initProps({
     ...props,
@@ -89,14 +75,6 @@ export function ControllerInner(props: ControllerProps) {
   });
 
   initSetting();
-  // /**
-  //  * check turn
-  //  * 캐릭터 방향 감지
-  //  * @param rigidBodyRef
-  //  */
-  // checkTurn({
-  //   rigidBodyRef
-  // });
 
   checkOnTheGround({
     capsuleColliderRef

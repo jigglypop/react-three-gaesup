@@ -42,7 +42,7 @@ export default function Main() {
           <orthographicCamera attach='shadow-camera' args={[20, 20, 20, -20]} />
         </directionalLight>
         <ambientLight intensity={0.2} />
-        <Physics timeStep='vary' colliders='trimesh' debug>
+        <Physics debug>
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
@@ -53,16 +53,6 @@ export default function Main() {
               }}
             />
           </KeyboardControls>
-
-          {/* <RigidBody type='fixed' colliders='trimesh'>
-            <Gltf
-              castShadow
-              receiveShadow
-              rotation={[-Math.PI / 2, 0, Math.PI]}
-              scale={0.11}
-              src='/fantasy_game_inn2-transformed.glb'
-            />
-          </RigidBody> */}
 
           {/* Rough plan */}
           <RoughPlane />

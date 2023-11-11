@@ -1,4 +1,4 @@
-import { fixed, flex_relative } from '@styles/recipe/index.css';
+import { fixed } from '@styles/recipe/index.css';
 import { vars } from '@styles/theme.css';
 import { style } from '@vanilla-extract/css';
 

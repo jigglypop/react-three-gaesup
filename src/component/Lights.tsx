@@ -1,6 +1,6 @@
-import { useHelper } from "@react-three/drei";
-import { useRef } from "react";
-import * as THREE from "three";
+import { useHelper } from '@react-three/drei';
+import { useRef } from 'react';
+import * as THREE from 'three';
 
 export default function Lights() {
   const directionalLightRef = useRef<THREE.DirectionalLight>();
@@ -21,7 +21,7 @@ export default function Lights() {
         shadow-camera-right={50}
         shadow-camera-bottom={-50}
         shadow-camera-left={-50}
-        name="followLight"
+        name='followLight'
         ref={directionalLightRef}
       />
       <ambientLight intensity={0.5} />
