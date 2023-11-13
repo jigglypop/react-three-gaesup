@@ -1,3 +1,4 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
@@ -12,11 +13,12 @@ export default function calcJump(prop: propType) {
     keyControl,
     jump,
     move,
-    current,
     constant
   } = prop;
   const { jump: isOnJump } = keyControl;
   const { isOnTheGround } = states;
+  const current = useAtomValue(currentAtom);
+
   useFrame(() => {
     // Jump impulse
     const { jumpAccelY, jumpSpeed } = constant;

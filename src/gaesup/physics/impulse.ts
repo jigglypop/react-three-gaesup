@@ -1,13 +1,16 @@
 import { colliderAtom } from '@gaesup/stores/collider';
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
 import { isValidOrZero } from '@gaesup/utils/vector';
 import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 export default function calcImpulse(prop: propType) {
-  const { rigidBodyRef, slopeRay, groundRay, move, constant, current } = prop;
+  const { rigidBodyRef, slopeRay, groundRay, move, constant } = prop;
+  const [current, setCurrent] = useAtom(currentAtom);
+
   const states = useAtomValue(statesAtom);
   const collider = useAtomValue(colliderAtom);
   const { isNotMoving, isOnMoving, isOnTheGround, isMoving, isRotated } =
@@ -100,5 +103,8 @@ export default function calcImpulse(prop: propType) {
     }
     current.position = vec3(rigidBodyRef.current.translation());
     current.velocity = vec3(rigidBodyRef.current.linvel());
+    setCurrent((current) => ({
+      ...current
+    }));
   });
 }

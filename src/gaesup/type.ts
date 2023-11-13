@@ -128,7 +128,7 @@ export type propType = {
   cameraRay: cameraRayType;
   jump: jumpInnerType;
   move: moveType;
-  current: currentType;
+  // current: currentType;
   constant: constantType;
   capsuleColliderRef: RefObject<Collider>;
   rigidBodyRef: RefObject<RapierRigidBody>;

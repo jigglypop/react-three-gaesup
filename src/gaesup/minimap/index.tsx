@@ -1,12 +1,15 @@
 'use client';
 
+import { currentAtom } from '@gaesup/stores/current';
 import { minimapAtom } from '@gaesup/stores/minimap';
 import { useAtomValue } from 'jotai';
 import { assignInWith } from 'lodash';
 import * as style from './style.css';
 
-export default function MiniMap() {
+export function MiniMapInner() {
   const minimap = useAtomValue(minimapAtom);
+  const current = useAtomValue(currentAtom);
+
   return (
     <div className={style.minimap}>
       <div className={style.minimapOuter}></div>
@@ -19,7 +22,9 @@ export default function MiniMap() {
               style={assignInWith({
                 width: `${obj.size.x}rem`,
                 height: `${obj.size.z}rem`,
-                transform: `translate(${-obj.center.x}rem, ${-obj.center.z}rem)`
+                transform: `translate(${
+                  -obj.center.x + current.position.x * 0.5
+                }rem, ${-obj.center.z + current.position.z * 0.5}rem)`
               })}
             >
               <div className={style.text}>{obj.text}</div>
@@ -30,4 +35,8 @@ export default function MiniMap() {
       </div>
     </div>
   );
+}
+
+export default function MiniMap() {
+  return <MiniMapInner />;
 }

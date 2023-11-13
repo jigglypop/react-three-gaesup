@@ -10,4 +10,5 @@ export const currentAtom = atom<currentType>({
   quat: quat(),
   euler: euler()
 });
+
 currentAtom.debugPrivate = true;

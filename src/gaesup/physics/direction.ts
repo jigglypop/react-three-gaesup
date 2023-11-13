@@ -1,11 +1,14 @@
 // import { currentCameraAtom } from '@gaesup/stores/camera/atom';
+import { currentAtom } from '@gaesup/stores/current';
 import { joyStickOriginAtom } from '@gaesup/stores/joystick';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 
 export default function calcDirection(prop: propType) {
-  const { rigidBodyRef, keyControl, current, options, cameraRay } = prop;
+  const { rigidBodyRef, keyControl, options, cameraRay } = prop;
+  const current = useAtomValue(currentAtom);
+
   // const currentCamera = useAtomValue(currentCameraAtom);
   const joystick = useAtomValue(joyStickOriginAtom);
   const { forward, backward, leftward, rightward } = keyControl;

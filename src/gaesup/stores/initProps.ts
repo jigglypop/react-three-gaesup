@@ -1,5 +1,5 @@
 import { useKeyboardControls } from '@react-three/drei';
-import { euler, quat, useRapier, vec3 } from '@react-three/rapier';
+import { useRapier, vec3 } from '@react-three/rapier';
 import { useCallback, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { ControllerInitProps } from '..';
@@ -108,16 +108,16 @@ export default function initProps(props: ControllerInitProps) {
     };
   }, []);
 
-  const current = useMemo(() => {
-    return {
-      position: vec3(),
-      standPosition: vec3(),
-      velocity: vec3(),
-      reverseVelocity: vec3(),
-      quat: quat(),
-      euler: euler()
-    };
-  }, []);
+  // const current = useMemo(() => {
+  //   return {
+  //     position: vec3(),
+  //     standPosition: vec3(),
+  //     velocity: vec3(),
+  //     reverseVelocity: vec3(),
+  //     quat: quat(),
+  //     euler: euler()
+  //   };
+  // }, []);
 
   let options: optionsType = useMemo(() => {
     return {
@@ -150,7 +150,7 @@ export default function initProps(props: ControllerInitProps) {
     groundRay,
     jump,
     move,
-    current,
+    // current,
     constant,
     cameraRay,
     capsuleColliderRef: props.capsuleColliderRef,

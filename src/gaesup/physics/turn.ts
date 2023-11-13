@@ -1,8 +1,11 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
 
 export default function calcTurn(prop: propType) {
-  const { outerGroupRef, constant, current } = prop;
+  const current = useAtomValue(currentAtom);
+  const { outerGroupRef, constant } = prop;
   const { turnSpeed } = constant;
   useFrame((_, delta) => {
     if (!outerGroupRef || !outerGroupRef.current) return null;

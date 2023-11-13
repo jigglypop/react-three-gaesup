@@ -1,16 +1,19 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 export default function checkOnMovingObject(prop: propType) {
   /**
    * Ray detect if on rigid body or dynamic platform, then apply the linear Vocity and angular Vocity to character
    */
   const states = useAtomValue(statesAtom);
+  const [current, setCurrent] = useAtom(currentAtom);
+
   const subDirection = vec3();
-  const { groundRay, move, current } = prop;
+  const { groundRay, move } = prop;
   const { dragDamping } = move;
   const { isNotMoving } = states;
   useFrame(() => {

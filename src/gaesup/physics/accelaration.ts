@@ -1,3 +1,4 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
@@ -6,9 +7,10 @@ import { useAtomValue } from 'jotai';
 
 export default function calcAccelaration(prop: propType) {
   const states = useAtomValue(statesAtom);
-  const { outerGroupRef, move, constant, current } = prop;
+  const { outerGroupRef, move, constant } = prop;
   const { isMoving, isRunning } = states;
   // const { run } = keyControl;
+  const current = useAtomValue(currentAtom);
 
   useFrame(() => {
     if (!outerGroupRef || !outerGroupRef.current || !isMoving) return null;

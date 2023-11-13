@@ -1,7 +1,9 @@
 // import { currentCameraAtom } from '@gaesup/stores/camera/atom';
 import useCameraDetect from '@gaesup/stores/camera/useCameraDetect';
+import { currentAtom } from '@gaesup/stores/current';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
+import { useAtomValue } from 'jotai';
 
 /**
  * Camera movement
@@ -10,7 +12,9 @@ import { useFrame } from '@react-three/fiber';
  *
  */
 export default function calcCamera(prop: propType) {
-  const { current, cameraRay, constant } = prop;
+  const { cameraRay, constant } = prop;
+  const current = useAtomValue(currentAtom);
+
   // const currentCamera = useAtomValue(currentCameraAtom);
   const { cameraCollisionDetect } = useCameraDetect(prop);
   useFrame((state, delta) => {

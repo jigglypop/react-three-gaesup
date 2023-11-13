@@ -1,5 +1,7 @@
 import { propType } from '@gaesup/type';
+import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { currentAtom } from './current';
 
 /**
  * Follow camera initial setups from props
@@ -8,7 +10,7 @@ import { useEffect } from 'react';
  * 카메라 피벗과 캐릭터 이동 설정
  */
 export default function initSetting(prop: propType) {
-  const { current } = prop;
+  const current = useAtomValue(currentAtom);
 
   useEffect(() => {
     current.euler.y = Math.PI;

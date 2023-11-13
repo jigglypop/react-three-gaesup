@@ -1,4 +1,5 @@
 import { colliderAtom } from '@gaesup/stores/collider';
+import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
@@ -12,7 +13,8 @@ import { useAtomValue } from 'jotai';
  */
 
 export default function checkOnTheGround(prop: propType) {
-  const { capsuleColliderRef, groundRay, current } = prop;
+  const { capsuleColliderRef, groundRay } = prop;
+  const current = useAtomValue(currentAtom);
   const states = useAtomValue(statesAtom);
   const collider = useAtomValue(colliderAtom);
   const { world } = useRapier();
