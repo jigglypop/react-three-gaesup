@@ -1,8 +1,9 @@
 'use client';
 
-import GaeSupWorld from '@gaesup/gaesupworld';
 import Controller from '@gaesup/index';
+import MiniMap from '@gaesup/minimap';
 import { Environment, KeyboardControls } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import DynamicPlatforms from 'component/DynamicPlatforms';
 import FloatingPlatform from 'component/FloatingPlatform';
@@ -12,6 +13,10 @@ import RoughPlane from 'component/RoughPlane';
 import ShotCube from 'component/ShotCube';
 import Slopes from 'component/Slopes';
 import Steps from 'component/Steps';
+
+export function GaeSupWorld({ children }: { children: JSX.Element }) {
+  return <>{children}</>;
+}
 
 export default function Main() {
   const keyboardMap = [
@@ -30,8 +35,9 @@ export default function Main() {
   const URL = './gaesup.glb';
 
   return (
-    <GaeSupWorld>
-      <>
+    <>
+      {' '}
+      <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
         <Environment background preset='sunset' blur={0.8} />
         <directionalLight
           intensity={0.7}
@@ -78,12 +84,9 @@ export default function Main() {
           {/* Shoting cubes */}
           <ShotCube />
         </Physics>
-      </>
-      {/* <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
-        
-      </Canvas> */}
+      </Canvas>
       {/* <JoyStick /> */}
-      {/* <MiniMap /> */}
-    </GaeSupWorld>
+      <MiniMap />
+    </>
   );
 }

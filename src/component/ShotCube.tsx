@@ -1,7 +1,8 @@
-import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
-import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { useRef, useMemo, useState, useEffect } from "react";
+import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
+import { useThree } from '@react-three/fiber';
+import { RapierRigidBody, RigidBody } from '@react-three/rapier';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import * as THREE from 'three';
 
 export default function ShotCube() {
   const { camera } = useThree();
@@ -21,7 +22,7 @@ export default function ShotCube() {
           receiveShadow
         >
           <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color="orange" />
+          <meshStandardMaterial color='orange' />
         </mesh>
       );
       setCubeMesh((prevMeshes) => [...prevMeshes, newMesh]);
@@ -43,15 +44,15 @@ export default function ShotCube() {
   }, [cubeMesh]);
 
   useEffect(() => {
-    window.addEventListener("click", () => clickToCreateBox());
+    window.addEventListener('click', () => clickToCreateBox());
 
     return () => {
-      window.removeEventListener("click", () => clickToCreateBox());
+      window.removeEventListener('click', () => clickToCreateBox());
     };
   }, []);
 
   return (
-    <>
+    <GaeSupProps text='ShotCube'>
       {cubeMesh.map((item, i) => {
         return (
           <RigidBody key={i} mass={0.6} ref={cubeRef}>
@@ -59,6 +60,6 @@ export default function ShotCube() {
           </RigidBody>
         );
       })}
-    </>
+    </GaeSupProps>
   );
 }

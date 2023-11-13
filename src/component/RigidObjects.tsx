@@ -1,3 +1,4 @@
+import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { Text } from '@react-three/drei';
 import {
   BallCollider,
@@ -8,7 +9,7 @@ import {
 
 export default function RigidObjects() {
   return (
-    <>
+    <GaeSupProps text='RigidObjects'>
       {/* Rigid body boxes */}
       <RigidBody position={[15, 1, 2]}>
         <mesh receiveShadow castShadow>
@@ -93,6 +94,6 @@ export default function RigidObjects() {
           <meshStandardMaterial color={'lightsteelblue'} />
         </mesh>
       </RigidBody>
-    </>
+    </GaeSupProps>
   );
 }

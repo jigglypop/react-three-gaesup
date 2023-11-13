@@ -1,4 +1,5 @@
 import type { RayColliderToi } from '@dimforge/rapier3d-compat';
+import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { CuboidCollider, RigidBody, useRapier } from '@react-three/rapier';
@@ -170,7 +171,7 @@ export default function FloatingPlatform() {
   });
 
   return (
-    <>
+    <GaeSupProps text='floating'>
       {/* Platform 1 */}
       <RigidBody
         position={[0, 5, -10]}
@@ -239,6 +240,6 @@ export default function FloatingPlatform() {
           <meshStandardMaterial color={'lightsteelblue'} />
         </mesh>
       </RigidBody>
-    </>
+    </GaeSupProps>
   );
 }

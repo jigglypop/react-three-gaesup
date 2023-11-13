@@ -1,3 +1,4 @@
+import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
@@ -54,7 +55,7 @@ export default function DynamicPlatforms() {
   });
 
   return (
-    <>
+    <GaeSupProps text='dynamic'>
       {/* Moving platform */}
       <RigidBody
         type='kinematicPosition'
@@ -148,6 +149,6 @@ export default function DynamicPlatforms() {
           </mesh>
         </group>
       </RigidBody>
-    </>
+    </GaeSupProps>
   );
 }

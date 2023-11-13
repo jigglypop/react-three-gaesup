@@ -1,3 +1,4 @@
+import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { useGLTF } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import { useEffect } from 'react';
@@ -20,8 +21,10 @@ export default function RoughPlane() {
   }, []);
 
   return (
-    <RigidBody type='fixed' colliders='trimesh' position={[10, -1.2, 10]}>
-      <primitive object={roughPlane.scene} />
-    </RigidBody>
+    <GaeSupProps text='RoughPlane'>
+      <RigidBody type='fixed' colliders='trimesh' position={[10, -1.2, 10]}>
+        <primitive object={roughPlane.scene} />
+      </RigidBody>
+    </GaeSupProps>
   );
 }
