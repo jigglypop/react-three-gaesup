@@ -7,7 +7,7 @@ import {
   vec3
 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { useRef } from 'react';
+import { RefObject, useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import checkIsRotate from './check/checkIsRotate';
@@ -16,42 +16,38 @@ import checkOnMovingObject from './check/checkOnMovingObject';
 import checkOnTheGround from './check/checkOnTheGround';
 import checkOnTheSlope from './check/checkOnTheSlope';
 import calcAccelaration from './physics/accelaration';
+import calcActions from './physics/actions';
 import calcCamera from './physics/camera';
 import calcDirection from './physics/direction';
 import calcImpulse from './physics/impulse';
 import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
-import useActionsEffect from './stores/animation/useActionsEffect';
 import { colliderAtom, useColliderInit } from './stores/collider';
-import { currentAtom } from './stores/current';
 import initProps from './stores/initProps';
 import initSetting from './stores/initSetting';
-import { rayAtom } from './stores/ray/atom';
-import { slopeRayAtom } from './stores/slopRay/atom';
 import { ControllerProps } from './type';
 import CharacterGltf from './utils/CharacterGltf';
 
 /**
  * ControllerWrapper
- * 컨트롤 정의
  */
+
+export type ControllerInitProps = Omit<ControllerProps, 'children' | 'url'> & {
+  capsuleColliderRef: RefObject<Collider>;
+  rigidBodyRef: RefObject<RapierRigidBody>;
+  outerGroupRef: RefObject<THREE.Group>;
+  slopeRayOriginRef: RefObject<THREE.Mesh>;
+};
 
 export default function Controller(props: Omit<ControllerProps, 'animations'>) {
   const gltf = useLoader(GLTFLoader, props.url);
-  const raycaster = new THREE.Raycaster();
   const { animations, scene } = gltf;
-  // scene.add(
-  //   new THREE.ArrowHelper(
-  //     raycaster.ray.direction,
-  //     raycaster.ray.origin,
-  //     300,
-  //     0xff0000
-  //   )
-  // );
+  // const [minimap, setMiniMap] = useAtom(minimapAtom);
+  // setMiniMap(scene);
+  // console.log(scene);
 
   useColliderInit(scene, props);
-  //console.log( size );
   return (
     <ControllerInner {...{ ...props, animations }}>
       <CharacterGltf {...props} />
@@ -66,7 +62,7 @@ export function ControllerInner(props: ControllerProps) {
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
 
   // init props
-  initProps({
+  const prop = initProps({
     ...props,
     capsuleColliderRef,
     rigidBodyRef,
@@ -74,41 +70,20 @@ export function ControllerInner(props: ControllerProps) {
     slopeRayOriginRef
   });
 
-  initSetting();
-
-  checkOnTheGround({
-    capsuleColliderRef
-  });
-
-  checkOnTheSlope({
-    slopeRayOriginRef,
-    capsuleColliderRef
-  });
-
-  checkOnMovingObject();
-  checkMoving();
-  checkIsRotate({
-    outerGroupRef
-  });
-
-  calcCamera();
-  calcTurn({
-    outerGroupRef
-  });
-  calcDirection({
-    rigidBodyRef
-  });
-  calcAccelaration({
-    outerGroupRef
-  });
-  calcJump({
-    rigidBodyRef
-  });
-  calcImpulse({
-    rigidBodyRef
-  });
-  stabilizing({ rigidBodyRef });
-  useActionsEffect({ outerGroupRef, animations: props.animations });
+  initSetting(prop);
+  checkOnTheGround(prop);
+  checkOnTheSlope(prop);
+  checkOnMovingObject(prop);
+  checkMoving(prop);
+  checkIsRotate(prop);
+  calcCamera(prop);
+  calcTurn(prop);
+  calcDirection(prop);
+  calcAccelaration(prop);
+  calcJump(prop);
+  calcImpulse(prop);
+  stabilizing(prop);
+  calcActions(prop);
 
   const rigidBody2Ref = useRef<RapierRigidBody>(null);
   const capsuleCollider2Ref = useRef<Collider>(null);
@@ -132,10 +107,8 @@ export function ControllerInner(props: ControllerProps) {
   //       delta * calc.turnS * 0.5
   //     );
   //   });
-  const rays = useAtomValue(rayAtom);
-  const slopeRays = useAtomValue(slopeRayAtom);
+
   const collider = useAtomValue(colliderAtom);
-  const current = useAtomValue(currentAtom);
 
   //   useEffect(() => {
   //     const a = vec3({ x: 1, y: 0, z: 1 });
@@ -168,9 +141,9 @@ export function ControllerInner(props: ControllerProps) {
           </mesh>
           <mesh
             position={[
-              rays.originOffset.x,
-              rays.originOffset.y,
-              rays.originOffset.z + slopeRays.originOffset.z
+              prop.groundRay.offset.x,
+              prop.groundRay.offset.y,
+              prop.groundRay.offset.z + prop.slopeRay.offset.z
             ]}
             ref={slopeRayOriginRef}
             visible={false}

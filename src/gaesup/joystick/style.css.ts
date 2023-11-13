@@ -19,7 +19,7 @@ export const joyStickInner = style([
   }),
   {
     margin: '3rem',
-    padding: '5rem',
+    padding: '4rem',
     borderRadius: '50%',
     background: 'rgba(0, 0, 0, 0.5)',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'

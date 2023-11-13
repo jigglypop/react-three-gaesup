@@ -1,56 +1,42 @@
-import { currentAtom } from '@gaesup/stores/current';
-import { jumpAtom } from '@gaesup/stores/jump';
-import { moveAtom } from '@gaesup/stores/move';
-import { ratioAtom } from '@gaesup/stores/ratio';
-import { rayAtom } from '@gaesup/stores/ray/atom';
-import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
-import { standAtom } from '@gaesup/stores/stand';
 import { statesAtom } from '@gaesup/stores/states';
-import { useKeyboardControls } from '@react-three/drei';
+import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
-import { RapierRigidBody } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { RefObject } from 'react';
 
-export default function calcJump({
-  rigidBodyRef
-}: {
-  rigidBodyRef: RefObject<RapierRigidBody>;
-}) {
-  const ratio = useAtomValue(ratioAtom);
-  const ray = useAtomValue(rayAtom);
-  const slopeRay = useAtomValue(slopeRayAtom);
-  const current = useAtomValue(currentAtom);
-  const stand = useAtomValue(standAtom);
-  const [_, getKeys] = useKeyboardControls();
-  const { jump: isOnJump, run } = getKeys();
-  const jump = useAtomValue(jumpAtom);
+export default function calcJump(prop: propType) {
   const states = useAtomValue(statesAtom);
-  const move = useAtomValue(moveAtom);
-  // const { isCanJump } = useAtomValue(statesAtom);
+  const {
+    rigidBodyRef,
+    slopeRay,
+    groundRay,
+    keyControl,
+    jump,
+    move,
+    current,
+    constant
+  } = prop;
+  const { jump: isOnJump } = keyControl;
+  const { isOnTheGround } = states;
   useFrame(() => {
     // Jump impulse
-    if (isOnJump && states.isOnTheGround) {
-      jump.velocity.set(
-        current.velocity.x,
-        run ? ratio.runJump * jump.speed : jump.speed,
-        current.velocity.z
-      );
+    const { jumpAccelY, jumpSpeed } = constant;
+    if (isOnJump && isOnTheGround) {
+      jump.velocity.set(current.velocity.x, jumpSpeed, current.velocity.z);
       // Apply slope normal to jump direction
       rigidBodyRef.current!.setLinvel(
         jump.direction
-          .set(
-            0,
-            (run ? ratio.runJump * jump.speed : jump.speed) * ratio.slopJump,
-            0
-          )
+          .set(0, jumpSpeed * 0.25, 0)
           .projectOnVector(slopeRay.current)
           .add(jump.velocity),
         false
       );
       // Apply jump force downward to the standing platform
-      move.mass.y *= jump.gravity;
-      ray.rayParent?.applyImpulseAtPoint(move.mass, stand.position, true);
+      move.mass.y *= jumpAccelY;
+      groundRay.parent?.applyImpulseAtPoint(
+        move.mass,
+        current.standPosition,
+        true
+      );
     }
   });
 }

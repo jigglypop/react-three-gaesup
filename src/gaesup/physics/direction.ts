@@ -1,39 +1,36 @@
-import { currentCameraAtom } from '@gaesup/stores/camera/atom';
-import { currentAtom } from '@gaesup/stores/current';
-import { useKeyboardControls } from '@react-three/drei';
+// import { currentCameraAtom } from '@gaesup/stores/camera/atom';
+import { joyStickOriginAtom } from '@gaesup/stores/joystick';
+import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
-import { RapierRigidBody, vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { RefObject } from 'react';
 
-export default function calcDirection({
-  rigidBodyRef
-}: {
-  rigidBodyRef: RefObject<RapierRigidBody>;
-}) {
-  const [_, getKeys] = useKeyboardControls();
-  const currentCamera = useAtomValue(currentCameraAtom);
-  const current = useAtomValue(currentAtom);
-  const { forward, backward, leftward, rightward } = getKeys();
+export default function calcDirection(prop: propType) {
+  const { rigidBodyRef, keyControl, current, options, cameraRay } = prop;
+  // const currentCamera = useAtomValue(currentCameraAtom);
+  const joystick = useAtomValue(joyStickOriginAtom);
+  const { forward, backward, leftward, rightward } = keyControl;
+  const { controllerType } = options;
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
-    current.position = vec3(rigidBodyRef.current.translation());
-    current.velocity = vec3(rigidBodyRef.current.linvel());
-    if (forward) {
-      current.euler.y =
-        currentCamera.pivot.rotation.y +
-        (leftward ? Math.PI / 4 : 0) -
-        (rightward ? Math.PI / 4 : 0);
-    } else if (backward) {
-      current.euler.y =
-        currentCamera.pivot.rotation.y +
-        Math.PI -
-        (leftward ? Math.PI / 4 : 0) +
-        (rightward ? Math.PI / 4 : 0);
-    } else if (leftward) {
-      current.euler.y = currentCamera.pivot.rotation.y + Math.PI / 2;
-    } else if (rightward) {
-      current.euler.y = currentCamera.pivot.rotation.y - Math.PI / 2;
+    if (controllerType === 'none' || controllerType === 'gameboy') {
+      if (forward) {
+        current.euler.y =
+          cameraRay.pivot.rotation.y +
+          (leftward ? Math.PI / 4 : 0) -
+          (rightward ? Math.PI / 4 : 0);
+      } else if (backward) {
+        current.euler.y =
+          cameraRay.pivot.rotation.y +
+          Math.PI -
+          (leftward ? Math.PI / 4 : 0) +
+          (rightward ? Math.PI / 4 : 0);
+      } else if (leftward) {
+        current.euler.y = cameraRay.pivot.rotation.y + Math.PI / 2;
+      } else if (rightward) {
+        current.euler.y = cameraRay.pivot.rotation.y - Math.PI / 2;
+      }
+    } else if (controllerType === 'joystick') {
+      current.euler.y = -joystick.angle - Math.PI / 2;
     }
   });
 }

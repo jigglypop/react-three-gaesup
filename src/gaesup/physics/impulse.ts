@@ -1,65 +1,60 @@
 import { colliderAtom } from '@gaesup/stores/collider';
-import { currentAtom } from '@gaesup/stores/current';
-import { dampingAtom } from '@gaesup/stores/damping';
-import { moveAtom } from '@gaesup/stores/move';
-import { rayAtom } from '@gaesup/stores/ray/atom';
-import { slopeRayAtom } from '@gaesup/stores/slopRay/atom';
-import { standAtom } from '@gaesup/stores/stand';
 import { statesAtom } from '@gaesup/stores/states';
+import { propType } from '@gaesup/type';
+import { isValidOrZero } from '@gaesup/utils/vector';
 import { useFrame } from '@react-three/fiber';
-import { RapierRigidBody, vec3 } from '@react-three/rapier';
+import { vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { RefObject } from 'react';
 
-export default function calcImpulse({
-  rigidBodyRef // standingForcePoint
-}: {
-  rigidBodyRef: RefObject<RapierRigidBody>;
-}) {
-  const ray = useAtomValue(rayAtom);
-  const damping = useAtomValue(dampingAtom);
-  const stand = useAtomValue(standAtom);
-  const slopeRay = useAtomValue(slopeRayAtom);
-  const current = useAtomValue(currentAtom);
-  const move = useAtomValue(moveAtom);
+export default function calcImpulse(prop: propType) {
+  const { rigidBodyRef, slopeRay, groundRay, move, constant, current } = prop;
+  const states = useAtomValue(statesAtom);
   const collider = useAtomValue(colliderAtom);
   const { isNotMoving, isOnMoving, isOnTheGround, isMoving, isRotated } =
-    useAtomValue(statesAtom);
-
+    states;
+  const { springConstant, turnSpeed } = constant;
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
-    if (ray.rayHit !== null && ray.rayParent && isOnTheGround) {
+    if (groundRay.hit !== null && groundRay.parent && isOnTheGround) {
       if (isOnTheGround) {
-        const { dragXZ, dragY } = damping;
-        const forwardF = (xz: 'x' | 'z') =>
-          isOnMoving && isNotMoving ? move.velocity[xz] * dragXZ : 0;
-        const reverseF = (xz: 'x' | 'z') =>
-          isNotMoving ? current.velocity[xz] * dragXZ : 0;
-        // calc up impulse (Y)
-        const K = damping.springConstant;
-        const dY = collider.radius + 0.3 - ray.rayHit.toi;
-        const sY = rigidBodyRef.current.linvel().y;
-        const impulseY = K * dY - dragY * sY;
-        rigidBodyRef.current.applyImpulse(
+        const { dragDamping } = move;
+        const forward = isValidOrZero(
+          isOnMoving && isNotMoving,
           vec3({
-            x: forwardF('x') - reverseF('x'),
-            y: impulseY,
-            z: forwardF('z') - reverseF('z')
-          }),
-          false
+            x: move.velocity.x,
+            y: 0,
+            z: move.velocity.z
+          }).multiply(dragDamping)
         );
+        const reverse = isValidOrZero(
+          isNotMoving,
+          vec3({
+            x: current.velocity.x,
+            y: 0,
+            z: current.velocity.z
+          })
+            .multiply(dragDamping)
+            .negate()
+        );
+        // calc up impulse (Y)
+        const K = springConstant;
+        const dY = collider.radius + 0.3 - groundRay.hit.toi;
+        const sY = rigidBodyRef.current.linvel().y;
+        const impulseY = K * dY - dragDamping.y * sY;
+        const dragImpulse = forward.add(reverse).setY(impulseY);
+
+        rigidBodyRef.current.applyImpulse(dragImpulse, false);
         move.mass.set(0, Math.min(-impulseY, 0), 0);
-        ray.rayParent.applyImpulseAtPoint(move.mass, stand.position, true);
+        groundRay.parent.applyImpulseAtPoint(
+          move.mass,
+          current.standPosition,
+          true
+        );
       }
     }
 
     if (isMoving) {
-      if (
-        // maxAngle = 1
-        slopeRay.currentAngle < 1 &&
-        0.2 < Math.abs(slopeRay.angle) &&
-        Math.abs(slopeRay.angle) < 1
-      ) {
+      if (0.2 < Math.abs(slopeRay.angle) && Math.abs(slopeRay.angle) < 1) {
         move.direction.set(
           0,
           Math.sin(slopeRay.angle),
@@ -84,7 +79,7 @@ export default function calcImpulse({
         x: 1,
         y: 1,
         z: 1
-      }).multiplyScalar(isRotated ? 1 : 1 / move.turnSpeed);
+      }).multiplyScalar(isRotated ? 1 : 1 / turnSpeed);
 
       // 세팅
       move.impulse
@@ -97,9 +92,13 @@ export default function calcImpulse({
 
       rigidBodyRef.current.applyImpulseAtPoint(
         move.impulse,
-        vec3().copy(current.position).add(move.delta),
+        vec3()
+          .copy(current.position)
+          .add(vec3().set(0, 0.5, 0)),
         false
       );
     }
+    current.position = vec3(rigidBodyRef.current.translation());
+    current.velocity = vec3(rigidBodyRef.current.linvel());
   });
 }

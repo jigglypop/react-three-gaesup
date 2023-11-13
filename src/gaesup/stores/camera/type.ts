@@ -29,7 +29,7 @@ export type cameraRayPropsType = {
   length: number;
 };
 
-export type cameraRayAtomType = {
+export type cameraRayType = {
   origin: THREE.Vector3;
   hit: THREE.Raycaster;
   rayCast: THREE.Raycaster | null;

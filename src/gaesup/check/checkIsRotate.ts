@@ -1,16 +1,11 @@
-import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
+import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
-import { RefObject } from 'react';
 
-export default function checkIsRotate({
-  outerGroupRef
-}: {
-  outerGroupRef: RefObject<THREE.Group>;
-}) {
+export default function checkIsRotate(prop: propType) {
   const states = useAtomValue(statesAtom);
-  const current = useAtomValue(currentAtom);
+  const { outerGroupRef, current } = prop;
   useFrame(() => {
     if (states.isMoving && outerGroupRef && outerGroupRef.current) {
       states.isRotated =

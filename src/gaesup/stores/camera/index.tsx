@@ -1,26 +1,17 @@
+import { propType } from '@gaesup/type';
 import { useThree } from '@react-three/fiber';
-import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import * as THREE from 'three';
-import { cameraInteractAtom, cameraRayAtom, currentCameraAtom } from './atom';
-import { cameraPropsType, cameraRayPropsType } from './type';
 
-export default function useCameraInit({
-  cameraProps,
-  cameraRayProps
-}: {
-  cameraProps: cameraPropsType;
-  cameraRayProps: cameraRayPropsType;
-}) {
+export default function useCameraInit(prop: propType) {
   const { scene, camera } = useThree();
-  const [currentCamera, setCurrentCamera] = useAtom(currentCameraAtom);
-  const [cameraRay, setCameraRay] = useAtom(cameraRayAtom);
-  const cameraInteract = useAtomValue(cameraInteractAtom);
+  const { constant, cameraRay } = prop;
+  const { cameraMaxDistance, cameraInitDirection } = constant;
   cameraRay.rayCast = new THREE.Raycaster(
     cameraRay.origin,
     cameraRay.dir,
     0,
-    -currentCamera.maxDistance
+    -cameraMaxDistance
   );
 
   const intersectObjectMap: { [uuid: string]: THREE.Object3D } = {};
@@ -37,40 +28,22 @@ export default function useCameraInit({
     });
   };
 
-  const initCurrentCamera = (cameraProps: cameraPropsType) => {
+  const initCurrentCamera = () => {
     const origin = new THREE.Object3D();
-    origin.position.set(
-      0,
-      0,
-      cameraProps?.initDistance || currentCamera.initDistance
-    );
-    if (cameraProps) {
-      setCurrentCamera({
-        ...currentCamera,
-        ...Object.assign(currentCamera, cameraProps),
-        followCamera: origin
-      });
-    }
-  };
-
-  const initCameraRay = (cameraRayProps: cameraRayPropsType) => {
-    setCameraRay({
-      ...cameraRay,
-      length: cameraRayProps?.length || cameraRay.length
-    });
+    origin.position.set(0, 0, cameraInitDirection);
+    cameraRay.followCamera = origin;
   };
 
   useEffect(() => {
     scene.children.forEach((child) => getMeshs(child));
-    cameraInteract.intersectObjectMap = intersectObjectMap;
-    currentCamera.followCamera.add(camera);
-    currentCamera.pivot.add(currentCamera.followCamera);
+    cameraRay.intersectObjectMap = intersectObjectMap;
+    cameraRay.followCamera.add(camera);
+    cameraRay.pivot.add(cameraRay.followCamera);
   });
 
   // init
   useEffect(() => {
-    initCurrentCamera(cameraProps);
-    initCameraRay(cameraRayProps);
+    initCurrentCamera();
     camera.position.set(0, 0, 0);
   }, []);
 }

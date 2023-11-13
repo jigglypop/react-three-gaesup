@@ -1,8 +1,6 @@
-import { dampingAtom } from '@gaesup/stores/damping';
+import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
-import { RapierRigidBody, vec3 } from '@react-three/rapier';
-import { useAtomValue } from 'jotai';
-import { RefObject, useEffect } from 'react';
+import { vec3 } from '@react-three/rapier';
 
 /**
  *
@@ -12,15 +10,11 @@ import { RefObject, useEffect } from 'react';
  *
  */
 
-export type stabilizingType = {
-  rigidBodyRef: RefObject<RapierRigidBody | null>;
-};
-
-export default function stabilizing({ rigidBodyRef }: stabilizingType) {
-  const damping = useAtomValue(dampingAtom);
+export default function stabilizing(prop: propType) {
+  const { rigidBodyRef, constant } = prop;
   useFrame(() => {
     if (!rigidBodyRef || !rigidBodyRef.current) return null;
-    const { reconsil, rotational, vertical } = damping;
+    const { reconsil, rotational, vertical } = constant;
     const rotation = rigidBodyRef.current.rotation();
     const angvel = rigidBodyRef.current.angvel();
     rigidBodyRef.current.applyTorqueImpulse(
@@ -37,8 +31,8 @@ export default function stabilizing({ rigidBodyRef }: stabilizingType) {
     );
   });
 
-  useEffect(() => {
-    if (rigidBodyRef.current)
-      rigidBodyRef.current.setEnabledRotations(true, true, true, false);
-  }, [damping]);
+  // useEffect(() => {
+  //   if (rigidBodyRef.current)
+  //     rigidBodyRef.current.setEnabledRotations(true, true, true, false);
+  // }, [damping]);
 }

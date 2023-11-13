@@ -1,134 +1,89 @@
-export default function initDebug() {
-  //   const [options, setOptions] = useAtom(optionAtom);
-  //   const controllerContext = useContext(ControllerContext);
-  //
-  //   if (options.debug) {
-  //     Object.keys(controllerContext).forEach((key) => {
-  //       const values = controllerContext[key];
-  //
-  //       Object.entries(values).forEach(([k, v]) => {
-  //         if (typeof v === 'number') {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: v
-  //             }
-  //           }));
-  //
-  //           const memoSet = () =>
-  //             useMemo(() => {
-  //               set({
-  //                 [k]: controllerContext[key][k]
-  //               });
-  //             }, [controllerContext[key][k]]);
-  //           return memoSet();
-  //         } else if (typeof v === 'string') {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: v
-  //             }
-  //           }));
-  //           const memoSet = () =>
-  //             useMemo(() => {
-  //               set({
-  //                 [k]: controllerContext[key][k]
-  //               });
-  //             }, [controllerContext[key][k]]);
-  //           return memoSet();
-  //         } else if (typeof v === 'boolean') {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: false
-  //             }
-  //           }));
-  //           const memoSet = () =>
-  //             useMemo(() => {
-  //               set({
-  //                 [k]: controllerContext[key][k]
-  //               });
-  //             }, [controllerContext[key][k]]);
-  //           return memoSet();
-  //         } else if (v instanceof THREE.Euler) {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: {
-  //                 x: 0,
-  //                 y: 0,
-  //                 z: 0
-  //               }
-  //             }
-  //           }));
-  //
-  //           const memoSet = () =>
-  //             useMemo(() => {
-  //               set({
-  //                 [k]: {
-  //                   x: controllerContext[key][k]._x,
-  //                   y: controllerContext[key][k]._y,
-  //                   z: controllerContext[key][k]._z
-  //                 }
-  //               });
-  //             }, [
-  //               controllerContext[key][k]._x,
-  //               controllerContext[key][k]._y,
-  //               controllerContext[key][k]._z
-  //             ]);
-  //           return memoSet();
-  //         } else if (v instanceof THREE.Quaternion) {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: {
-  //                 x: 0,
-  //                 y: 0,
-  //                 z: 0
-  //               }
-  //             }
-  //           }));
-  //
-  //           const memoSet = () =>
-  //             useMemo(() => {
-  //               set({
-  //                 [k]: {
-  //                   x: controllerContext[key][k]._x,
-  //                   y: controllerContext[key][k]._y,
-  //                   z: controllerContext[key][k]._z
-  //                 }
-  //               });
-  //             }, [
-  //               controllerContext[key][k]._x,
-  //               controllerContext[key][k]._y,
-  //               controllerContext[key][k]._z
-  //             ]);
-  //           return memoSet();
-  //         } else if (v instanceof THREE.Vector3) {
-  //           const [, set] = useControls(key, () => ({
-  //             [k]: {
-  //               value: {
-  //                 x: 0,
-  //                 y: 0,
-  //                 z: 0
-  //               }
-  //             }
-  //           }));
-  //
-  //           const memoSet = () =>
-  //             useMemo(
-  //               () =>
-  //                 set({
-  //                   [k]: {
-  //                     x: controllerContext[key][k].x,
-  //                     y: controllerContext[key][k].y,
-  //                     z: controllerContext[key][k].z
-  //                   }
-  //                 }),
-  //               [
-  //                 controllerContext[key][k].x,
-  //                 controllerContext[key][k].y,
-  //                 controllerContext[key][k].z
-  //               ]
-  //             );
-  //           return memoSet();
-  //         }
-  //       });
-  //     });
-  //   }
+import { propType } from '@gaesup/type';
+import { useControls } from 'leva';
+
+export default function initDebug(prop: propType) {
+  /**
+   * Debug settings
+   */
+  const tempProp = { ...prop };
+
+  // Character jumpConst
+  if (prop.options.debug) {
+    tempProp.constant = useControls('constants', {
+      jumpSpeed: {
+        value: tempProp.constant.jumpSpeed,
+        min: 1,
+        max: 10,
+        step: 0.01
+      },
+      jumpAccelY: {
+        value: tempProp.constant.jumpAccelY,
+        min: 0,
+        max: 80,
+        step: 0.01
+      },
+      turnSpeed: {
+        value: tempProp.constant.turnSpeed,
+        min: 5,
+        max: 30,
+        step: 0.01
+      },
+      rejectSpeed: {
+        value: tempProp.constant.rejectSpeed,
+        min: 0,
+        max: 10,
+        step: 0.01
+      },
+      splintSpeed: {
+        value: tempProp.constant.splintSpeed,
+        min: 1,
+        max: 5,
+        step: 0.01
+      },
+      runRate: {
+        value: tempProp.constant.runRate,
+        min: 1,
+        max: 10,
+        step: 0.01
+      },
+      dT: {
+        value: tempProp.constant.dT,
+        min: 1,
+        max: 100,
+        step: 0.01
+      },
+      reconsil: {
+        value: tempProp.constant.reconsil,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      rotational: {
+        value: tempProp.constant.rotational,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      vertical: {
+        value: tempProp.constant.vertical,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      airDamping: {
+        value: tempProp.constant.airDamping,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      springConstant: {
+        value: tempProp.constant.springConstant,
+        min: 1,
+        max: 10,
+        step: 0.01
+      }
+    });
+  }
+
+  return { ...tempProp };
 }

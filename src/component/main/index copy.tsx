@@ -3,6 +3,7 @@
 import GaeSupWorld from '@gaesup/gaesupworld';
 import Controller from '@gaesup/index';
 import { Environment, KeyboardControls } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import DynamicPlatforms from 'component/DynamicPlatforms';
 import FloatingPlatform from 'component/FloatingPlatform';
@@ -31,7 +32,7 @@ export default function Main() {
 
   return (
     <GaeSupWorld>
-      <>
+      <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
         <Environment background preset='sunset' blur={0.8} />
         <directionalLight
           intensity={0.7}
@@ -78,10 +79,7 @@ export default function Main() {
           {/* Shoting cubes */}
           <ShotCube />
         </Physics>
-      </>
-      {/* <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
-        
-      </Canvas> */}
+      </Canvas>
       {/* <JoyStick /> */}
       {/* <MiniMap /> */}
     </GaeSupWorld>

@@ -1,12 +1,9 @@
-import { Collider } from '@dimforge/rapier3d-compat';
-import { currentAtom } from '@gaesup/stores/current';
-import { dampingAtom } from '@gaesup/stores/damping';
-import { rayAtom } from '@gaesup/stores/ray/atom';
+import { colliderAtom } from '@gaesup/stores/collider';
 import { statesAtom } from '@gaesup/stores/states';
+import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
-import { useAtom, useAtomValue } from 'jotai';
-import { RefObject } from 'react';
+import { useAtomValue } from 'jotai';
 
 /**
  * Ray casting detect if on ground
@@ -14,30 +11,24 @@ import { RefObject } from 'react';
  * @param capsuleColliderRef
  */
 
-export default function checkOnTheGround({
-  capsuleColliderRef
-}: {
-  capsuleColliderRef: RefObject<Collider>;
-}) {
-  // const ray = useAtomValue(rayAtom);
-  const ray = useAtomValue(rayAtom);
-  const current = useAtomValue(currentAtom);
-  const damping = useAtomValue(dampingAtom);
-  const [states, setStates] = useAtom(statesAtom);
+export default function checkOnTheGround(prop: propType) {
+  const { capsuleColliderRef, groundRay, current } = prop;
+  const states = useAtomValue(statesAtom);
+  const collider = useAtomValue(colliderAtom);
   const { world } = useRapier();
   useFrame(() => {
-    const { originOffset, hitForgiveness } = ray;
-    ray.rayOrigin.addVectors(current.position, vec3(originOffset));
-    if (!ray.rayHit || !ray.rayCast || !capsuleColliderRef.current) return null;
-    ray.rayHit = world.castRay(
-      ray.rayCast,
-      ray.length,
+    groundRay.origin.addVectors(current.position, vec3(groundRay.offset));
+    if (!groundRay.hit || !groundRay.rayCast || !capsuleColliderRef.current)
+      return null;
+    groundRay.hit = world.castRay(
+      groundRay.rayCast,
+      groundRay.length,
       true,
       undefined,
       undefined,
       capsuleColliderRef.current
     );
-    if (ray.rayHit && ray.rayHit.toi < damping.distance + hitForgiveness) {
+    if (groundRay.hit && groundRay.hit.toi < collider.radius + 0.4) {
       states.isOnTheGround = true;
     } else {
       states.isOnTheGround = false;

@@ -6,6 +6,8 @@ export type statesType = {
   isOnTheGround: boolean;
   isOnMoving: boolean;
   isRotated: boolean;
+  isRunning: boolean;
+  isJumping: boolean;
 };
 
 export const statesAtom = atom<statesType>({
@@ -13,6 +15,8 @@ export const statesAtom = atom<statesType>({
   isNotMoving: false,
   isOnTheGround: false,
   isOnMoving: false,
-  isRotated: false
+  isRotated: false,
+  isRunning: false,
+  isJumping: false
 });
-statesAtom.debugLabel = 'states';
+statesAtom.debugPrivate = true;
