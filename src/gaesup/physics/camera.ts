@@ -1,5 +1,4 @@
-// import { currentCameraAtom } from '@gaesup/stores/camera/atom';
-import useCameraDetect from '@gaesup/stores/camera/useCameraDetect';
+import checkCameraCollision from '@gaesup/check/checkCameraCollision';
 import { currentAtom } from '@gaesup/stores/current';
 import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
@@ -14,9 +13,7 @@ import { useAtomValue } from 'jotai';
 export default function calcCamera(prop: propType) {
   const { cameraRay, constant } = prop;
   const current = useAtomValue(currentAtom);
-
-  // const currentCamera = useAtomValue(currentCameraAtom);
-  const { cameraCollisionDetect } = useCameraDetect(prop);
+  const { checkCollision } = checkCameraCollision(prop);
   useFrame((state, delta) => {
     cameraRay.pivot.position.lerp(
       current.position,
@@ -29,6 +26,6 @@ export default function calcCamera(prop: propType) {
      * 카메라 충돌 감지
      * @param delta
      */
-    cameraCollisionDetect(delta);
+    checkCollision(delta);
   });
 }

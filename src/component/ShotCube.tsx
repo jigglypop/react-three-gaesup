@@ -1,6 +1,6 @@
 import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { useThree } from '@react-three/fiber';
-import { RapierRigidBody, RigidBody } from '@react-three/rapier';
+import { RapierRigidBody } from '@react-three/rapier';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
@@ -53,13 +53,13 @@ export default function ShotCube() {
 
   return (
     <GaeSupProps text='ShotCube'>
-      {cubeMesh.map((item, i) => {
+      {/* {cubeMesh.map((item, i) => {
         return (
           <RigidBody key={i} mass={0.6} ref={cubeRef}>
             {item}
           </RigidBody>
         );
-      })}
+      })} */}
     </GaeSupProps>
   );
 }

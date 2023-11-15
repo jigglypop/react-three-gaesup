@@ -2,8 +2,8 @@
 
 import { currentAtom } from '@gaesup/stores/current';
 import { minimapAtom } from '@gaesup/stores/minimap';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { useAtomValue } from 'jotai';
-import { assignInWith } from 'lodash';
 import * as style from './style.css';
 
 export function MiniMapInner() {
@@ -19,7 +19,7 @@ export function MiniMapInner() {
             <div
               key={key}
               className={style.minimapObject}
-              style={assignInWith({
+              style={assignInlineVars({
                 width: `${obj.size.x}rem`,
                 height: `${obj.size.z}rem`,
                 transform: `translate(${

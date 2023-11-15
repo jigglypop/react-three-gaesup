@@ -8,7 +8,8 @@ export const currentAtom = atom<currentType>({
   velocity: vec3(),
   reverseVelocity: vec3(),
   quat: quat(),
-  euler: euler()
+  euler: euler(),
+  refs: {}
 });
 
 currentAtom.debugPrivate = true;

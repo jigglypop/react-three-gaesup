@@ -1,8 +1,10 @@
 import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
-import { GroupProps } from '@react-three/fiber';
+import { GroupProps, RootState } from '@react-three/fiber';
 import { RapierRigidBody, RigidBodyProps } from '@react-three/rapier';
 import { ReactNode, RefObject } from 'react';
 import * as THREE from 'three';
+import { animationPropType } from './stores/animation';
+import { statesType } from './stores/states';
 
 export type cameraRayType = {
   origin: THREE.Vector3;
@@ -29,6 +31,12 @@ export type currentType = {
   reverseVelocity: THREE.Vector3;
   quat: THREE.Quaternion;
   euler: THREE.Euler;
+  refs: {
+    capsuleColliderRef?: RefObject<Collider>;
+    rigidBodyRef?: RefObject<RapierRigidBody>;
+    outerGroupRef?: RefObject<THREE.Group>;
+    slopeRayOriginRef?: RefObject<THREE.Mesh>;
+  };
 };
 
 export type moveType = {
@@ -39,14 +47,6 @@ export type moveType = {
   dragForce: THREE.Vector3;
   mass: THREE.Vector3;
   dragDamping: THREE.Vector3;
-};
-
-export type statesType = {
-  isMoving: boolean;
-  isNotMoving: boolean;
-  isOnTheGround: boolean;
-  isOnMoving: boolean;
-  isRotated: boolean;
 };
 
 export type dampingType = {
@@ -83,6 +83,7 @@ export type constantType = {
 export type optionsType = {
   debug: boolean;
   controllerType: 'none' | 'gameboy' | 'joystick';
+  cameraCollisionType: 'transparent' | 'closeUp';
 };
 
 export type partialOptionsType = Partial<optionsType>;
@@ -128,7 +129,6 @@ export type propType = {
   cameraRay: cameraRayType;
   jump: jumpInnerType;
   move: moveType;
-  // current: currentType;
   constant: constantType;
   capsuleColliderRef: RefObject<Collider>;
   rigidBodyRef: RefObject<RapierRigidBody>;
@@ -154,16 +154,62 @@ export type actionsType = animationTagType & {
   [key: string]: string;
 };
 
-export interface ControllerProps extends RigidBodyProps {
+export type onFramePropType = callbackPropType & RootState;
+export type onAnimatePropType = onFramePropType & {
+  actions: {
+    [x: string]: THREE.AnimationAction | null;
+  };
+  animation: animationPropType;
+  playAnimation: (tag: keyof actionsType) => void;
+};
+
+export interface controllerPropType extends RigidBodyProps {
   children?: ReactNode;
-  url: string;
   debug?: boolean;
-  // camera?: cameraPropsType;
-  // cameraRay?: cameraRayPropsType;
   slopeRay?: slopeRayType;
   props?: RigidBodyProps;
   constant?: partialConstantType;
   options?: partialOptionsType;
   character?: GroupProps;
-  animations: THREE.AnimationClip[];
+  onReady?: (prop: callbackPropType) => void;
+  onFrame?: (prop: onFramePropType) => void;
+  onDestory?: (prop: callbackPropType) => void;
+  onAnimate?: (prop: onAnimatePropType) => void;
 }
+
+export type refsType = {
+  capsuleColliderRef: RefObject<Collider>;
+  rigidBodyRef: RefObject<RapierRigidBody>;
+  outerGroupRef: RefObject<THREE.Group>;
+  slopeRayOriginRef: RefObject<THREE.Mesh>;
+};
+
+export type controllerType = controllerPropType & {
+  url: string;
+};
+
+export type controllerInnerType = controllerType & {
+  animations: THREE.AnimationClip[];
+};
+
+export type controllerInitPropsType = controllerInnerType & refsType;
+
+export type callbackPropType = {
+  current: currentType;
+  states: statesType;
+  options: optionsType;
+  slopeRay: slopeRayType;
+  groundRay: groundRayType;
+  cameraRay: cameraRayType;
+  jump: jumpInnerType;
+  move: moveType;
+  constant: constantType;
+  capsuleColliderRef: RefObject<Collider>;
+  rigidBodyRef: RefObject<RapierRigidBody>;
+  outerGroupRef: RefObject<THREE.Group>;
+  slopeRayOriginRef: RefObject<THREE.Mesh>;
+  animations: THREE.AnimationClip[];
+  keyControl: {
+    [key: string]: boolean;
+  };
+};

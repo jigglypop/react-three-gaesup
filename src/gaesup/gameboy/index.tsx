@@ -3,7 +3,6 @@ import { BiLeftArrow } from '@react-icons/all-files/bi/BiLeftArrow';
 import { BiRightArrow } from '@react-icons/all-files/bi/BiRightArrow';
 import { BiUpArrow } from '@react-icons/all-files/bi/BiUpArrow';
 import { useAtomValue } from 'jotai';
-import { optionAtom } from '../stores/options';
 import GameBoyButton, { gameBoyButtonType } from './GameBoyButton';
 import * as style from './style.css';
 

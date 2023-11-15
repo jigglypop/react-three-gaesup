@@ -10,7 +10,7 @@ export default function FloatingPlatform() {
   // Preset
   // couldn't find the correct type
   const floatingPlateRef = useRef<any>();
-  const floatingPlateRef2 = useRef<any>();
+  // const floatingPlateRef2 = useRef<any>();
   const floatingMovingPlateRef = useRef<any>();
   const { rapier, world } = useRapier();
 
@@ -45,10 +45,10 @@ export default function FloatingPlatform() {
     floatingPlateRef.current.lockRotations(true);
 
     // Loack platform 2 translation
-    floatingPlateRef2.current.lockRotations(true);
-    floatingPlateRef2.current.lockTranslations(true);
-    floatingPlateRef2.current.setEnabledRotations(false, true, false);
-    floatingPlateRef2.current.setEnabledTranslations(false, true, false);
+    // floatingPlateRef2.current.lockRotations(true);
+    // floatingPlateRef2.current.lockTranslations(true);
+    // floatingPlateRef2.current.setEnabledRotations(false, true, false);
+    // floatingPlateRef2.current.setEnabledTranslations(false, true, false);
 
     // Loack moving platform rotation
     floatingMovingPlateRef.current.setEnabledRotations(false, true, false);
@@ -77,22 +77,22 @@ export default function FloatingPlatform() {
       );
     }
     // Ray cast for platform 2
-    if (floatingPlateRef2.current) {
-      origin2.set(
-        floatingPlateRef2.current.translation().x,
-        floatingPlateRef2.current.translation().y,
-        floatingPlateRef2.current.translation().z
-      );
-      rayHit2 = world.castRay(
-        rayCast2,
-        rayLength,
-        false,
-        null,
-        null,
-        floatingPlateRef2.current,
-        floatingPlateRef2.current
-      );
-    }
+    // if (floatingPlateRef2.current) {
+    //   origin2.set(
+    //     floatingPlateRef2.current.translation().x,
+    //     floatingPlateRef2.current.translation().y,
+    //     floatingPlateRef2.current.translation().z
+    //   );
+    //   rayHit2 = world.castRay(
+    //     rayCast2,
+    //     rayLength,
+    //     false,
+    //     null,
+    //     null,
+    //     floatingPlateRef2.current,
+    //     floatingPlateRef2.current
+    //   );
+    // }
     // Ray cast for moving platform
     if (floatingMovingPlateRef.current) {
       originMove.set(
@@ -143,18 +143,18 @@ export default function FloatingPlatform() {
       }
     }
 
-    // Ray for platform 2
-    if (rayHit2) {
-      if (rayHit2.collider.parent()) {
-        const floatingForce2 =
-          springK * (floatingDis - rayHit2.toi) -
-          floatingPlateRef2.current.linvel().y * dampingC;
-        floatingPlateRef2.current.applyImpulse(
-          springDirVec2.set(0, floatingForce2, 0),
-          true
-        );
-      }
-    }
+    // // Ray for platform 2
+    // if (rayHit2) {
+    //   if (rayHit2.collider.parent()) {
+    //     const floatingForce2 =
+    //       springK * (floatingDis - rayHit2.toi) -
+    //       floatingPlateRef2.current.linvel().y * dampingC;
+    //     floatingPlateRef2.current.applyImpulse(
+    //       springDirVec2.set(0, floatingForce2, 0),
+    //       true
+    //     );
+    //   }
+    // }
 
     // Ray for moving platform
     if (rayHitMove) {
@@ -174,7 +174,7 @@ export default function FloatingPlatform() {
     <GaeSupProps text='floating'>
       {/* Platform 1 */}
       <RigidBody
-        position={[0, 5, -10]}
+        position={[0, 10, -10]}
         mass={1}
         colliders={false}
         ref={floatingPlateRef}
@@ -195,32 +195,9 @@ export default function FloatingPlatform() {
         </mesh>
       </RigidBody>
 
-      {/* Platform 2 */}
-      <RigidBody
-        position={[7, 5, -10]}
-        mass={1}
-        colliders={false}
-        ref={floatingPlateRef2}
-      >
-        <Text
-          scale={0.5}
-          color='black'
-          maxWidth={10}
-          textAlign='center'
-          position={[0, 2.5, 0]}
-        >
-          Floating Platform push to rotate
-        </Text>
-        <CuboidCollider args={[2.5, 0.1, 2.5]} />
-        <mesh receiveShadow castShadow>
-          <boxGeometry args={[5, 0.2, 5]} />
-          <meshStandardMaterial color={'lightsteelblue'} />
-        </mesh>
-      </RigidBody>
-
       {/* Floating moving Platform test */}
       <RigidBody
-        position={[0, 5, -17]}
+        position={[0, 10, -17]}
         mass={1}
         colliders={false}
         ref={floatingMovingPlateRef}

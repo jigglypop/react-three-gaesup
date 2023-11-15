@@ -1,6 +1,6 @@
 import { useSetGltf } from '@gaesup/stores/animation';
 import { colliderAtom } from '@gaesup/stores/collider';
-import { ControllerProps } from '@gaesup/type';
+import { controllerInnerType } from '@gaesup/type';
 import { useLoader } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
@@ -8,9 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let url = '';
 
-export default function CharacterGltf(
-  props: Omit<ControllerProps, 'animations'>
-) {
+export default function CharacterGltf(props: controllerInnerType) {
   url = props.url;
   const gltf = useLoader(GLTFLoader, props.url);
   const { setGltf } = useSetGltf();
@@ -22,8 +20,18 @@ export default function CharacterGltf(
   }, [gltf]);
 
   return (
-    <group {...props.character} position={[0, -collider.height, 0]}>
-      <primitive object={nodes!.walk} visible={false} />
+    <group
+      receiveShadow
+      castShadow
+      {...props.character}
+      position={[0, -collider.height, 0]}
+    >
+      <primitive
+        object={nodes!.walk}
+        visible={false}
+        receiveShadow
+        castShadow
+      />
       {Object.keys(nodes!).map((name: string, key: number) => {
         if (nodes[name].type === 'SkinnedMesh') {
           return (

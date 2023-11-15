@@ -6,9 +6,8 @@ import {
   grid
 } from '@styles/recipe/index.css';
 import { vars } from '@styles/theme.css';
-import { style, keyframes } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
-
 
 export const joyStick = style([
   fixed({
@@ -21,8 +20,6 @@ export const joyStick = style([
     width: '100%'
   }
 ]);
-
-
 
 export const joyStickInner = style([
   grid({

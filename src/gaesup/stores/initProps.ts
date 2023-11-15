@@ -1,20 +1,19 @@
 import { useKeyboardControls } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
 import { useCallback, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import { ControllerInitProps } from '..';
 import {
   constantType,
+  controllerInitPropsType,
   groundRayType,
   optionsType,
-  propType,
   slopeRayType
 } from '../type';
-import useCameraInit from './camera';
 import { colliderAtom } from './collider';
 import initDebug from './initDebug';
 
-export default function initProps(props: ControllerInitProps) {
+export default function initProps(props: controllerInitPropsType) {
   const { rapier, world } = useRapier();
   const [_, getKeys] = useKeyboardControls();
   const keyControl: {
@@ -108,21 +107,11 @@ export default function initProps(props: ControllerInitProps) {
     };
   }, []);
 
-  // const current = useMemo(() => {
-  //   return {
-  //     position: vec3(),
-  //     standPosition: vec3(),
-  //     velocity: vec3(),
-  //     reverseVelocity: vec3(),
-  //     quat: quat(),
-  //     euler: euler()
-  //   };
-  // }, []);
-
   let options: optionsType = useMemo(() => {
     return {
       debug: false,
-      controllerType: 'none'
+      controllerType: 'none',
+      cameraCollisionType: 'transparent'
     };
   }, []);
 
@@ -143,23 +132,34 @@ export default function initProps(props: ControllerInitProps) {
       intersectObjectMap: {}
     };
   }, []);
+  cameraRay.rayCast = new THREE.Raycaster(
+    cameraRay.origin,
+    cameraRay.dir,
+    0,
+    -constant.cameraMaxDistance
+  );
 
-  const _prop: propType = {
-    options,
-    slopeRay,
-    groundRay,
-    jump,
-    move,
-    // current,
-    constant,
-    cameraRay,
-    capsuleColliderRef: props.capsuleColliderRef,
-    rigidBodyRef: props.rigidBodyRef,
-    outerGroupRef: props.outerGroupRef,
-    slopeRayOriginRef: props.slopeRayOriginRef,
-    animations: props.animations,
-    keyControl
+  const { scene, camera } = useThree();
+  const intersectObjectMap: { [uuid: string]: THREE.Object3D } = {};
+  const getMeshs = (object: THREE.Object3D) => {
+    if (object.userData && object.userData.intangible) return;
+    if (
+      object instanceof THREE.Mesh &&
+      object.geometry.type !== 'InstancedBufferGeometry'
+    ) {
+      intersectObjectMap[object.uuid] = object;
+    }
+    object.children.forEach((child) => {
+      getMeshs(child);
+    });
   };
+
+  useEffect(() => {
+    scene.children.forEach((child) => getMeshs(child));
+    cameraRay.intersectObjectMap = intersectObjectMap;
+    cameraRay.followCamera.add(camera);
+    cameraRay.pivot.add(cameraRay.followCamera);
+  });
 
   useEffect(() => {
     if (props.options) {
@@ -176,8 +176,19 @@ export default function initProps(props: ControllerInitProps) {
     }
   }, []);
 
-  const prop = initDebug(_prop);
-  useCameraInit(prop);
-
-  return prop;
+  return initDebug({
+    options,
+    slopeRay,
+    groundRay,
+    jump,
+    move,
+    constant,
+    cameraRay,
+    capsuleColliderRef: props.capsuleColliderRef,
+    rigidBodyRef: props.rigidBodyRef,
+    outerGroupRef: props.outerGroupRef,
+    slopeRayOriginRef: props.slopeRayOriginRef,
+    animations: props.animations,
+    keyControl
+  });
 }

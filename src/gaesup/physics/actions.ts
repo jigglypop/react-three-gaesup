@@ -16,26 +16,28 @@ import { useAtomValue } from 'jotai';
 
 export default function calcActions(prop: propType) {
   const { outerGroupRef, animations, groundRay } = prop;
-  const { playIdle, playWalk, playRun, playJump, playJumpIdle, playFall } =
-    usePlay({ outerGroupRef, animations });
+  const { playIdle, playWalk, playRun, playJump, playFall } = usePlay({
+    outerGroupRef,
+    animations
+  });
   const states = useAtomValue(statesAtom);
   const current = useAtomValue(currentAtom);
-  const { isNotMoving, isMoving, isJumping, isRunning } = states;
+  const { isNotMoving, isMoving, isJumping, isRunning, isAnimationOuter } =
+    states;
   useFrame(() => {
-    if (isJumping) {
-      playJump();
-    } else if (isNotMoving) {
-      playIdle();
-    } else if (isRunning) {
-      playRun();
-    } else if (isMoving) {
-      playWalk();
-    }
-    // else if (!isCanJump) {
-    //   playJumpIdle();
-    // }
-    if (groundRay.hit === null && current.velocity.y < 0) {
-      playFall();
+    if (!isAnimationOuter) {
+      if (isJumping) {
+        playJump();
+      } else if (isNotMoving) {
+        playIdle();
+      } else if (isRunning) {
+        playRun();
+      } else if (isMoving) {
+        playWalk();
+      }
+      if (groundRay.hit === null && current.velocity.y < 0) {
+        playFall();
+      }
     }
   });
 }

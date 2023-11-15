@@ -1,4 +1,4 @@
-import { ControllerProps } from '@gaesup/type';
+import { controllerType } from '@gaesup/type';
 import { vec3 } from '@react-three/rapier';
 import { atom, useAtom } from 'jotai';
 import * as THREE from 'three';
@@ -17,10 +17,7 @@ export const colliderAtom = atom<colliderAtomType>({
 });
 colliderAtom.debugLabel = 'collider';
 
-export function useColliderInit(
-  scene: THREE.Object3D,
-  props: Omit<ControllerProps, 'animations'>
-) {
+export function useColliderInit(scene: THREE.Object3D, props: controllerType) {
   const [collider, setcollider] = useAtom(colliderAtom);
   const box = new THREE.Box3().setFromObject(scene);
   const scale = props.character?.scale;

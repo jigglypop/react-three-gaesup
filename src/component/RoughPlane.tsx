@@ -22,7 +22,7 @@ export default function RoughPlane() {
 
   return (
     <GaeSupProps text='RoughPlane'>
-      <RigidBody type='fixed' colliders='trimesh' position={[10, -1.2, 10]}>
+      <RigidBody type='fixed' colliders='trimesh' position={[10, -1, 10]}>
         <primitive object={roughPlane.scene} />
       </RigidBody>
     </GaeSupProps>

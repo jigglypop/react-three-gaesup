@@ -1,7 +1,7 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
 import { actionsType, animationTagType } from '@gaesup/type';
-import { useAnimations } from '@react-three/drei';
+import { useAnimations, useKeyboardControls } from '@react-three/drei';
 import { atom, useAtom } from 'jotai';
 import * as THREE from 'three';
 import { GLTF } from 'three-stdlib';
@@ -9,6 +9,9 @@ import { GLTF } from 'three-stdlib';
 export type animationPropType = {
   current: keyof animationTagType;
   animationNames: actionsType;
+  keyControl: {
+    [key: string]: boolean;
+  };
 };
 
 export const animationAtom = atom<animationPropType>({
@@ -21,7 +24,8 @@ export const animationAtom = atom<animationPropType>({
     jumpIdle: 'jumpIdle',
     jumpLand: 'jumpLand',
     fall: 'fall'
-  }
+  },
+  keyControl: {}
 });
 
 animationAtom.debugLabel = 'animation';
@@ -33,16 +37,21 @@ export default function usePlay({
   outerGroupRef?: RefObject<THREE.Group>;
   animations: THREE.AnimationClip[];
 }) {
+  const [_, getKeys] = useKeyboardControls();
+  const keys = getKeys();
   const { actions } = useAnimations(animations, outerGroupRef);
   const [animation, setAnimation] = useAtom(animationAtom);
 
   // Animation set state
-  const playAnimation = (tag: keyof animationTagType) => {
-    setAnimation((animation) => ({
-      ...animation,
-      current: tag
-    }));
-  };
+  const playAnimation = useCallback(
+    (tag: any) => {
+      setAnimation((animation) => ({
+        ...animation,
+        current: tag
+      }));
+    },
+    [setAnimation, animation, animation.current]
+  );
 
   const setAnimationName = (actions: {
     [x: string]: THREE.AnimationAction | null;
@@ -75,6 +84,13 @@ export default function usePlay({
       resetAni();
     };
   }, []);
+
+  useEffect(() => {
+    setAnimation((animation) => ({
+      ...animation,
+      keyControl: keys
+    }));
+  }, [keys]);
 
   useEffect(() => {
     // Play animation

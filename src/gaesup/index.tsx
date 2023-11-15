@@ -7,7 +7,7 @@ import {
   vec3
 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
-import { RefObject, useRef } from 'react';
+import { useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import checkIsRotate from './check/checkIsRotate';
@@ -24,38 +24,28 @@ import calcJump from './physics/jump';
 import stabilizing from './physics/stabilizing';
 import calcTurn from './physics/turn';
 import { colliderAtom, useColliderInit } from './stores/collider';
+import initCallback from './stores/initCallback';
 import initProps from './stores/initProps';
 import initSetting from './stores/initSetting';
-import { ControllerProps } from './type';
+import { controllerInnerType, controllerType } from './type';
 import CharacterGltf from './utils/CharacterGltf';
 
 /**
  * ControllerWrapper
  */
 
-export type ControllerInitProps = Omit<ControllerProps, 'children' | 'url'> & {
-  capsuleColliderRef: RefObject<Collider>;
-  rigidBodyRef: RefObject<RapierRigidBody>;
-  outerGroupRef: RefObject<THREE.Group>;
-  slopeRayOriginRef: RefObject<THREE.Mesh>;
-};
-
-export default function Controller(props: Omit<ControllerProps, 'animations'>) {
+export default function Controller(props: controllerType) {
   const gltf = useLoader(GLTFLoader, props.url);
   const { animations, scene } = gltf;
-  // const [minimap, setMiniMap] = useAtom(minimapAtom);
-  // setMiniMap(scene);
-  // console.log(scene);
-
   useColliderInit(scene, props);
   return (
     <ControllerInner {...{ ...props, animations }}>
-      <CharacterGltf {...props} />
+      <CharacterGltf {...{ ...props, animations }} />
     </ControllerInner>
   );
 }
 
-export function ControllerInner(props: ControllerProps) {
+export function ControllerInner(props: controllerInnerType) {
   const capsuleColliderRef = useRef<Collider>(null);
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const outerGroupRef = useRef<THREE.Group>(null);
@@ -69,7 +59,7 @@ export function ControllerInner(props: ControllerProps) {
     outerGroupRef,
     slopeRayOriginRef
   });
-
+  initCallback(props, prop);
   initSetting(prop);
   checkOnTheGround(prop);
   checkOnTheSlope(prop);
@@ -110,14 +100,6 @@ export function ControllerInner(props: ControllerProps) {
 
   const collider = useAtomValue(colliderAtom);
 
-  //   useEffect(() => {
-  //     const a = vec3({ x: 1, y: 0, z: 1 });
-  //     const b = vec3({ x: 2, y: 0, z: 1 });
-  //
-  //     a.multiplyScalar(3);
-  //     console.log(a);
-  //   }, []);
-
   return (
     <>
       <RigidBody
@@ -133,7 +115,7 @@ export function ControllerInner(props: ControllerProps) {
           args={[collider.height, collider.radius]}
         ></CapsuleCollider>
 
-        <group ref={outerGroupRef} userData={{ camExcludeCollision: true }}>
+        <group ref={outerGroupRef} userData={{ intangible: true }}>
           <mesh>
             <arrowHelper
               args={[vec3().set(0, -1, 0), vec3().set(0, -0.3, 0)]}
@@ -147,7 +129,7 @@ export function ControllerInner(props: ControllerProps) {
             ]}
             ref={slopeRayOriginRef}
             visible={false}
-            userData={{ camExcludeCollision: true }} // this won't be collide by camera ray
+            userData={{ intangible: true }}
           >
             <boxGeometry args={[0.15, 0.15, 0.15]} />
           </mesh>
