@@ -101,10 +101,13 @@ export default function calcImpulse(prop: propType) {
         false
       );
     }
-    current.position = vec3(rigidBodyRef.current.translation());
-    current.velocity = vec3(rigidBodyRef.current.linvel());
-    setCurrent((current) => ({
-      ...current
-    }));
+    // current.position = vec3(rigidBodyRef.current.translation());
+    // current.velocity = vec3(rigidBodyRef.current.linvel());
+    if (rigidBodyRef.current)
+      setCurrent((current) => ({
+        ...current,
+        position: vec3(rigidBodyRef.current!.translation()),
+        velocity: vec3(rigidBodyRef.current!.linvel())
+      }));
   });
 }

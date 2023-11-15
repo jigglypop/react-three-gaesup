@@ -2,6 +2,7 @@
 
 import { currentAtom } from '@gaesup/stores/current';
 import { minimapAtom } from '@gaesup/stores/minimap';
+import { optionsAtom } from '@gaesup/stores/options';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { useAtomValue } from 'jotai';
 import * as style from './style.css';
@@ -9,6 +10,7 @@ import * as style from './style.css';
 export function MiniMapInner() {
   const minimap = useAtomValue(minimapAtom);
   const current = useAtomValue(currentAtom);
+  const options = useAtomValue(optionsAtom);
 
   return (
     <div className={style.minimap}>
@@ -23,8 +25,10 @@ export function MiniMapInner() {
                 width: `${obj.size.x}rem`,
                 height: `${obj.size.z}rem`,
                 transform: `translate(${
-                  -obj.center.x + current.position.x * 0.5
-                }rem, ${-obj.center.z + current.position.z * 0.5}rem)`
+                  -obj.center.x + current.position.x * options.minimapRatio
+                }rem, ${
+                  -obj.center.z + current.position.z * options.minimapRatio
+                }rem)`
               })}
             >
               <div className={style.text}>{obj.text}</div>

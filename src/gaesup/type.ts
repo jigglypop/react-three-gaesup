@@ -82,8 +82,10 @@ export type constantType = {
 
 export type optionsType = {
   debug: boolean;
-  controllerType: 'none' | 'gameboy' | 'joystick';
+  controllerType: 'none' | 'gameboy' | 'joystick' | 'keyboard';
   cameraCollisionType: 'transparent' | 'closeUp';
+  minimap: boolean;
+  minimapRatio: number;
 };
 
 export type partialOptionsType = Partial<optionsType>;

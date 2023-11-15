@@ -7,11 +7,6 @@ import { useAtomValue } from 'jotai';
 
 /**
  * Actions for managing animations
- * 애니메이션을 관리하기 위한 액션들
- * @param props
- * @param props.url GLTF file url
- * @param props.outerGroupRef Ref of the outer group of the character 캐릭터의 내부 그룹의 Ref
- *
  */
 
 export default function calcActions(prop: propType) {

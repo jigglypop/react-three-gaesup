@@ -3,8 +3,7 @@ import { useLoader } from '@react-three/fiber';
 import {
   CapsuleCollider,
   RapierRigidBody,
-  RigidBody,
-  vec3
+  RigidBody
 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
@@ -99,7 +98,6 @@ export function ControllerInner(props: controllerInnerType) {
   //   });
 
   const collider = useAtomValue(colliderAtom);
-
   return (
     <>
       <RigidBody
@@ -110,17 +108,22 @@ export function ControllerInner(props: controllerInnerType) {
         // friction={props.friction || -0.5}
         {...props}
       >
+        {/* <mesh visible={prop.options.debug}>
+          <arrowHelper
+            args={[
+              prop.groundRay.dir,
+              prop.groundRay.origin,
+              prop.groundRay.length
+            ]}
+          />
+        </mesh> */}
+
         <CapsuleCollider
           ref={capsuleColliderRef}
           args={[collider.height, collider.radius]}
-        ></CapsuleCollider>
+        />
 
         <group ref={outerGroupRef} userData={{ intangible: true }}>
-          <mesh>
-            <arrowHelper
-              args={[vec3().set(0, -1, 0), vec3().set(0, -0.3, 0)]}
-            />
-          </mesh>
           <mesh
             position={[
               prop.groundRay.offset.x,
@@ -131,6 +134,16 @@ export function ControllerInner(props: controllerInnerType) {
             visible={false}
             userData={{ intangible: true }}
           >
+            {/* <mesh>
+              <arrowHelper
+                args={[
+                  prop.slopeRay.dir,
+                  prop.slopeRay.origin,
+                  prop.slopeRay.length,
+                  '#ff0000'
+                ]}
+              />
+            </mesh> */}
             <boxGeometry args={[0.15, 0.15, 0.15]} />
           </mesh>
 

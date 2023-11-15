@@ -8,8 +8,6 @@ import { useAtomValue } from 'jotai';
 export default function calcDirection(prop: propType) {
   const { rigidBodyRef, keyControl, options, cameraRay } = prop;
   const current = useAtomValue(currentAtom);
-
-  // const currentCamera = useAtomValue(currentCameraAtom);
   const joystick = useAtomValue(joyStickOriginAtom);
   const { forward, backward, leftward, rightward } = keyControl;
   const { controllerType } = options;

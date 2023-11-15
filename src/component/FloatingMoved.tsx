@@ -1,30 +1,56 @@
-import type { RayColliderToi } from '@dimforge/rapier3d-compat';
+import { Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
 import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { CuboidCollider, RigidBody, useRapier } from '@react-three/rapier';
+import {
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+  useRapier,
+  vec3
+} from '@react-three/rapier';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function FloatingPlatform() {
+export type rayType = {
+  origin: THREE.Vector3;
+  hit: RayColliderToi | null;
+  parent?: RapierRigidBody | null | undefined;
+  rayCast: Ray | null;
+  offset: THREE.Vector3;
+  dir: THREE.Vector3;
+  springDir: THREE.Vector3;
+  length: number;
+};
+
+export default function FloatingMoved() {
   // Preset
   const floatingPlateRef = useRef<any>();
   const { rapier, world } = useRapier();
 
-  /**
-   * Ray setup
-   */
-  // Platform 1
-  const rayLength = 0.8;
-  const rayDir = { x: 0, y: -1, z: 0 };
-  const springDirVec = useMemo(() => new THREE.Vector3(), []);
-  const origin = useMemo(() => new THREE.Vector3(), []);
-  const rayCast = new rapier.Ray(origin, rayDir);
-  let rayHit: RayColliderToi = null;
-  const floatingDis = 0.8;
-  const springK = 2.5;
-  const dampingC = 0.15;
+  const ray: rayType = useMemo(() => {
+    return {
+      origin: vec3(),
+      dir: vec3({ x: 0, y: -1, z: 0 }),
+      offset: vec3(),
+      springDir: vec3(),
+      hit: null,
+      parent: null,
+      rayCast: null,
+      length: 0.8
+    };
+  }, []);
 
+  ray.rayCast = new rapier.Ray(ray.origin, ray.dir);
+  ray.hit = world.castRay(
+    ray.rayCast,
+    ray.length,
+    true,
+    undefined,
+    undefined,
+    floatingPlateRef.current,
+    floatingPlateRef.current
+  );
   useEffect(() => {
     // Loack platform 1 rotation
     floatingPlateRef.current.lockRotations(true);
@@ -32,30 +58,25 @@ export default function FloatingPlatform() {
 
   useFrame(() => {
     // Ray cast for platform 1
-    if (floatingPlateRef.current) {
-      origin.set(
-        floatingPlateRef.current.translation().x,
-        floatingPlateRef.current.translation().y,
-        floatingPlateRef.current.translation().z
-      );
-      rayHit = world.castRay(
-        rayCast,
-        rayLength,
+    if (floatingPlateRef.current && ray.rayCast) {
+      ray.origin = vec3(floatingPlateRef.current.translation());
+      ray.hit = world.castRay(
+        ray.rayCast,
+        ray.length,
         false,
-        null,
-        null,
+        undefined,
+        undefined,
         floatingPlateRef.current,
         floatingPlateRef.current
       );
     }
 
-    if (rayHit) {
-      if (rayHit.collider.parent()) {
+    if (ray.hit) {
+      if (ray.hit.collider.parent()) {
         const floatingForce =
-          springK * (floatingDis - rayHit.toi) -
-          floatingPlateRef.current.linvel().y * dampingC;
+          2.5 * (0.8 - ray.hit.toi) - floatingPlateRef.current.linvel().y * 0.2;
         floatingPlateRef.current.applyImpulse(
-          springDirVec.set(0, floatingForce, 0),
+          ray.springDir.set(0, floatingForce, 0),
           true
         );
       }
@@ -63,9 +84,9 @@ export default function FloatingPlatform() {
   });
 
   return (
-    <GaeSupProps text='floating'>
+    <GaeSupProps text='moved'>
       <RigidBody
-        position={[0, 10, -10]}
+        position={[5, 10, -5]}
         mass={1}
         colliders={false}
         ref={floatingPlateRef}
@@ -77,7 +98,7 @@ export default function FloatingPlatform() {
           textAlign='center'
           position={[0, 2.5, 0]}
         >
-          Floating Platform push to move
+          moved
         </Text>
         <CuboidCollider args={[2.5, 0.1, 2.5]} />
         <mesh receiveShadow castShadow>

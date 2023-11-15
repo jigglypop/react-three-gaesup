@@ -1,23 +1,17 @@
 'use client';
 
 import Controller from '@gaesup/index';
-import JumpPoint from '@gaesup/jumpPoint';
-import KeyBoardToolTip from '@gaesup/keyBoardToolTip';
-import MiniMap from '@gaesup/minimap';
+import GaeSupTools from '@gaesup/tools';
 import { Environment, KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import DynamicPlatforms from 'component/DynamicPlatforms';
-import FloatingPlatform from 'component/FloatingPlatform';
 import Floor from 'component/Floor';
 import RigidObjects from 'component/RigidObjects';
 import RoughPlane from 'component/RoughPlane';
 import ShotCube from 'component/ShotCube';
 import Slopes from 'component/Slopes';
-
-export function GaeSupWorld({ children }: { children: JSX.Element }) {
-  return <>{children}</>;
-}
+import FloatMove from 'component/platform/FloatMove';
 
 export default function Main() {
   const keyboardMap = [
@@ -62,7 +56,7 @@ export default function Main() {
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
-              options={{ debug: false, controllerType: 'none' }}
+              options={{ debug: false, controllerType: 'joystick' }}
               character={{
                 scale: 0.3,
                 position: [0, -0.55, 0]
@@ -87,24 +81,16 @@ export default function Main() {
 
           {/* Rigid body objects */}
           <RigidObjects />
-
-          {/* Floating platform */}
-          <FloatingPlatform />
-
+          <FloatMove />
           {/* Dynamic platforms */}
           <DynamicPlatforms />
-
           {/* Floor */}
           <Floor />
-
           {/* Shoting cubes */}
           <ShotCube />
         </Physics>
       </Canvas>
-      {/* <JoyStick /> */}
-      <MiniMap />
-      <KeyBoardToolTip keyboardMap={keyboardMap} />
-      <JumpPoint />
+      <GaeSupTools keyboardMap={keyboardMap} />
     </>
   );
 }

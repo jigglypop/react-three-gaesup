@@ -22,10 +22,10 @@ export default function calcJump(prop: propType) {
   useFrame(() => {
     // Jump impulse
     const { jumpAccelY, jumpSpeed } = constant;
-    if (isOnJump && isOnTheGround) {
+    if (isOnJump && isOnTheGround && rigidBodyRef.current) {
       jump.velocity.set(current.velocity.x, jumpSpeed, current.velocity.z);
       // Apply slope normal to jump direction
-      rigidBodyRef.current!.setLinvel(
+      rigidBodyRef.current.setLinvel(
         jump.direction
           .set(0, jumpSpeed * 0.25, 0)
           .projectOnVector(slopeRay.current)
@@ -34,6 +34,7 @@ export default function calcJump(prop: propType) {
       );
       // Apply jump force downward to the standing platform
       move.mass.y *= jumpAccelY;
+
       groundRay.parent?.applyImpulseAtPoint(
         move.mass,
         current.standPosition,

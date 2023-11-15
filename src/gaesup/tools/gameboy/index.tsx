@@ -15,11 +15,10 @@ export const GameBoyDirections = [
   { tag: 'down', value: 'backward', icon: <BiDownArrow /> },
   { tag: 'left', value: 'leftward', icon: <BiLeftArrow /> },
   { tag: 'right', value: 'rightward', icon: <BiRightArrow /> }
-  // { tag: 'z', value: 'KeyZ', icon: 'GREET' }
 ];
 
 export default function GameBoy() {
-  const options = useAtomValue(optionAtom);
+  const options = useAtomValue(optionsAtom);
   return (
     <>
       {options.controllerType === 'gameboy' && (

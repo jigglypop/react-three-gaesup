@@ -28,7 +28,7 @@ export function JoyBall() {
       if (!mouseDown) return;
       const outer = e.target as HTMLDivElement;
       const parent = outer.parentElement as HTMLDivElement;
-      const { top, left, bottom, right, x, y, width, height } =
+      const { top, left, bottom, right, width, height } =
         parent.getBoundingClientRect();
       if (
         top > e.clientY ||
@@ -91,7 +91,7 @@ export function JoyBall() {
       if (!touchDown) return;
       const outer = e.target as HTMLDivElement;
       const parent = outer.parentElement as HTMLDivElement;
-      const { top, left, bottom, right, x, y, width, height } =
+      const { top, left, bottom, right, width, height } =
         parent.getBoundingClientRect();
       if (
         top > e.touches[0].pageY ||

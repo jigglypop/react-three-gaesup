@@ -1,17 +1,18 @@
 import { useKeyboardControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
+import { useAtom } from 'jotai';
 import { useCallback, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import {
   constantType,
   controllerInitPropsType,
   groundRayType,
-  optionsType,
   slopeRayType
 } from '../type';
 import { colliderAtom } from './collider';
 import initDebug from './initDebug';
+import { optionsAtom } from './options';
 
 export default function initProps(props: controllerInitPropsType) {
   const { rapier, world } = useRapier();
@@ -21,6 +22,7 @@ export default function initProps(props: controllerInitPropsType) {
   } = useCallback(() => {
     return getKeys();
   }, [getKeys])();
+  const [options, setOptions] = useAtom(optionsAtom);
 
   const groundRay: groundRayType = useMemo(() => {
     return {
@@ -107,13 +109,13 @@ export default function initProps(props: controllerInitPropsType) {
     };
   }, []);
 
-  let options: optionsType = useMemo(() => {
-    return {
-      debug: false,
-      controllerType: 'none',
-      cameraCollisionType: 'transparent'
-    };
-  }, []);
+  // let options: optionsType = useMemo(() => {
+  //   return {
+  //     debug: false,
+  //     controllerType: 'none',
+  //     cameraCollisionType: 'transparent'
+  //   };
+  // }, []);
 
   const cameraRay = useMemo(() => {
     return {
@@ -163,10 +165,14 @@ export default function initProps(props: controllerInitPropsType) {
 
   useEffect(() => {
     if (props.options) {
-      options = {
+      setOptions((options) => ({
         ...options,
         ...Object.assign(options, props.options)
-      };
+      }));
+      // options = {
+      //   ...options,
+      //   ...Object.assign(options, props.options)
+      // };
     }
     if (props.constant) {
       constant = {
