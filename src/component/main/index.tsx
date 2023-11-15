@@ -56,7 +56,7 @@ export default function Main() {
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
-              options={{ debug: false, controllerType: 'joystick' }}
+              options={{ debug: false, controllerType: 'keyboard' }}
               character={{
                 scale: 0.3,
                 position: [0, -0.55, 0]
@@ -72,13 +72,10 @@ export default function Main() {
               }}
             />
           </KeyboardControls>
-
           {/* Rough plan */}
           <RoughPlane />
-
           {/* Slopes and stairs */}
           <Slopes />
-
           {/* Rigid body objects */}
           <RigidObjects />
           <FloatMove />

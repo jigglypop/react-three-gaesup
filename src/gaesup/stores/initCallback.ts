@@ -9,6 +9,7 @@ import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { animationAtom } from './animation';
+import useCalcControl from './control';
 import { currentAtom } from './current';
 import { statesAtom } from './states';
 
@@ -36,8 +37,11 @@ export default function initCallback(
     }));
   };
 
+  const keyControl = useCalcControl(prop);
+
   const controllerProp: callbackPropType = {
     ...prop,
+    keyControl,
     current,
     states
   };

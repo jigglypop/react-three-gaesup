@@ -6,23 +6,15 @@ import { useAtomValue } from 'jotai';
 
 export default function calcJump(prop: propType) {
   const states = useAtomValue(statesAtom);
-  const {
-    rigidBodyRef,
-    slopeRay,
-    groundRay,
-    keyControl,
-    jump,
-    move,
-    constant
-  } = prop;
-  const { jump: isOnJump } = keyControl;
+  const { rigidBodyRef, slopeRay, groundRay, jump, move, constant } = prop;
   const { isOnTheGround } = states;
   const current = useAtomValue(currentAtom);
+  const { isJumping } = states;
 
   useFrame(() => {
     // Jump impulse
     const { jumpAccelY, jumpSpeed } = constant;
-    if (isOnJump && isOnTheGround && rigidBodyRef.current) {
+    if (isJumping && isOnTheGround && rigidBodyRef.current) {
       jump.velocity.set(current.velocity.x, jumpSpeed, current.velocity.z);
       // Apply slope normal to jump direction
       rigidBodyRef.current.setLinvel(

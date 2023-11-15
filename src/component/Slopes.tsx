@@ -1,4 +1,4 @@
-import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
+import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { useGLTF } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import { useEffect } from 'react';
@@ -21,8 +21,8 @@ export default function Slopes() {
   }, []);
 
   return (
-    <GaeSupProps text='Slopes'>
-      <group position={[-10, -0.8, 10]}>
+    <GaeSupProps text='Slopes' jumpPoint={true} position={[-10, -0.8, 10]}>
+      <group>
         <RigidBody type='fixed' colliders='trimesh' rotation={[0, Math.PI, 0]}>
           <primitive object={slopes.scene} />
         </RigidBody>

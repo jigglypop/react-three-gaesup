@@ -7,6 +7,7 @@ import {
   useRef,
   useState
 } from 'react';
+import GamePad from '../gamepad';
 import * as style from './style.css';
 
 export default function JoyStick() {
@@ -151,34 +152,40 @@ export function JoyBall() {
   }, [touchDown]);
 
   return (
-    <div
-      className={style.joyStickInner}
-      ref={outerRef}
-      onMouseDown={() => setMouseDown(true)}
-      onMouseUp={() => setMouseDown(false)}
-      onMouseMove={handleMouseOver}
-      onMouseLeave={() => {
-        setMouseDown(false);
-        handleMouseOut();
-      }}
-      onTouchStart={() => setTouchDown(true)}
-      onTouchEnd={() => {
-        setTouchDown(false);
-        handleTouchEnd();
-      }}
-      onTouchMove={handleTouchMove}
-      onTouchCancel={handleTouchEnd}
-    >
-      <div
-        className={`${style.joystickBall}`}
-        style={{
-          position: joyStickBall.position as 'fixed' | 'absolute',
-          background: joyStickBall.background,
-          boxShadow: joyStickBall.boxShadow,
-          top: joyStickBall.y,
-          left: joyStickBall.x
-        }}
-      />
-    </div>
+    <>
+      {' '}
+      <GamePad />
+      <div className={style.joyStick}>
+        <div
+          className={style.joyStickInner}
+          ref={outerRef}
+          onMouseDown={() => setMouseDown(true)}
+          onMouseUp={() => setMouseDown(false)}
+          onMouseMove={handleMouseOver}
+          onMouseLeave={() => {
+            setMouseDown(false);
+            handleMouseOut();
+          }}
+          onTouchStart={() => setTouchDown(true)}
+          onTouchEnd={() => {
+            setTouchDown(false);
+            handleTouchEnd();
+          }}
+          onTouchMove={handleTouchMove}
+          onTouchCancel={handleTouchEnd}
+        >
+          <div
+            className={`${style.joystickBall}`}
+            style={{
+              position: joyStickBall.position as 'fixed' | 'absolute',
+              background: joyStickBall.background,
+              boxShadow: joyStickBall.boxShadow,
+              top: joyStickBall.y,
+              left: joyStickBall.x
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }

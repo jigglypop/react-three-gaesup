@@ -1,5 +1,5 @@
 import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
-import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
+import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
@@ -104,13 +104,8 @@ export default function FloatMove() {
   });
 
   return (
-    <GaeSupProps text='Float and move'>
-      <RigidBody
-        position={[0, 5, -17]}
-        mass={1}
-        colliders={false}
-        ref={rigidBodyRef}
-      >
+    <GaeSupProps text='Float and move' jumpPoint={true} position={[0, 5, -17]}>
+      <RigidBody mass={1} colliders={false} ref={rigidBodyRef}>
         <Text
           scale={0.2}
           color='black'

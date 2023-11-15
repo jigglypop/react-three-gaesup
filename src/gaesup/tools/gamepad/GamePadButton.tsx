@@ -2,13 +2,12 @@ import { controlAtom } from '@gaesup/stores/control';
 import { useAtom } from 'jotai';
 import * as style from './style.css';
 
-export type gameBoyButtonType = {
-  tag: 'up' | 'down' | 'left' | 'right';
+export type gamePadButtonType = {
+  tag: string;
   value: string;
-  icon: JSX.Element;
 };
 
-export default function GameBoyButton({ tag, value, icon }: gameBoyButtonType) {
+export default function GamePadButton({ tag, value }: gamePadButtonType) {
   const [control, setControl] = useAtom(controlAtom);
 
   const pushKey = (key: string, value: boolean) => {
@@ -28,9 +27,7 @@ export default function GameBoyButton({ tag, value, icon }: gameBoyButtonType) {
 
   return (
     <button
-      className={`${style.gameBoyButtonRecipe({
-        tag: tag
-      })}`}
+      className={`${style.gamePadButtonRecipe({})}`}
       onMouseDown={() => onMouseDown()}
       onMouseUp={() => onMouseLeave()}
       onMouseLeave={() => onMouseLeave()}
@@ -39,7 +36,7 @@ export default function GameBoyButton({ tag, value, icon }: gameBoyButtonType) {
         onMouseLeave();
       }}
     >
-      {icon}
+      {value}
     </button>
   );
 }

@@ -15,10 +15,11 @@ export const jumpPoints = style([
 export const jumpPoint = style([
   flex({}),
   {
+    margin: '1rem',
     fontSize: '0.8rem',
     borderRadius: '50%',
-    width: '4rem',
-    height: '4rem',
+    width: '5rem',
+    height: '5rem',
     color: 'white',
     background: 'rgba(0, 0, 0, 0.6)',
     boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.6)',

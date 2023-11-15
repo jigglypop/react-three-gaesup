@@ -9,7 +9,6 @@ export default function calcAccelaration(prop: propType) {
   const states = useAtomValue(statesAtom);
   const { outerGroupRef, move, constant } = prop;
   const { isMoving, isRunning } = states;
-  // const { run } = keyControl;
   const current = useAtomValue(currentAtom);
 
   useFrame(() => {

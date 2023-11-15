@@ -2,7 +2,7 @@ import { BiDownArrow } from '@react-icons/all-files/bi/BiDownArrow';
 import { BiLeftArrow } from '@react-icons/all-files/bi/BiLeftArrow';
 import { BiRightArrow } from '@react-icons/all-files/bi/BiRightArrow';
 import { BiUpArrow } from '@react-icons/all-files/bi/BiUpArrow';
-import { useAtomValue } from 'jotai';
+import GamePad from '../gamepad';
 import GameBoyButton, { gameBoyButtonType } from './GameBoyButton';
 import * as style from './style.css';
 
@@ -18,25 +18,23 @@ export const GameBoyDirections = [
 ];
 
 export default function GameBoy() {
-  const options = useAtomValue(optionsAtom);
   return (
     <>
-      {options.controllerType === 'gameboy' && (
-        <div className={style.joyStick}>
-          <div className={style.joyStickInner}>
-            {GameBoyDirections.map((item: gameBoyButtonType, key: number) => {
-              return (
-                <GameBoyButton
-                  key={key}
-                  tag={item.tag}
-                  value={item.value}
-                  icon={item.icon}
-                />
-              );
-            })}
-          </div>
+      <GamePad />
+      <div className={style.gameBoy}>
+        <div className={style.gameBoyInner}>
+          {GameBoyDirections.map((item: gameBoyButtonType, key: number) => {
+            return (
+              <GameBoyButton
+                key={key}
+                tag={item.tag}
+                value={item.value}
+                icon={item.icon}
+              />
+            );
+          })}
         </div>
-      )}
+      </div>
     </>
   );
 }

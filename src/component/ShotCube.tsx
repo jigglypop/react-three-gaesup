@@ -1,4 +1,4 @@
-import GaeSupProps from '@gaesup/stores/minimap/gaesupProps';
+import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { useThree } from '@react-three/fiber';
 import { RapierRigidBody } from '@react-three/rapier';
 import { useEffect, useMemo, useRef, useState } from 'react';

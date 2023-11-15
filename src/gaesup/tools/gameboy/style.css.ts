@@ -9,7 +9,7 @@ import { vars } from '@styles/theme.css';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
-export const joyStick = style([
+export const gameBoy = style([
   fixed({
     south: true
   }),
@@ -21,7 +21,7 @@ export const joyStick = style([
   }
 ]);
 
-export const joyStickInner = style([
+export const gameBoyInner = style([
   grid({
     row: 'center'
   }),
@@ -36,7 +36,7 @@ export const joyStickInner = style([
   }
 ]);
 
-export const joystickButtonRecipe = recipe({
+export const gameBoyButtonRecipe = recipe({
   base: [
     flex_relative({}),
     glass({}),
