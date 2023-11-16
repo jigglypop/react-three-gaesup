@@ -3,7 +3,7 @@ import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 
-export default function calcTurn(prop: propType) {
+export default function turn(prop: propType) {
   const current = useAtomValue(currentAtom);
   const { outerGroupRef, constant } = prop;
   const { turnSpeed } = constant;

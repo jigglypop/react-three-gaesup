@@ -1,3 +1,5 @@
+'use client';
+
 import { Grid, MeshReflectorMaterial } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 

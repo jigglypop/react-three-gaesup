@@ -1,4 +1,7 @@
+'use client';
+
 import GaeSupProps from '@gaesup/stores/gaesupProps';
+import { Qt, V3 } from '@gaesup/utils/vector';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
@@ -10,48 +13,66 @@ import {
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
+export type dynamicType = {
+  time: number | null;
+  X: THREE.Vector3;
+  Y: THREE.Vector3;
+  Qt: THREE.Quaternion;
+};
+
 export default function DynamicPlatforms() {
-  const sideMovePlatformRef = useRef<RapierRigidBody>();
-  const verticalMovePlatformRef = useRef<RapierRigidBody>();
-  const rotatePlatformRef = useRef<RapierRigidBody>();
-  const rotationDrumRef = useRef<RapierRigidBody>();
+  const sideMovePlatformRef = useRef<RapierRigidBody>(null);
+  const verticalMovePlatformRef = useRef<RapierRigidBody>(null);
+  const rotatePlatformRef = useRef<RapierRigidBody>(null);
+  const rotationDrumRef = useRef<RapierRigidBody>(null);
 
   // Initializ animation settings
-  let time = null;
-  const xRotationAxies = new THREE.Vector3(1, 0, 0);
-  const yRotationAxies = new THREE.Vector3(0, 1, 0);
+  const dynamic = useMemo<dynamicType>(() => {
+    return {
+      time: null,
+      X: V3(1, 0, 0),
+      Y: V3(0, 1, 0),
+      Qt: Qt()
+    };
+  }, []);
 
-  const quaternionRotation = useMemo(() => new THREE.Quaternion(), []);
+  // let time = null;
+  // const xRotationAxies = new THREE.Vector3(1, 0, 0);
+  // const Y = new THREE.Vector3(0, 1, 0);
+
+  // const Qt = useMemo(() => new THREE.Quaternion(), []);
 
   useFrame((state) => {
-    time = state.clock.elapsedTime;
+    dynamic.time = state.clock.elapsedTime;
+    const { time, Qt, X, Y } = dynamic;
+    if (dynamic.time) {
+      // Move platform
+      sideMovePlatformRef.current?.setNextKinematicTranslation({
+        x: 5 * Math.sin(time / 2) - 12,
+        y: -0.5,
+        z: -10
+      });
 
-    // Move platform
-    sideMovePlatformRef.current?.setNextKinematicTranslation({
-      x: 5 * Math.sin(time / 2) - 12,
-      y: -0.5,
-      z: -10
-    });
+      // Elevate platform
+      verticalMovePlatformRef.current?.setNextKinematicTranslation({
+        x: -25,
+        y: 2 * Math.sin(time / 2) + 2,
+        z: 0
+      });
+      verticalMovePlatformRef.current?.setNextKinematicRotation(
+        Qt.setFromAxisAngle(Y, time * 0.5)
+      );
 
-    // Elevate platform
-    verticalMovePlatformRef.current?.setNextKinematicTranslation({
-      x: -25,
-      y: 2 * Math.sin(time / 2) + 2,
-      z: 0
-    });
-    verticalMovePlatformRef.current?.setNextKinematicRotation(
-      quaternionRotation.setFromAxisAngle(yRotationAxies, time * 0.5)
-    );
+      // Rotate platform
+      rotatePlatformRef.current?.setNextKinematicRotation(
+        Qt.setFromAxisAngle(Y, time * 0.5)
+      );
 
-    // Rotate platform
-    rotatePlatformRef.current?.setNextKinematicRotation(
-      quaternionRotation.setFromAxisAngle(yRotationAxies, time * 0.5)
-    );
-
-    // Rotate drum
-    rotationDrumRef.current?.setNextKinematicRotation(
-      quaternionRotation.setFromAxisAngle(xRotationAxies, time * 0.5)
-    );
+      // Rotate drum
+      rotationDrumRef.current?.setNextKinematicRotation(
+        Qt.setFromAxisAngle(X, time * 0.5)
+      );
+    }
   });
 
   return (

@@ -1,3 +1,5 @@
+'use client';
+
 import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
 import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { Text } from '@react-three/drei';

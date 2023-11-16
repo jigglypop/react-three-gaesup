@@ -10,7 +10,7 @@ import { useAtomValue } from 'jotai';
  * @returns void
  *
  */
-export default function calcCamera(prop: propType) {
+export default function camera(prop: propType) {
   const { cameraRay, constant } = prop;
   const current = useAtomValue(currentAtom);
   const { checkCollision } = checkCameraCollision(prop);

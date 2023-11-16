@@ -1,3 +1,5 @@
+import { colliderAtom } from '@gaesup/stores/collider';
+import { optionsAtom } from '@gaesup/stores/options';
 import { useKeyboardControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { useRapier, vec3 } from '@react-three/rapier';
@@ -10,9 +12,7 @@ import {
   groundRayType,
   slopeRayType
 } from '../type';
-import { colliderAtom } from './collider';
 import initDebug from './initDebug';
-import { optionsAtom } from './options';
 
 export default function initProps(props: controllerInitPropsType) {
   const { rapier, world } = useRapier();
@@ -108,14 +108,6 @@ export default function initProps(props: controllerInitPropsType) {
       })
     };
   }, []);
-
-  // let options: optionsType = useMemo(() => {
-  //   return {
-  //     debug: false,
-  //     controllerType: 'none',
-  //     cameraCollisionType: 'transparent'
-  //   };
-  // }, []);
 
   const cameraRay = useMemo(() => {
     return {

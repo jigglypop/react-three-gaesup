@@ -1,3 +1,4 @@
+'use client';
 import { controlAtom } from '@gaesup/stores/control';
 import { optionsAtom } from '@gaesup/stores/options';
 import { useAtom, useAtomValue } from 'jotai';

@@ -1,9 +1,9 @@
+import { currentAtom } from '@gaesup/stores/current';
 import { propType } from '@gaesup/type';
 import { useThree } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import * as THREE from 'three';
-import { currentAtom } from './current';
 
 /**
  * Follow camera initial setups from props

@@ -1,3 +1,5 @@
+'use client';
+
 import { Collider } from '@dimforge/rapier3d-compat';
 import { useLoader } from '@react-three/fiber';
 import {
@@ -9,23 +11,11 @@ import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import checkIsRotate from './check/checkIsRotate';
-import checkMoving from './check/checkMoving';
-import checkOnMovingObject from './check/checkOnMovingObject';
-import checkOnTheGround from './check/checkOnTheGround';
-import checkOnTheSlope from './check/checkOnTheSlope';
-import calcAccelaration from './physics/accelaration';
-import calcActions from './physics/actions';
-import calcCamera from './physics/camera';
-import calcDirection from './physics/direction';
-import calcImpulse from './physics/impulse';
-import calcJump from './physics/jump';
-import stabilizing from './physics/stabilizing';
-import calcTurn from './physics/turn';
 import { colliderAtom, useColliderInit } from './stores/collider';
-import initCallback from './stores/initCallback';
-import initProps from './stores/initProps';
-import initSetting from './stores/initSetting';
+
+import check from './check';
+import initialize from './initial';
+import calculation from './physics';
 import { controllerInnerType, controllerType } from './type';
 import CharacterGltf from './utils/CharacterGltf';
 
@@ -51,28 +41,15 @@ export function ControllerInner(props: controllerInnerType) {
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
 
   // init props
-  const prop = initProps({
+  const prop = initialize({
     ...props,
     capsuleColliderRef,
     rigidBodyRef,
     outerGroupRef,
     slopeRayOriginRef
   });
-  initCallback(props, prop);
-  initSetting(prop);
-  checkOnTheGround(prop);
-  checkOnTheSlope(prop);
-  checkOnMovingObject(prop);
-  checkMoving(prop);
-  checkIsRotate(prop);
-  calcCamera(prop);
-  calcTurn(prop);
-  calcDirection(prop);
-  calcAccelaration(prop);
-  calcJump(prop);
-  calcImpulse(prop);
-  stabilizing(prop);
-  calcActions(prop);
+  check(prop);
+  calculation(prop);
 
   const rigidBody2Ref = useRef<RapierRigidBody>(null);
   const capsuleCollider2Ref = useRef<Collider>(null);

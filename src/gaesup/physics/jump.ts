@@ -4,7 +4,7 @@ import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 
-export default function calcJump(prop: propType) {
+export default function jump(prop: propType) {
   const states = useAtomValue(statesAtom);
   const { rigidBodyRef, slopeRay, groundRay, jump, move, constant } = prop;
   const { isOnTheGround } = states;

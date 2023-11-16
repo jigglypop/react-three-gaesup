@@ -7,7 +7,7 @@ import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
 import { useAtom, useAtomValue } from 'jotai';
 
-export default function calcImpulse(prop: propType) {
+export default function impulse(prop: propType) {
   const { rigidBodyRef, slopeRay, groundRay, move, constant } = prop;
   const [current, setCurrent] = useAtom(currentAtom);
 

@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai';
  * Actions for managing animations
  */
 
-export default function calcActions(prop: propType) {
+export default function actions(prop: propType) {
   const { outerGroupRef, animations, groundRay } = prop;
   const { playIdle, playWalk, playRun, playJump, playFall } = usePlay({
     outerGroupRef,

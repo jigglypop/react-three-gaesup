@@ -1,3 +1,5 @@
+'use client';
+
 import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { Text } from '@react-three/drei';
 import {

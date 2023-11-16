@@ -1,3 +1,7 @@
+import { animationAtom } from '@gaesup/stores/animation';
+import useCalcControl from '@gaesup/stores/control';
+import { currentAtom } from '@gaesup/stores/current';
+import { statesAtom } from '@gaesup/stores/states';
 import {
   animationTagType,
   callbackPropType,
@@ -8,10 +12,6 @@ import { useAnimations } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { animationAtom } from './animation';
-import useCalcControl from './control';
-import { currentAtom } from './current';
-import { statesAtom } from './states';
 
 export default function initCallback(
   props: controllerInnerType,

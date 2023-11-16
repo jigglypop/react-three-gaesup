@@ -5,13 +5,13 @@ import GaeSupTools from '@gaesup/tools';
 import { Environment, KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import DynamicPlatforms from 'component/DynamicPlatforms';
-import Floor from 'component/Floor';
-import RigidObjects from 'component/RigidObjects';
-import RoughPlane from 'component/RoughPlane';
-import ShotCube from 'component/ShotCube';
-import Slopes from 'component/Slopes';
+
+import DynamicPlatforms from 'component/platform/DynamicPlatforms';
 import FloatMove from 'component/platform/FloatMove';
+import Floor from 'component/platform/Floor';
+import RigidObjects from 'component/platform/RigidObjects';
+import RoughPlane from 'component/platform/RoughPlane';
+import Slopes from 'component/platform/Slopes';
 
 export default function Main() {
   const keyboardMap = [
@@ -72,19 +72,12 @@ export default function Main() {
               }}
             />
           </KeyboardControls>
-          {/* Rough plan */}
           <RoughPlane />
-          {/* Slopes and stairs */}
           <Slopes />
-          {/* Rigid body objects */}
           <RigidObjects />
           <FloatMove />
-          {/* Dynamic platforms */}
           <DynamicPlatforms />
-          {/* Floor */}
           <Floor />
-          {/* Shoting cubes */}
-          <ShotCube />
         </Physics>
       </Canvas>
       <GaeSupTools keyboardMap={keyboardMap} />

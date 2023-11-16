@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { vec3 } from '@react-three/rapier';
 import { useAtomValue } from 'jotai';
 
-export default function calcAccelaration(prop: propType) {
+export default function accelaration(prop: propType) {
   const states = useAtomValue(statesAtom);
   const { outerGroupRef, move, constant } = prop;
   const { isMoving, isRunning } = states;
