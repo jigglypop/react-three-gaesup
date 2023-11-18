@@ -82,6 +82,7 @@ export type constantType = {
 
 export type optionsType = {
   debug: boolean;
+  mode: 'normal' | 'vehicle' | 'airplane';
   controllerType: 'none' | 'gameboy' | 'joystick' | 'keyboard';
   cameraCollisionType: 'transparent' | 'closeUp';
   minimap: boolean;

@@ -13,8 +13,11 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { colliderAtom, useColliderInit } from './stores/collider';
 
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import check from './check';
-import initialize from './initial';
+import initCallback from './initial/initCallback';
+import initProps from './initial/initProps';
+import initSetting from './initial/initSetting';
 import calculation from './physics';
 import { controllerInnerType, controllerType } from './type';
 import CharacterGltf from './utils/CharacterGltf';
@@ -41,13 +44,16 @@ export function ControllerInner(props: controllerInnerType) {
   const slopeRayOriginRef = useRef<THREE.Mesh>(null);
 
   // init props
-  const prop = initialize({
+  const prop = initProps({
     ...props,
     capsuleColliderRef,
     rigidBodyRef,
     outerGroupRef,
     slopeRayOriginRef
   });
+  initCallback(props, prop);
+  initSetting(prop);
+
   check(prop);
   calculation(prop);
 
@@ -75,13 +81,16 @@ export function ControllerInner(props: controllerInnerType) {
   //   });
 
   const collider = useAtomValue(colliderAtom);
+  const { cameraRay } = prop;
   return (
     <>
+      <PerspectiveCamera makeDefault fov={40} />
+      <OrbitControls enabled={false} regress={false}  />
       <RigidBody
         colliders={false}
         canSleep={false}
         ref={rigidBodyRef}
-        position={props.position || [0, 5, 0]}
+        position={props.position || [0, 1, 0]}
         // friction={props.friction || -0.5}
         {...props}
       >

@@ -3,6 +3,7 @@ import { atom } from 'jotai';
 
 export const optionsAtom = atom<optionsType>({
   debug: false,
+  mode: 'normal',
   controllerType: 'none',
   cameraCollisionType: 'transparent',
   minimap: true,

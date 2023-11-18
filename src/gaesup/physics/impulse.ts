@@ -101,8 +101,6 @@ export default function impulse(prop: propType) {
         false
       );
     }
-    // current.position = vec3(rigidBodyRef.current.translation());
-    // current.velocity = vec3(rigidBodyRef.current.linvel());
     if (rigidBodyRef.current)
       setCurrent((current) => ({
         ...current,

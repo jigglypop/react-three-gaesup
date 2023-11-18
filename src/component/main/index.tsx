@@ -2,7 +2,12 @@
 
 import Controller from '@gaesup/index';
 import GaeSupTools from '@gaesup/tools';
-import { Environment, KeyboardControls } from '@react-three/drei';
+import {
+  Environment,
+  Gltf,
+  KeyboardControls,
+  OrbitControls
+} from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 
@@ -11,7 +16,6 @@ import FloatMove from 'component/platform/FloatMove';
 import Floor from 'component/platform/Floor';
 import RigidObjects from 'component/platform/RigidObjects';
 import RoughPlane from 'component/platform/RoughPlane';
-import Slopes from 'component/platform/Slopes';
 
 export default function Main() {
   const keyboardMap = [
@@ -31,11 +35,11 @@ export default function Main() {
       <Canvas
         shadows
         style={{ width: '100vw', height: '100vh' }}
-        camera={{
-          fov: 65,
-          near: 0.1,
-          far: 1000
-        }}
+        // camera={{
+        //   fov: 65,
+        //   near: 0.1,
+        //   far: 1000
+        // }}
       >
         <Environment background preset='sunset' blur={0.8} />
         <directionalLight
@@ -52,11 +56,16 @@ export default function Main() {
           shadow-camera-left={-50}
         />
         <ambientLight intensity={0.5} />
+        <OrbitControls />
         <Physics>
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
-              options={{ debug: false, controllerType: 'keyboard' }}
+              options={{
+                debug: false,
+                controllerType: 'none',
+                mode: 'vehicle'
+              }}
               character={{
                 scale: 0.3,
                 position: [0, -0.55, 0]
@@ -73,7 +82,16 @@ export default function Main() {
             />
           </KeyboardControls>
           <RoughPlane />
-          <Slopes />
+          {/* <Slopes /> */}
+          <Gltf src={'/snow.glb'} position={[0, -1, 0]} />
+          <Gltf src={'/snow.glb'} position={[2, -1, 2]} />
+          <Gltf src={'/snow.glb'} position={[-2, -1, 2]} />
+          <Gltf src={'/snow.glb'} position={[2, -1, -2]} />
+          <Gltf src={'/snow.glb'} position={[-2, -1, -2]} />
+          <Gltf src={'/snow.glb'} position={[0, -1, 2]} />
+          <Gltf src={'/snow.glb'} position={[2, -1, 0]} />
+          <Gltf src={'/snow.glb'} position={[0, -1, -2]} />
+          <Gltf src={'/snow.glb'} position={[-2, -1, 0]} />
           <RigidObjects />
           <FloatMove />
           <DynamicPlatforms />
