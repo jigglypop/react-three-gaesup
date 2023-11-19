@@ -7,13 +7,15 @@ export type colliderAtomType = {
   height: number;
   radius: number;
   diameter: number;
+  rotation: [number, number, number];
 };
 
 export const colliderAtom = atom<colliderAtomType>({
   height: 0.7,
   halfHeight: 0.35,
   radius: 0.3,
-  diameter: 0.6
+  diameter: 0.6,
+  rotation: [0, 0, 0]
 });
 colliderAtom.debugLabel = 'collider';
 
@@ -41,7 +43,8 @@ export function useColliderInit(scene: THREE.Object3D, props: controllerType) {
       height: height * ratio,
       halfHeight: halfHeight * ratio,
       diameter,
-      radius
+      radius,
+      rotation: [0, 0, 0]
     });
   }
   return { collider, setcollider };

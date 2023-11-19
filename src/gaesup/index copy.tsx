@@ -1,6 +1,7 @@
 'use client';
 
 import { Collider } from '@dimforge/rapier3d-compat';
+import { useLoader } from '@react-three/fiber';
 import {
   CapsuleCollider,
   RapierRigidBody,
@@ -9,7 +10,8 @@ import {
 import { useAtomValue } from 'jotai';
 import { useRef } from 'react';
 import * as THREE from 'three';
-import { colliderAtom } from './stores/collider';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { colliderAtom, useColliderInit } from './stores/collider';
 
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import check from './check';
@@ -18,6 +20,7 @@ import initProps from './initial/initProps';
 import initSetting from './initial/initSetting';
 import calculation from './physics';
 import { controllerInnerType, controllerType } from './type';
+import CharacterGltf from './utils/CharacterGltf';
 import VehicleGltf from './utils/VehicleGltf';
 
 /**
@@ -25,18 +28,17 @@ import VehicleGltf from './utils/VehicleGltf';
  */
 
 export default function Controller(props: controllerType) {
-  // const gltf = useLoader(GLTFLoader, props.url);
-  // const { animations, scene } = gltf;
-  // useColliderInit(scene, props);
-  const animations = [];
+  const gltf = useLoader(GLTFLoader, props.url);
+  const { animations, scene } = gltf;
+  useColliderInit(scene, props);
   return (
     <ControllerInner {...{ ...props, animations }}>
-      {/* {props.options?.mode === 'normal' && (
+      {props.options?.mode === 'normal' && (
         <CharacterGltf {...{ ...props, animations }} />
       )}
       {props.options?.mode === 'airplane' && (
         <CharacterGltf {...{ ...props, animations }} />
-      )} */}
+      )}
       {props.options?.mode === 'vehicle' && (
         <VehicleGltf {...{ ...props, animations }} />
       )}
@@ -63,6 +65,29 @@ export function ControllerInner(props: controllerInnerType) {
 
   check(prop);
   calculation(prop);
+
+  const rigidBody2Ref = useRef<RapierRigidBody>(null);
+  const capsuleCollider2Ref = useRef<Collider>(null);
+  const outerGroup2Ref = useRef<THREE.Group>(null);
+  const slopeRayOrigin2Ref = useRef<THREE.Mesh>(null);
+  // const { stabilize } = useContext(ControllerContext);
+  //
+  //   const { model } = useContext(ControllerContext);
+  //
+  //   useFrame((_, delta) => {
+  //     if (!rigidBody2Ref.current || !outerGroup2Ref.current) return null;
+  //     if (!rigidBodyRef || !rigidBodyRef.current) return null;
+  //
+  //     outerGroup2Ref.current.position.lerp(
+  //       cur.P.add(vec3({ x: 1, y: 0.1, z: 1 })),
+  //       0
+  //     );
+  //     model.quat.setFromEuler(model.euler);
+  //     outerGroup2Ref.current!.quaternion.rotateTowards(
+  //       model.quat,
+  //       delta * calc.turnS * 0.5
+  //     );
+  //   });
 
   const collider = useAtomValue(colliderAtom);
   const { cameraRay } = prop;

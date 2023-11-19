@@ -28,19 +28,12 @@ export default function Main() {
     { name: 'greet', keys: ['KeyZ'] }
   ];
 
-  const URL = './gaesup.glb';
+  // const URL = './gaesup.glb';
+  const URL = './kart.glb';
 
   return (
     <>
-      <Canvas
-        shadows
-        style={{ width: '100vw', height: '100vh' }}
-        // camera={{
-        //   fov: 65,
-        //   near: 0.1,
-        //   far: 1000
-        // }}
-      >
+      <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
         <Environment background preset='sunset' blur={0.8} />
         <directionalLight
           castShadow
@@ -57,7 +50,7 @@ export default function Main() {
         />
         <ambientLight intensity={0.5} />
         <OrbitControls />
-        <Physics>
+        <Physics debug>
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
@@ -67,7 +60,6 @@ export default function Main() {
                 mode: 'vehicle'
               }}
               character={{
-                scale: 0.3,
                 position: [0, -0.55, 0]
               }}
               onAnimate={({ keyControl, states, playAnimation }) => {

@@ -189,6 +189,7 @@ export type refsType = {
 
 export type controllerType = controllerPropType & {
   url: string;
+  wheelsUrl?: string;
 };
 
 export type controllerInnerType = controllerType & {
