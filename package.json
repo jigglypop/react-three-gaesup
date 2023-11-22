@@ -1,13 +1,14 @@
 {
   "name": "react-three-gaesup",
   "version": "1.0.0",
+  "homepage": "https://jigglypop.github.io/react-three-gaesup/",
   "scripts": {
     "dev": "next dev",
     "start:next": "node_modules/next/dist/bin/next start -p 3000",
     "start": "next start",
-    "build": "next build && rm -rf ./.next/cache && node ./scripts/sitemap.js",
+    "build": "next build",
     "predeploy": "npm run build",
-    "deploy": "touch out/.nojekyll && gh-pages -d out --dotfiles"
+    "deploy": "next build && next export && touch out/.nojekyll && git add -f out/ && git commit -m 'deploy to gh-pages' && git subtree push --prefix out origin gh-pages"
   },
   "keywords": [],
   "author": "",
