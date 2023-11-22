@@ -1,10 +1,9 @@
 import { propType } from '@gaesup/type';
 import { useThree } from '@react-three/fiber';
 
-export default function checkCameraCollision(prop: propType) {
-  const { camera } = useThree();
+export default function cameraCollisionDetector(prop: propType) {
   const { cameraRay, constant, options } = prop;
-
+  const { camera } = useThree();
   const checkCollision = (delta: number) => {
     cameraRay.origin.copy(cameraRay.pivot.position);
     camera.getWorldPosition(cameraRay.position);

@@ -1,5 +1,6 @@
 'use client';
 
+import { S3 } from '@components/main';
 import GaeSupProps from '@gaesup/stores/gaesupProps';
 import { Html, useGLTF } from '@react-three/drei';
 import { RapierRigidBody, RigidBody } from '@react-three/rapier';
@@ -9,7 +10,7 @@ import { ControlledInput } from './ControlledInput';
 
 export default function Slopes() {
   // Load models
-  const slopes = useGLTF('./slopes.glb');
+  const slopes = useGLTF(S3 + '/slopes.glb');
   const [angle, setAngle] = useState<number>(25);
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   useEffect(() => {

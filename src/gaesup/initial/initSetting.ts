@@ -1,4 +1,5 @@
 import { currentAtom } from '@gaesup/stores/current';
+import { optionsAtom } from '@gaesup/stores/options';
 import { propType } from '@gaesup/type';
 import { useThree } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
@@ -13,13 +14,16 @@ import * as THREE from 'three';
  */
 export default function initSetting(prop: propType) {
   const current = useAtomValue(currentAtom);
+  const options = useAtomValue(optionsAtom);
   const { camera } = useThree();
   const { constant, cameraRay } = prop;
   useEffect(() => {
     // Initialize camera facing direction
-    const origin = new THREE.Object3D();
-    origin.position.set(0, 0, constant.cameraInitDirection);
-    cameraRay.followCamera = origin;
-    camera.position.set(0, 0, 0);
+    if (options.camera.type === 'perspective') {
+      const origin = new THREE.Object3D();
+      origin.position.set(0, 0, constant.cameraInitDirection);
+      cameraRay.followCamera = origin;
+      camera.position.set(0, 0, 0);
+    }
   }, []);
 }

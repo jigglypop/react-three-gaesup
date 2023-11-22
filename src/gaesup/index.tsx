@@ -4,6 +4,7 @@ import { Collider } from '@dimforge/rapier3d-compat';
 import { RapierRigidBody } from '@react-three/rapier';
 import { useRef } from 'react';
 import * as THREE from 'three';
+import Camera from './camera';
 import check from './check';
 import initProps from './initial/initProps';
 import initSetting from './initial/initSetting';
@@ -51,32 +52,35 @@ export default function Controller(props: controllerType) {
   calculation(prop);
 
   return (
-    <GaesupRigidBody
-      ref={rigidBodyRef}
-      groundRay={prop.groundRay}
-      controllerProps={props}
-    >
-      <GaesupCapsuleCollider ref={capsuleColliderRef} />
-      <GaesupGroup ref={outerGroupRef}>
-        <GaesupSlopeRay
-          slopeRay={prop.slopeRay}
-          groundRay={prop.groundRay}
-          ref={slopeRayOriginRef}
-        />
-        {props.children}
-        {props.options?.mode === 'normal' && (
-          <CharacterGltf
-            prop={prop}
-            url={props.url}
-            character={props.character}
+    <>
+      <Camera prop={prop} />
+      <GaesupRigidBody
+        ref={rigidBodyRef}
+        groundRay={prop.groundRay}
+        controllerProps={props}
+      >
+        <GaesupCapsuleCollider ref={capsuleColliderRef} />
+        <GaesupGroup ref={outerGroupRef}>
+          <GaesupSlopeRay
+            slopeRay={prop.slopeRay}
             groundRay={prop.groundRay}
-            refs={refs}
-            callbacks={callbacks}
+            ref={slopeRayOriginRef}
           />
-        )}
-        {/* {props.options?.mode === 'airplane' && <CharacterGltf {...props} />} */}
-        {props.options?.mode === 'vehicle' && <VehicleGltf {...props} />}
-      </GaesupGroup>
-    </GaesupRigidBody>
+          {props.children}
+          {props.options?.mode === 'normal' && (
+            <CharacterGltf
+              prop={prop}
+              url={props.url}
+              character={props.character}
+              groundRay={prop.groundRay}
+              refs={refs}
+              callbacks={callbacks}
+            />
+          )}
+          {/* {props.options?.mode === 'airplane' && <CharacterGltf {...props} />} */}
+          {props.options?.mode === 'vehicle' && <VehicleGltf {...props} />}
+        </GaesupGroup>
+      </GaesupRigidBody>
+    </>
   );
 }

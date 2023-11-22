@@ -10,6 +10,11 @@ import FloatMove from '@components/platform/FloatMove';
 import Floor from '@components/platform/Floor';
 import RigidObjects from '@components/platform/RigidObjects';
 import RoughPlane from '@components/platform/RoughPlane';
+import { optionsAtom } from '@gaesup/stores/options';
+import { vars } from '@styles/theme.css';
+import { useSetAtom } from 'jotai';
+
+export const S3 = 'https://jiggloghttps.s3.ap-northeast-2.amazonaws.com/gltf';
 
 export default function Main() {
   const keyboardMap = [
@@ -22,12 +27,141 @@ export default function Main() {
     { name: 'greet', keys: ['KeyZ'] }
   ];
 
-  const URL = './gaesup.glb';
+  const URL = S3 + '/gaesup.glb';
   // const URL = './kart.glb';
+
+  const setOptions = useSetAtom(optionsAtom);
 
   return (
     <>
-      <Canvas shadows style={{ width: '100vw', height: '100vh' }}>
+      <div
+        style={{ position: 'fixed', top: '1rem', left: '1rem', zIndex: '1000' }}
+      >
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() =>
+            setOptions((options) => ({
+              ...options,
+              camera: {
+                type: 'perspective',
+                control: 'normal'
+              }
+            }))
+          }
+        >
+          캐릭터 노멀
+        </button>
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() =>
+            setOptions((options) => ({
+              ...options,
+              camera: {
+                type: 'perspective',
+                control: 'orbit'
+              }
+            }))
+          }
+        >
+          캐릭터 궤도
+        </button>
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() => {
+            setOptions((options) => ({
+              ...options,
+              camera: {
+                type: 'orthographic',
+                control: 'normal'
+              }
+            }));
+          }}
+        >
+          캐릭터 맵
+        </button>
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() => {
+            setOptions((options) => ({
+              ...options,
+              controllerType: 'keyboard'
+            }));
+          }}
+        >
+          키보드
+        </button>
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() => {
+            setOptions((options) => ({
+              ...options,
+              controllerType: 'joystick'
+            }));
+          }}
+        >
+          조이스틱
+        </button>
+        <button
+          style={{
+            background: vars.gradient.lightGreen,
+            width: '6rem',
+            height: '3rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 0 10px rgba(161,244,255,1)',
+            margin: '1rem',
+            fontSize: '1rem'
+          }}
+          onClick={() => {
+            setOptions((options) => ({
+              ...options,
+              controllerType: 'gameboy'
+            }));
+          }}
+        >
+          게임보이
+        </button>
+      </div>
+      <Canvas shadows dpr={[1, 2]} style={{ width: '100vw', height: '100vh' }}>
         <Environment background preset='sunset' blur={0.8} />
         <directionalLight
           castShadow
@@ -50,10 +184,21 @@ export default function Main() {
               options={{
                 debug: false,
                 controllerType: 'keyboard',
-                mode: 'normal'
+                mode: 'normal',
+                camera: {
+                  type: 'perspective',
+                  control: 'orbit'
+                },
+                orthographicCamera: {
+                  zoom: 80
+                }
+                // perspectiveCamera: {
+                //   XZDistance: 2,
+                //   YDistance: 1.5,
+                //   isFront: true
+                // }
               }}
               character={{
-                scale: 0.3,
                 rotation: [0, Math.PI, 0]
               }}
               onAnimate={({ keyControl, states, playAnimation }) => {

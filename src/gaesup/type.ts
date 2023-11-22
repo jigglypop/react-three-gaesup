@@ -1,5 +1,9 @@
 import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
-import { GroupProps, RootState } from '@react-three/fiber';
+import {
+  GroupProps,
+  OrthographicCameraProps,
+  RootState
+} from '@react-three/fiber';
 import { RapierRigidBody, RigidBodyProps } from '@react-three/rapier';
 import { ReactNode, RefObject } from 'react';
 import * as THREE from 'three';
@@ -87,12 +91,16 @@ export type optionsType = {
   mode: 'normal' | 'vehicle' | 'airplane';
   controllerType: 'none' | 'gameboy' | 'joystick' | 'keyboard';
   cameraCollisionType: 'transparent' | 'closeUp';
-  camera: 'normal' | 'orbit';
-  orbitCamera: {
+  camera: {
+    type: 'perspective' | 'orthographic';
+    control: 'orbit' | 'normal';
+  };
+  perspectiveCamera: {
     isFront: boolean;
     XZDistance: number;
     YDistance: number;
   };
+  orthographicCamera?: OrthographicCameraProps;
   minimap: boolean;
   minimapRatio: number;
 };

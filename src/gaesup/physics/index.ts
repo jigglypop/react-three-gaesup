@@ -2,9 +2,9 @@ import { propType } from '@gaesup/type';
 import accelaration from './accelaration';
 import airplaneDirection from './airplane/airplaneDirection';
 import airplaneImpluse from './airplane/airplaneImpluse';
+
 import characterDirection from './character/characterDirection';
 import impulse from './character/impulse';
-import normalCamera from './character/normalCamera';
 import jump from './jump';
 import stabilizing from './stabilizing';
 import turn from './turn';
@@ -17,8 +17,6 @@ export default function calculation(prop: propType) {
   accelaration(prop);
   jump(prop);
   if (prop.options.mode === 'normal') {
-    // characterCamera(prop);
-    normalCamera(prop);
     impulse(prop);
     characterDirection(prop);
   } else if (prop.options.mode === 'airplane') {

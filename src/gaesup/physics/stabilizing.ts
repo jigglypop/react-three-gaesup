@@ -30,9 +30,4 @@ export default function stabilizing(prop: propType) {
       false
     );
   });
-
-  // useEffect(() => {
-  //   if (rigidBodyRef.current)
-  //     rigidBodyRef.current.setEnabledRotations(true, true, true, false);
-  // }, [damping]);
 }

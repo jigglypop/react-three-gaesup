@@ -139,8 +139,6 @@ export default function initProps({
     0,
     -constant.cameraMaxDistance
   );
-  console.log(cameraRay);
-
   const { scene, camera } = useThree();
   const intersectObjectMap: { [uuid: string]: THREE.Object3D } = {};
   const getMeshs = (object: THREE.Object3D) => {

@@ -6,13 +6,21 @@ export const optionsAtom = atom<optionsType>({
   mode: 'normal',
   controllerType: 'none',
   cameraCollisionType: 'transparent',
-  camera: 'orbit',
+  camera: {
+    type: 'orthographic',
+    control: 'orbit'
+  },
   minimap: true,
   minimapRatio: 1,
-  orbitCamera: {
+  perspectiveCamera: {
     isFront: true,
-    XZDistance: 5,
+    XZDistance: 8,
     YDistance: 1
+  },
+  orthographicCamera: {
+    zoom: 1,
+    near: 0.1,
+    far: 1000
   }
 });
 
