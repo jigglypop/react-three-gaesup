@@ -1,5 +1,5 @@
 import { vec3 } from '@react-three/rapier';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { minimapAtom } from '../minimap';
@@ -26,7 +26,7 @@ export default function GaeSupProps({
   children: React.ReactNode;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [minimap, setMiniMap] = useAtom(minimapAtom);
+  const setMiniMap = useSetAtom(minimapAtom);
   const options = useAtomValue(optionsAtom);
   const setJumpPoint = useSetAtom(jumpPointAtom);
   useEffect(() => {

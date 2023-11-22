@@ -1,16 +1,26 @@
 import usePlay from '@gaesup/stores/animation';
 import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
-import { propType } from '@gaesup/type';
+import { groundRayType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
+import { RefObject } from 'react';
 
 /**
  * Actions for managing animations
  */
 
-export default function actions(prop: propType) {
-  const { outerGroupRef, animations, groundRay } = prop;
+export type playActionsType = {
+  outerGroupRef: RefObject<THREE.Group>;
+  groundRay: groundRayType;
+  animations: THREE.AnimationClip[];
+};
+
+export default function playActions({
+  outerGroupRef,
+  groundRay,
+  animations
+}: playActionsType) {
   const { playIdle, playWalk, playRun, playJump, playFall } = usePlay({
     outerGroupRef,
     animations

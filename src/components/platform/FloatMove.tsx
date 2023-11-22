@@ -1,8 +1,5 @@
-'use client';
-
 import { Collider, Ray, RayColliderToi } from '@dimforge/rapier3d-compat';
 import GaeSupProps from '@gaesup/stores/gaesupProps';
-import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
   CuboidCollider,
@@ -16,13 +13,13 @@ import * as THREE from 'three';
 
 export type rayType = {
   origin: THREE.Vector3;
-  hit: RayColliderToi | null;
-  parent?: RapierRigidBody | null | undefined;
-  velocity: THREE.Vector3;
-  rayCast: Ray | null;
-  offset: THREE.Vector3;
   dir: THREE.Vector3;
+  offset: THREE.Vector3;
   springDir: THREE.Vector3;
+  velocity: THREE.Vector3;
+  hit: RayColliderToi | null;
+  parent: THREE.Object3D | null;
+  rayCast: Ray | null;
   length: number;
 };
 
@@ -108,15 +105,6 @@ export default function FloatMove() {
   return (
     <GaeSupProps text='Float and move' jumpPoint={true} position={[0, 5, -17]}>
       <RigidBody mass={1} colliders={false} ref={rigidBodyRef}>
-        <Text
-          scale={0.2}
-          color='black'
-          maxWidth={40}
-          textAlign='center'
-          position={[0, 0.4, 0]}
-        >
-          Float and move
-        </Text>
         <CuboidCollider args={[1.25, 0.1, 1.25]} ref={cuboidColliderRef} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[2.5, 0.2, 2.5]} />

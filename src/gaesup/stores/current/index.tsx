@@ -9,6 +9,8 @@ export const currentAtom = atom<currentType>({
   reverseVelocity: vec3(),
   quat: quat(),
   euler: euler(),
+  dir: vec3(),
+  direction: vec3(),
   refs: {}
 });
 

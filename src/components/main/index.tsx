@@ -2,20 +2,14 @@
 
 import Controller from '@gaesup/index';
 import GaeSupTools from '@gaesup/tools';
-import {
-  Environment,
-  Gltf,
-  KeyboardControls,
-  OrbitControls
-} from '@react-three/drei';
+import { Environment, KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 
-import DynamicPlatforms from 'component/platform/DynamicPlatforms';
-import FloatMove from 'component/platform/FloatMove';
-import Floor from 'component/platform/Floor';
-import RigidObjects from 'component/platform/RigidObjects';
-import RoughPlane from 'component/platform/RoughPlane';
+import FloatMove from '@components/platform/FloatMove';
+import Floor from '@components/platform/Floor';
+import RigidObjects from '@components/platform/RigidObjects';
+import RoughPlane from '@components/platform/RoughPlane';
 
 export default function Main() {
   const keyboardMap = [
@@ -28,8 +22,8 @@ export default function Main() {
     { name: 'greet', keys: ['KeyZ'] }
   ];
 
-  // const URL = './gaesup.glb';
-  const URL = './kart.glb';
+  const URL = './gaesup.glb';
+  // const URL = './kart.glb';
 
   return (
     <>
@@ -49,18 +43,18 @@ export default function Main() {
           shadow-camera-left={-50}
         />
         <ambientLight intensity={0.5} />
-        <OrbitControls />
         <Physics debug>
           <KeyboardControls map={keyboardMap}>
             <Controller
               url={URL}
               options={{
                 debug: false,
-                controllerType: 'none',
-                mode: 'vehicle'
+                controllerType: 'keyboard',
+                mode: 'normal'
               }}
               character={{
-                position: [0, -0.55, 0]
+                scale: 0.3,
+                rotation: [0, Math.PI, 0]
               }}
               onAnimate={({ keyControl, states, playAnimation }) => {
                 const { greet } = keyControl;
@@ -74,19 +68,8 @@ export default function Main() {
             />
           </KeyboardControls>
           <RoughPlane />
-          {/* <Slopes /> */}
-          <Gltf src={'/snow.glb'} position={[0, -1, 0]} />
-          <Gltf src={'/snow.glb'} position={[2, -1, 2]} />
-          <Gltf src={'/snow.glb'} position={[-2, -1, 2]} />
-          <Gltf src={'/snow.glb'} position={[2, -1, -2]} />
-          <Gltf src={'/snow.glb'} position={[-2, -1, -2]} />
-          <Gltf src={'/snow.glb'} position={[0, -1, 2]} />
-          <Gltf src={'/snow.glb'} position={[2, -1, 0]} />
-          <Gltf src={'/snow.glb'} position={[0, -1, -2]} />
-          <Gltf src={'/snow.glb'} position={[-2, -1, 0]} />
           <RigidObjects />
           <FloatMove />
-          <DynamicPlatforms />
           <Floor />
         </Physics>
       </Canvas>

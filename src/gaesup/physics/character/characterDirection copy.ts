@@ -6,7 +6,7 @@ import { propType } from '@gaesup/type';
 import { useFrame } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
 
-export default function direction(prop: propType) {
+export default function characterDirection(prop: propType) {
   const { rigidBodyRef, options, cameraRay } = prop;
   const current = useAtomValue(currentAtom);
   const joystick = useAtomValue(joyStickOriginAtom);

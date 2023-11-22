@@ -1,23 +1,16 @@
-import { useSetGltf } from '@gaesup/stores/animation';
 import { colliderAtom } from '@gaesup/stores/collider';
-import { controllerInnerType } from '@gaesup/type';
+import { controllerType } from '@gaesup/type';
 import { useLoader } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let url = '';
 
-export default function WheelGltf(props: controllerInnerType) {
+export default function WheelGltf(props: controllerType) {
   url = props.wheelsUrl || url;
   const gltf = useLoader(GLTFLoader, props.url);
-  const { setGltf } = useSetGltf();
   const { materials, nodes } = gltf;
   const collider = useAtomValue(colliderAtom);
-
-  useEffect(() => {
-    setGltf(gltf);
-  }, [gltf]);
 
   return (
     <>
@@ -60,7 +53,6 @@ export default function WheelGltf(props: controllerInnerType) {
           receiveShadow
           castShadow
         />
-
       </group>
     </>
   );

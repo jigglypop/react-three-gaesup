@@ -6,8 +6,14 @@ export const optionsAtom = atom<optionsType>({
   mode: 'normal',
   controllerType: 'none',
   cameraCollisionType: 'transparent',
+  camera: 'orbit',
   minimap: true,
-  minimapRatio: 1
+  minimapRatio: 1,
+  orbitCamera: {
+    isFront: true,
+    XZDistance: 5,
+    YDistance: 1
+  }
 });
 
 optionsAtom.debugLabel = 'options';

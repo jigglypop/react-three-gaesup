@@ -8,13 +8,20 @@ import { useCallback, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import {
   constantType,
-  controllerInitPropsType,
+  controllerType,
   groundRayType,
+  refsType,
   slopeRayType
 } from '../type';
 import initDebug from './initDebug';
 
-export default function initProps(props: controllerInitPropsType) {
+export default function initProps({
+  props,
+  refs
+}: {
+  props: controllerType;
+  refs: refsType;
+}) {
   const { rapier, world } = useRapier();
   const [_, getKeys] = useKeyboardControls();
   const keyControl: {
@@ -43,7 +50,7 @@ export default function initProps(props: controllerInitPropsType) {
     true,
     undefined,
     undefined,
-    props.capsuleColliderRef.current!,
+    refs.capsuleColliderRef.current!,
     undefined
   );
   groundRay.parent = groundRay.hit?.collider.parent();
@@ -132,6 +139,7 @@ export default function initProps(props: controllerInitPropsType) {
     0,
     -constant.cameraMaxDistance
   );
+  console.log(cameraRay);
 
   const { scene, camera } = useThree();
   const intersectObjectMap: { [uuid: string]: THREE.Object3D } = {};
@@ -161,10 +169,6 @@ export default function initProps(props: controllerInitPropsType) {
         ...options,
         ...Object.assign(options, props.options)
       }));
-      // options = {
-      //   ...options,
-      //   ...Object.assign(options, props.options)
-      // };
     }
     if (props.constant) {
       constant = {
@@ -182,11 +186,10 @@ export default function initProps(props: controllerInitPropsType) {
     move,
     constant,
     cameraRay,
-    capsuleColliderRef: props.capsuleColliderRef,
-    rigidBodyRef: props.rigidBodyRef,
-    outerGroupRef: props.outerGroupRef,
-    slopeRayOriginRef: props.slopeRayOriginRef,
-    animations: props.animations,
+    capsuleColliderRef: refs.capsuleColliderRef,
+    rigidBodyRef: refs.rigidBodyRef,
+    outerGroupRef: refs.outerGroupRef,
+    slopeRayOriginRef: refs.slopeRayOriginRef,
     keyControl
   });
 }

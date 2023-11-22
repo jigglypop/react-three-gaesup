@@ -32,7 +32,6 @@ export default function Slopes() {
         ref={rigidBodyRef}
         rotation={[-(angle * Math.PI) / 180, 0, 0]}
       >
-        {/* <primitive object={slopes.scene} /> */}
         <mesh receiveShadow castShadow>
           <boxGeometry args={[10, 1, 10]} />
           <meshBasicMaterial transparent opacity={0.9} />

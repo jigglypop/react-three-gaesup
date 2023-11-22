@@ -1,7 +1,6 @@
 'use client';
 
 import GaeSupProps from '@gaesup/stores/gaesupProps';
-import { Text } from '@react-three/drei';
 import {
   BallCollider,
   CuboidCollider,
@@ -26,7 +25,7 @@ export default function RigidObjects() {
         </mesh>
       </RigidBody>
       <RigidBody position={[15, 0, 0]} colliders={false}>
-        <Text
+        {/* <Text
           scale={0.5}
           color='black'
           maxWidth={10}
@@ -35,7 +34,7 @@ export default function RigidObjects() {
           rotation={[0, -Math.PI / 2, 0]}
         >
           mass: 1
-        </Text>
+        </Text> */}
         <CuboidCollider args={[0.5, 0.5, 0.5]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[1, 1, 1]} />
@@ -43,7 +42,7 @@ export default function RigidObjects() {
         </mesh>
       </RigidBody>
       <RigidBody position={[15, 0, -2]} colliders={false}>
-        <Text
+        {/* <Text
           scale={0.5}
           color='black'
           maxWidth={10}
@@ -52,7 +51,7 @@ export default function RigidObjects() {
           rotation={[0, -Math.PI / 2, 0]}
         >
           mass: 3.375
-        </Text>
+        </Text> */}
         <CuboidCollider args={[1.5 / 2, 1.5 / 2, 1.5 / 2]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[1.5, 1.5, 1.5]} />
@@ -60,7 +59,7 @@ export default function RigidObjects() {
         </mesh>
       </RigidBody>
       <RigidBody position={[15, 0, -5]} colliders={false}>
-        <Text
+        {/* <Text
           scale={0.5}
           color='black'
           maxWidth={10}
@@ -69,7 +68,7 @@ export default function RigidObjects() {
           rotation={[0, -Math.PI / 2, 0]}
         >
           mass: 8
-        </Text>
+        </Text> */}
         <CuboidCollider args={[1, 1, 1]} />
         <mesh receiveShadow castShadow>
           <boxGeometry args={[2, 2, 2]} />
@@ -79,7 +78,7 @@ export default function RigidObjects() {
 
       {/* Fun toy */}
       <RigidBody colliders={false} position={[15, 5, -10]}>
-        <Text
+        {/* <Text
           scale={0.5}
           color='black'
           maxWidth={10}
@@ -88,7 +87,7 @@ export default function RigidObjects() {
           rotation={[0, -Math.PI / 2, 0]}
         >
           mass: 1.24
-        </Text>
+        </Text> */}
         <CylinderCollider args={[0.03, 2.5]} position={[0, 0.25, 0]} />
         <BallCollider args={[0.25]} />
         <mesh receiveShadow castShadow>

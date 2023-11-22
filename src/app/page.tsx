@@ -1,4 +1,4 @@
-import Main from 'component/main';
+import Main from '@components/main';
 
 export const metadata = {
   title: 'react-three-gaesup | example',

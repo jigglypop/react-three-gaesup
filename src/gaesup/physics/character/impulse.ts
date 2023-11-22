@@ -1,4 +1,5 @@
 import { colliderAtom } from '@gaesup/stores/collider';
+import useCalcControl from '@gaesup/stores/control';
 import { currentAtom } from '@gaesup/stores/current';
 import { statesAtom } from '@gaesup/stores/states';
 import { propType } from '@gaesup/type';
@@ -10,6 +11,7 @@ import { useAtom, useAtomValue } from 'jotai';
 export default function impulse(prop: propType) {
   const { rigidBodyRef, slopeRay, groundRay, move, constant } = prop;
   const [current, setCurrent] = useAtom(currentAtom);
+  const { forward, backward } = useCalcControl(prop);
 
   const states = useAtomValue(statesAtom);
   const collider = useAtomValue(colliderAtom);
@@ -63,16 +65,8 @@ export default function impulse(prop: propType) {
           Math.sin(slopeRay.angle),
           Math.cos(slopeRay.angle)
         );
-      }
-      // else if (slopeRay.currentAngle >= 1) {
-      //   move.direction.set(
-      //     0,
-      //     Math.sin(slopeRay.angle) > 0 ? 0 : Math.sin(slopeRay.angle),
-      //     Math.sin(slopeRay.angle) > 0 ? 0.1 : 1
-      //   );
-      // }
-      else {
-        move.direction.set(0, 0, 1);
+      } else {
+        move.direction.set(0, 0, Number(backward) - Number(forward));
       }
       const M = rigidBodyRef.current.mass();
       const A = move.accelation;

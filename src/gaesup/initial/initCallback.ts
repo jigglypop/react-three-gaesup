@@ -5,7 +5,7 @@ import { statesAtom } from '@gaesup/stores/states';
 import {
   animationTagType,
   callbackPropType,
-  controllerInnerType,
+  callbackType,
   propType
 } from '@gaesup/type';
 import { useAnimations } from '@react-three/drei';
@@ -13,22 +13,23 @@ import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
-export default function initCallback(
-  props: controllerInnerType,
-  prop: propType
-) {
-  const {
-    outerGroupRef,
-    animations,
-    rigidBodyRef,
-    slopeRayOriginRef,
-    capsuleColliderRef
-  } = prop;
+export type initCallbackType = {
+  prop: propType;
+  callbacks?: callbackType;
+  animations: THREE.AnimationClip[];
+};
+
+export default function initCallback({
+  prop,
+  callbacks,
+  animations
+}: initCallbackType) {
+  const { outerGroupRef, rigidBodyRef, slopeRayOriginRef, capsuleColliderRef } =
+    prop;
   const current = useAtomValue(currentAtom);
   const states = useAtomValue(statesAtom);
   const { actions } = useAnimations(animations, outerGroupRef);
   const [animation, setAnimation] = useAtom(animationAtom);
-
   // Animation set state
   const playAnimation = (tag: keyof animationTagType) => {
     setAnimation((animation) => ({
@@ -38,7 +39,6 @@ export default function initCallback(
   };
 
   const keyControl = useCalcControl(prop);
-
   const controllerProp: callbackPropType = {
     ...prop,
     keyControl,
@@ -62,22 +62,22 @@ export default function initCallback(
   }, []);
 
   useEffect(() => {
-    if (props.onReady) {
-      props.onReady(controllerProp);
+    if (callbacks && callbacks.onReady) {
+      callbacks.onReady(controllerProp);
     }
     return () => {
-      if (props.onDestory) {
-        props.onDestory(controllerProp);
+      if (callbacks && callbacks.onDestory) {
+        callbacks.onDestory(controllerProp);
       }
     };
   }, []);
 
   useFrame((prop) => {
-    if (props.onFrame) {
-      props.onFrame({ ...controllerProp, ...prop });
+    if (callbacks && callbacks.onFrame) {
+      callbacks.onFrame({ ...controllerProp, ...prop });
     }
-    if (props.onAnimate) {
-      props.onAnimate({
+    if (callbacks && callbacks.onAnimate) {
+      callbacks.onAnimate({
         ...controllerProp,
         ...prop,
         actions,

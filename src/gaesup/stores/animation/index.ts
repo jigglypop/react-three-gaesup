@@ -4,7 +4,6 @@ import { actionsType, animationTagType } from '@gaesup/type';
 import { useAnimations, useKeyboardControls } from '@react-three/drei';
 import { atom, useAtom } from 'jotai';
 import * as THREE from 'three';
-import { GLTF } from 'three-stdlib';
 
 export type animationPropType = {
   current: keyof animationTagType;
@@ -42,9 +41,15 @@ export default function usePlay({
   const { actions } = useAnimations(animations, outerGroupRef);
   const [animation, setAnimation] = useAtom(animationAtom);
 
+  useEffect(() => {
+    setAnimation((animation) => ({
+      ...animation,
+      keyControl: keys
+    }));
+  }, [keys]);
   // Animation set state
   const playAnimation = useCallback(
-    (tag: any) => {
+    (tag: keyof animationTagType) => {
       setAnimation((animation) => ({
         ...animation,
         current: tag
@@ -86,13 +91,6 @@ export default function usePlay({
   }, []);
 
   useEffect(() => {
-    setAnimation((animation) => ({
-      ...animation,
-      keyControl: keys
-    }));
-  }, [keys]);
-
-  useEffect(() => {
     // Play animation
     const action = actions[animation.current]?.reset().fadeIn(0.2).play();
     setAnimationName(actions);
@@ -114,18 +112,3 @@ export default function usePlay({
     playFall
   };
 }
-
-export const useSetGltf = () => {
-  const [animation, setAnimation] = useAtom(animationAtom);
-  const setGltf = (gltf: GLTF) => {
-    setAnimation((animation) => ({
-      ...animation,
-      gltf
-    }));
-  };
-  return {
-    animation,
-    setAnimation,
-    setGltf
-  };
-};

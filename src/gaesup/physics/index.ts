@@ -1,22 +1,26 @@
 import { propType } from '@gaesup/type';
-import airplaneDirection from './airplaneDirection';
-import airplaneImpluse from './airplaneImpluse';
-import camera from './camera';
-import direction from './direction';
-import impulse from './impulse';
+import accelaration from './accelaration';
+import airplaneDirection from './airplane/airplaneDirection';
+import airplaneImpluse from './airplane/airplaneImpluse';
+import characterDirection from './character/characterDirection';
+import impulse from './character/impulse';
+import normalCamera from './character/normalCamera';
+import jump from './jump';
 import stabilizing from './stabilizing';
 import turn from './turn';
-import vehicleDirection from './vehicleDirection';
-import vehicleImpulse from './vehicleImpulse';
+import vehicleDirection from './vehicle/vehicleDirection';
+import vehicleImpulse from './vehicle/vehicleImpulse';
 
 export default function calculation(prop: propType) {
-  camera(prop);
   turn(prop);
-  // accelaration(prop);
-  // jump(prop);
+  stabilizing(prop);
+  accelaration(prop);
+  jump(prop);
   if (prop.options.mode === 'normal') {
+    // characterCamera(prop);
+    normalCamera(prop);
     impulse(prop);
-    direction(prop);
+    characterDirection(prop);
   } else if (prop.options.mode === 'airplane') {
     airplaneImpluse(prop);
     airplaneDirection(prop);
@@ -24,6 +28,4 @@ export default function calculation(prop: propType) {
     vehicleImpulse(prop);
     vehicleDirection(prop);
   }
-  stabilizing(prop);
-  // actions(prop);
 }

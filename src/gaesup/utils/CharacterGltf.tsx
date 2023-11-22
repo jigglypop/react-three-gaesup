@@ -1,29 +1,52 @@
-import { useSetGltf } from '@gaesup/stores/animation';
-import { colliderAtom } from '@gaesup/stores/collider';
-import { controllerInnerType } from '@gaesup/type';
-import { useLoader } from '@react-three/fiber';
+import playActions from '@gaesup/animation/actions';
+import initCallback from '@gaesup/initial/initCallback';
+import { colliderAtom, useColliderInit } from '@gaesup/stores/collider';
+import { callbackType, groundRayType, propType, refsType } from '@gaesup/type';
+import { GroupProps, useLoader } from '@react-three/fiber';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-let url = '';
+let preloadUrl = '';
 
-export default function CharacterGltf(props: controllerInnerType) {
-  url = props.url;
-  const gltf = useLoader(GLTFLoader, props.url);
-  const { setGltf } = useSetGltf();
-  const { materials, nodes } = gltf;
+export type characterGltfType = {
+  prop: propType;
+  url: string;
+  character?: GroupProps;
+  groundRay: groundRayType;
+  refs: refsType;
+  callbacks?: callbackType;
+};
+
+export default function CharacterGltf({
+  prop,
+  url,
+  character,
+  groundRay,
+  refs,
+  callbacks
+}: characterGltfType) {
+  preloadUrl = url;
+  const gltf = useLoader(GLTFLoader, url);
+  const { materials, nodes, scene, animations } = gltf;
   const collider = useAtomValue(colliderAtom);
 
-  useEffect(() => {
-    setGltf(gltf);
-  }, [gltf]);
+  useColliderInit(scene, character);
+  initCallback({
+    prop,
+    callbacks,
+    animations
+  });
+  playActions({
+    outerGroupRef: refs.outerGroupRef,
+    groundRay: groundRay,
+    animations
+  });
 
   return (
     <group
       receiveShadow
       castShadow
-      {...props.character}
+      {...character}
       position={[0, -collider.height, 0]}
     >
       <primitive
@@ -50,4 +73,4 @@ export default function CharacterGltf(props: controllerInnerType) {
   );
 }
 
-useLoader.preload(GLTFLoader, url);
+useLoader.preload(GLTFLoader, preloadUrl);

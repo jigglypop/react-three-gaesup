@@ -31,6 +31,8 @@ export type currentType = {
   reverseVelocity: THREE.Vector3;
   quat: THREE.Quaternion;
   euler: THREE.Euler;
+  direction: THREE.Vector3;
+  dir: THREE.Vector3;
   refs: {
     capsuleColliderRef?: RefObject<Collider>;
     rigidBodyRef?: RefObject<RapierRigidBody>;
@@ -85,6 +87,12 @@ export type optionsType = {
   mode: 'normal' | 'vehicle' | 'airplane';
   controllerType: 'none' | 'gameboy' | 'joystick' | 'keyboard';
   cameraCollisionType: 'transparent' | 'closeUp';
+  camera: 'normal' | 'orbit';
+  orbitCamera: {
+    isFront: boolean;
+    XZDistance: number;
+    YDistance: number;
+  };
   minimap: boolean;
   minimapRatio: number;
 };
@@ -137,7 +145,6 @@ export type propType = {
   rigidBodyRef: RefObject<RapierRigidBody>;
   outerGroupRef: RefObject<THREE.Group>;
   slopeRayOriginRef: RefObject<THREE.Mesh>;
-  animations: THREE.AnimationClip[];
   keyControl: {
     [key: string]: boolean;
   };
@@ -174,29 +181,7 @@ export interface controllerPropType extends RigidBodyProps {
   constant?: partialConstantType;
   options?: partialOptionsType;
   character?: GroupProps;
-  onReady?: (prop: callbackPropType) => void;
-  onFrame?: (prop: onFramePropType) => void;
-  onDestory?: (prop: callbackPropType) => void;
-  onAnimate?: (prop: onAnimatePropType) => void;
 }
-
-export type refsType = {
-  capsuleColliderRef: RefObject<Collider>;
-  rigidBodyRef: RefObject<RapierRigidBody>;
-  outerGroupRef: RefObject<THREE.Group>;
-  slopeRayOriginRef: RefObject<THREE.Mesh>;
-};
-
-export type controllerType = controllerPropType & {
-  url: string;
-  wheelsUrl?: string;
-};
-
-export type controllerInnerType = controllerType & {
-  animations: THREE.AnimationClip[];
-};
-
-export type controllerInitPropsType = controllerInnerType & refsType;
 
 export type callbackPropType = {
   current: currentType;
@@ -208,12 +193,26 @@ export type callbackPropType = {
   jump: jumpInnerType;
   move: moveType;
   constant: constantType;
-  capsuleColliderRef: RefObject<Collider>;
-  rigidBodyRef: RefObject<RapierRigidBody>;
-  outerGroupRef: RefObject<THREE.Group>;
-  slopeRayOriginRef: RefObject<THREE.Mesh>;
-  animations: THREE.AnimationClip[];
   keyControl: {
     [key: string]: boolean;
   };
 };
+
+export type callbackType = {
+  onReady?: (prop: callbackPropType) => void;
+  onFrame?: (prop: onFramePropType) => void;
+  onDestory?: (prop: callbackPropType) => void;
+  onAnimate?: (prop: onAnimatePropType) => void;
+};
+
+export type refsType = {
+  capsuleColliderRef: RefObject<Collider>;
+  rigidBodyRef: RefObject<RapierRigidBody>;
+  outerGroupRef: RefObject<THREE.Group>;
+  slopeRayOriginRef: RefObject<THREE.Mesh>;
+};
+
+export type controllerType = controllerPropType & {
+  url: string;
+  wheelsUrl?: string;
+} & callbackType;
